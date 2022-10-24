@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <fcntl.h>
+#include "./ft_printf/ft_printf.h"
+
+int	ft_abs(int a)
+{
+	if (a < 0)
+		return (-a);
+	return (a);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	if (n == 0)
+		return (0);
+	while (*s1 && *s2 && *s1 == *s2 && ++i < n)
+	{
+		s1++;
+		s2++;
+	}
+	return (*s1 - *s2);
+}
+
+int	ft_strlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return	(i);
+}
+
+int	lineseg(char *line, char **lex_tab, int quoted)
+{
+	int	i;
+	int	charcount;
+	char	*seg;
+
+	i = 0;
+	charcount = 0;
+	while (line[++i] && ((quoted && line[i] != line[0]) || (!quoted && line[i] != '	' && line[i] != ' ')))
+		charcount++;
+	seg = malloc(charcount + 2);
+	i = 0;
+	seg[0] = line[0];
+	while (line[++i] && ((quoted && line[i] != line[0]) || (!quoted && line[i] != '	' && line[i] != ' ')))
+		seg[i] = line[i];
+	seg[i] = '\0';
+	*lex_tab = seg;
+	return (i);
+}
+ 
+char	**lexing(char *line)
+{
+	int	i;
+	int j;
+	int	quoted;
+	char	**lex_tab;
+
+	i = -1;
+	j = 0;
+	quoted = 0;
+	lex_tab = malloc(sizeof(char*) * 20/*arg_count(line)*/);
+	while (line[++i])
+	{
+		if (line[i] == '\'' || line [i] == '\"')
+			quoted = 1;
+		if (quoted || (line[i] != ' ' && line[i] != '	'))
+		{
+			i += lineseg(line + i, lex_tab + j, quoted) + quoted;
+			j++;
+			quoted = 0;
+		}
+	}
+	lex_tab[j] = NULL;
+	return (lex_tab);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	(void)argc;
+	(void)argv;
+	char	*line;
+	char	**test;
+	int	i;
+	int	hist_count;
+	int hist_fd;
+
+	// if (access("history", F_OK))
+	// 	hist_fd = open("history", O_CREAT | O_RDWR | O_TRUNC, 0000644);
+	// else
+	// 	hist_fd = open("history", O_WONLY);
+	// hist_count = 1;
+	while (1)
+	{
+		i = -1;
+		line = readline("Mini_chiale> ");
+		test = lexing(line);
+		while (test[++i])
+		{
+			//printf("%s\n\n", line);
+			printf("%s\n", test[i]);
+		}
+		// ft_printf(hist_fd, "%d	%s\n", hist_count, cmd);
+		// hist_count++;
+		//add_history(line);
+		//rl_redisplay();
+	}
+	return (0);
+}
