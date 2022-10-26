@@ -36,46 +36,51 @@ int	ft_strlen(char *str)
 	return	(i);
 }
 
-int	lineseg(char *line, char **lex_tab, int quoted)
+int	lineseg(char *line, char **lex_tab)
 {
 	int	i;
 	int	charcount;
+	int	quoted;
 	char	*seg;
 
 	i = 0;
 	charcount = 0;
-	while (line[++i] && ((quoted && line[i] != line[0]) || (!quoted && line[i] != '	' && line[i] != ' ')))
+	quoted = 0;
+	if (line[i] == '\'' || line [i] == '\"')
+		quoted = 1;
+	while (line[++i] && ((quoted && line[i] != line[0]) 
+		|| (!quoted && line[i] != '	' && line[i] != ' ' && line[i] != '|')))
 		charcount++;
-	seg = malloc(charcount + 2);
+	seg = malloc(charcount + 1);
 	i = 0;
 	seg[0] = line[0];
-	while (line[++i] && ((quoted && line[i] != line[0]) || (!quoted && line[i] != '	' && line[i] != ' ')))
+	while (line[++i] && ((quoted && line[i] != line[0]) 
+		|| (!quoted && line[i] != '	' && line[i] != ' ' && line[i] != '|')))
 		seg[i] = line[i];
 	seg[i] = '\0';
 	*lex_tab = seg;
-	return (i);
+	return (i + quoted);
 }
  
 char	**lexing(char *line)
 {
 	int	i;
 	int j;
-	int	quoted;
 	char	**lex_tab;
 
 	i = -1;
 	j = 0;
-	quoted = 0;
-	lex_tab = malloc(sizeof(char*) * 20/*arg_count(line)*/);
+	lex_tab = malloc(sizeof(char*) * 8/*arg_count(line)*/);
 	while (line[++i])
 	{
-		if (line[i] == '\'' || line [i] == '\"')
-			quoted = 1;
-		if (quoted || (line[i] != ' ' && line[i] != '	'))
+		if (line[i] == '|')
+			lex_tab[j++] = "|";
+		else if (line[i] == '\'' || line [i] == '\"' || (line[i] != ' ' && line[i] != '	' && line[i] != '|'))
 		{
-			i += lineseg(line + i, lex_tab + j, quoted) + quoted;
+			i += lineseg(line + i, lex_tab + j);
+			if (line[i] == '\'' || line[i] == '\"' || line[i] == '|')
+				i--;
 			j++;
-			quoted = 0;
 		}
 	}
 	lex_tab[j] = NULL;
@@ -89,8 +94,8 @@ int	main(int argc, char **argv, char **envp)
 	char	*line;
 	char	**test;
 	int	i;
-	int	hist_count;
-	int hist_fd;
+	// int	hist_count;
+	// int hist_fd;
 
 	// if (access("history", F_OK))
 	// 	hist_fd = open("history", O_CREAT | O_RDWR | O_TRUNC, 0000644);
@@ -104,13 +109,8 @@ int	main(int argc, char **argv, char **envp)
 		test = lexing(line);
 		while (test[++i])
 		{
-			//printf("%s\n\n", line);
 			printf("%s\n", test[i]);
 		}
-		// ft_printf(hist_fd, "%d	%s\n", hist_count, cmd);
-		// hist_count++;
-		//add_history(line);
-		//rl_redisplay();
 	}
 	return (0);
 }
