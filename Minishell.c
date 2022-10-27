@@ -44,24 +44,36 @@ int	lineseg(char *line, char **lex_tab)
 	char	*seg;
 
 	i = 0;
-	charcount = 0;
+	charcount = 1;
 	quoted = 0;
 	if (line[i] == '\'' || line [i] == '\"')
 		quoted = 1;
-	while (line[++i] && ((quoted && line[i] != line[0]) 
-		|| (!quoted && line[i] != '	' && line[i] != ' ' && line[i] != '|')))
+	while (line[++i] && ((quoted && line[i] != line[0]) \
+		|| (!quoted && line[i] != '	' && line[i] != ' ' && line[i] != '|' \
+		&& line[i] != '>' && line[i] != '<' && line[i] != '\'' && line[i] != '\"')))
 		charcount++;
 	seg = malloc(charcount + 1);
 	i = 0;
 	seg[0] = line[0];
 	while (line[++i] && ((quoted && line[i] != line[0]) 
-		|| (!quoted && line[i] != '	' && line[i] != ' ' && line[i] != '|')))
+		|| (!quoted && line[i] != '	' && line[i] != ' ' && line[i] != '|' \
+		&& line[i] != '>' && line[i] != '<' && line[i] != '\'' && line[i] != '\"')))
 		seg[i] = line[i];
 	seg[i] = '\0';
 	*lex_tab = seg;
 	return (i + quoted);
 }
  
+char	*char_to_string(char c)
+{
+	char	*str;
+
+	str = malloc(2);
+	str[0] = c;
+	str[1] = '\0';
+	return (str);
+}
+
 char	**lexing(char *line)
 {
 	int	i;
@@ -73,12 +85,13 @@ char	**lexing(char *line)
 	lex_tab = malloc(sizeof(char*) * 8/*arg_count(line)*/);
 	while (line[++i])
 	{
-		if (line[i] == '|')
-			lex_tab[j++] = "|";
-		else if (line[i] == '\'' || line [i] == '\"' || (line[i] != ' ' && line[i] != '	' && line[i] != '|'))
+		if (line[i] == '|' || line[i] == '<' || line[i] == '>')
+			lex_tab[j++] = char_to_string(line[i]);
+		else if (line[i] == '\'' || line [i] == '\"' || (line[i] != ' ' && line[i] != '	' && line[i] != '|' \
+			&& line[i] != '>' && line[i] != '<'))
 		{
 			i += lineseg(line + i, lex_tab + j);
-			if (line[i] == '\'' || line[i] == '\"' || line[i] == '|')
+			if (line[i] != ' ' && line[i] != '	')
 				i--;
 			j++;
 		}
