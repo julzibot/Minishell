@@ -1,8 +1,16 @@
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <fcntl.h>
-#include "./ft_printf/ft_printf.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jibot <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
+/*   Updated: 2022/03/23 17:49:12 by jibot            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 int	ft_abs(int a)
 {
@@ -36,6 +44,26 @@ int	ft_strlen(char *str)
 	return	(i);
 }
 
+//is_delim :
+//1 -> redir
+//2 -> pipe
+//3 -> quote
+//4 -> isspace
+//0 -> not a delim
+int	is_delim(char c)
+{	
+	if (c == '<' || c == '>')
+		return (1);
+	else if (c == '|')
+		return (2);
+	else if (c == '\'' || c == '\"')
+		return (3);
+	else if (c == ' ' || c == '	')
+		return (4);
+	else
+		return(0);
+}
+
 int	lineseg(char *line, char **lex_tab)
 {
 	int	i;
@@ -46,33 +74,45 @@ int	lineseg(char *line, char **lex_tab)
 	i = 0;
 	charcount = 1;
 	quoted = 0;
-	if (line[i] == '\'' || line [i] == '\"')
+	if (is_delim(line[i]) == 3)
 		quoted = 1;
 	while (line[++i] && ((quoted && line[i] != line[0]) \
-		|| (!quoted && line[i] != '	' && line[i] != ' ' && line[i] != '|' \
-		&& line[i] != '>' && line[i] != '<' && line[i] != '\'' && line[i] != '\"')))
+		|| (!quoted && !is_delim(line[i]))))
 		charcount++;
 	seg = malloc(charcount + 1);
 	i = 0;
 	seg[0] = line[0];
 	while (line[++i] && ((quoted && line[i] != line[0]) 
-		|| (!quoted && line[i] != '	' && line[i] != ' ' && line[i] != '|' \
-		&& line[i] != '>' && line[i] != '<' && line[i] != '\'' && line[i] != '\"')))
+		|| (!quoted && !is_delim(line[i]))))
 		seg[i] = line[i];
 	seg[i] = '\0';
 	*lex_tab = seg;
 	return (i + quoted);
 }
  
-char	*char_to_string(char c)
+int	pipe_redir(char *c, char **lex_tab)
 {
 	char	*str;
+	int		count;
 
-	str = malloc(2);
-	str[0] = c;
-	str[1] = '\0';
-	return (str);
+	if (is_delim(c[0]) == 1 && c[0] == c[1])
+	{
+		str = malloc(3);
+		str[1] = c[0];
+		str[2] = '\0';
+		count = 1;
+	}
+	else
+	{
+		str = malloc(2);
+		str[1] = '\0';
+		count = 0;
+	}
+	str[0] = c[0];
+	*lex_tab = str;
+	return (count);
 }
+
 
 char	**lexing(char *line)
 {
@@ -85,13 +125,15 @@ char	**lexing(char *line)
 	lex_tab = malloc(sizeof(char*) * 8/*arg_count(line)*/);
 	while (line[++i])
 	{
-		if (line[i] == '|' || line[i] == '<' || line[i] == '>')
-			lex_tab[j++] = char_to_string(line[i]);
-		else if (line[i] == '\'' || line [i] == '\"' || (line[i] != ' ' && line[i] != '	' && line[i] != '|' \
-			&& line[i] != '>' && line[i] != '<'))
+		if (is_delim(line[i]) == 1 || is_delim(line[i]) == 2/*is pipe or redir*/)
+		{
+			i += pipe_redir(line + i, lex_tab + j);
+			j++;
+		}
+		else if (is_delim(line[i]) == 3 || !is_delim(line[i]) /*is quote, or beginning of word*/)
 		{
 			i += lineseg(line + i, lex_tab + j);
-			if (line[i] != ' ' && line[i] != '	')
+			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
 				i--;
 			j++;
 		}
@@ -104,6 +146,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
+	(void)envp;
 	char	*line;
 	char	**test;
 	int	i;
