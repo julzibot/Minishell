@@ -24,6 +24,8 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	size_t	i;
 
 	i = 0;
+	if (!s1 || !s2)
+		return (-1);
 	if (n == 0)
 		return (0);
 	while (*s1 && *s2 && *s1 == *s2 && ++i < n)
@@ -38,6 +40,8 @@ int	ft_strlen(char *str)
 {
 	int	i;
 
+	if (!str)
+		return (0);
 	i = 0;
 	while (str[i])
 		i++;
@@ -142,6 +146,80 @@ char	**lexing(char *line)
 	return (lex_tab);
 }
 
+void	lst_addback(t_cmd *parse_list)
+{
+	t_cmd	next_cmd;
+	
+	next_cmd.next = NULL;
+	// next_cmd.dflt_in = parse_list->dflt_in;
+	// next_cmd.dflt_out = parse_list->dflt_out;
+	parse_list->next = &next_cmd;
+}
+
+// void	list_init(t_cmd parse_list)
+// {
+// 	parse_list.next = NULL;
+// 	// parse_list.p_in = open("dflt_in", O_CREAT | 0644);
+// 	// parse_list.p_out = open("dflt_out", O_CREAT | 0644);
+// }
+
+void	outfile_redir(t_cmd *parse_cmd, char **redir_ptr, int type)
+{
+	char	*filename;
+
+	filename = redir_ptr[1];
+	if (!type)
+		parse_cmd->outfile = open(filename, O_CREAT | O_RDWR, 0644);
+	else if (type)
+		parse_cmd->outfile = open(filename, O_CREAT | O_RDWR| O_APPEND, 0644);
+}
+
+void	infile_redir(t_cmd *parse_cmd, char **redir_ptr, int type)
+{
+	char	*filename_delim;
+	char	*line;
+
+	filename_delim = redir_ptr[1];
+	line = NULL;
+	if (!type)
+		parse_cmd->infile = open(filename_delim, O_CREAT | O_RDWR, 0644);
+	else if (type)
+	{
+		parse_cmd->infile = open(".here_doc", O_CREAT | O_RDWR, 0644);
+		while (!(ft_strlen(filename_delim) == ft_strlen(line) \
+			&& !ft_strncmp(line, filename_delim, ft_strlen(filename_delim))))
+		{
+			line = readline("> ");
+			ft_printf(parse_cmd->infile, "%s\n", line);
+		}
+	}
+}
+
+void	parsing(char **lex_tab)
+{
+	t_cmd	parse_list;
+	t_cmd	*temp;
+	int		i;
+
+	i = -1;
+	parse_list.next = NULL;
+	temp = &parse_list;
+	while (lex_tab[++i])
+	{
+		if (!ft_strncmp(lex_tab[i], ">", 1) || !ft_strncmp(lex_tab[i], ">>", 2))
+			outfile_redir(&parse_list, lex_tab + i, ft_strlen(lex_tab[i]) - 1);
+		else if (!ft_strncmp(lex_tab[i], "<", 1) || !ft_strncmp(lex_tab[i], "<<", 2))
+			infile_redir(&parse_list, lex_tab + i, ft_strlen(lex_tab[i]));
+		else if (!ft_strncmp(lex_tab[i], "|", 1))
+		{
+			lst_addback(temp);
+			temp = temp->next;
+		}
+
+	}
+	//return (parse_list);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -150,14 +228,7 @@ int	main(int argc, char **argv, char **envp)
 	char	*line;
 	char	**test;
 	int	i;
-	// int	hist_count;
-	// int hist_fd;
-
-	// if (access("history", F_OK))
-	// 	hist_fd = open("history", O_CREAT | O_RDWR | O_TRUNC, 0000644);
-	// else
-	// 	hist_fd = open("history", O_WONLY);
-	// hist_count = 1;
+	
 	while (1)
 	{
 		i = -1;
@@ -167,6 +238,8 @@ int	main(int argc, char **argv, char **envp)
 		{
 			printf("%s\n", test[i]);
 		}
+		printf("\n\n");
+		parsing(test);
 	}
 	return (0);
 }

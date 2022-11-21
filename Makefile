@@ -26,7 +26,8 @@ all:	${NAME}
 		${CC} -c $< -o $@
 
 ${NAME}:	${OBJS}
-		${CC} -o ${NAME} ${OBJS} -lreadline -lncurses libreadline.a
+		make all -C ./ft_printf
+		${CC} -o ${NAME} ${OBJS} -lreadline -lncurses libreadline.a ft_printf/libftprintf.a
 
 clean:
 		${RM} ${SRCS:.c=.o}

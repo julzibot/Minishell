@@ -19,16 +19,16 @@
 # include <fcntl.h>
 # include "./ft_printf/ft_printf.h"
 
-typedef struct s_int
+typedef struct s_cmd
 {
-	int				nb;
-	int				sort_value;
-	int				pos;
-	int				moves;
-	struct s_int	*neighbor;
-	struct s_int	*next;
-}	t_int;
-
+	char			*cmd;
+	char			**args;
+	// int				dflt_in;
+	// int				dflt_out;
+	int				infile;
+	int				outfile;
+	struct s_cmd	*next;
+}	t_cmd;
 
 
 #endif
