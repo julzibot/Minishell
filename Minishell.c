@@ -154,6 +154,7 @@ void	lst_addback(t_cmd *parse_list)
 	// next_cmd.dflt_in = parse_list->dflt_in;
 	// next_cmd.dflt_out = parse_list->dflt_out;
 	parse_list->next = &next_cmd;
+	parse_list = &next_cmd;
 }
 
 // void	list_init(t_cmd parse_list)
@@ -168,6 +169,8 @@ void	outfile_redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 	char	*filename;
 
 	filename = redir_ptr[1];
+	if (!filename)
+		return ; // error handling here
 	if (!type)
 		parse_cmd->outfile = open(filename, O_CREAT | O_RDWR, 0644);
 	else if (type)
@@ -180,17 +183,20 @@ void	infile_redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 	char	*line;
 
 	filename_delim = redir_ptr[1];
+	if (!filename_delim)
+		return ; // error handling here
 	line = NULL;
 	if (!type)
 		parse_cmd->infile = open(filename_delim, O_CREAT | O_RDWR, 0644);
 	else if (type)
 	{
 		parse_cmd->infile = open(".here_doc", O_CREAT | O_RDWR, 0644);
+		line = readline("> ");
 		while (!(ft_strlen(filename_delim) == ft_strlen(line) \
 			&& !ft_strncmp(line, filename_delim, ft_strlen(filename_delim))))
 		{
-			line = readline("> ");
 			ft_printf(parse_cmd->infile, "%s\n", line);
+			line = readline("> ");
 		}
 	}
 }
@@ -211,11 +217,7 @@ void	parsing(char **lex_tab)
 		else if (!ft_strncmp(lex_tab[i], "<", 1) || !ft_strncmp(lex_tab[i], "<<", 2))
 			infile_redir(&parse_list, lex_tab + i, ft_strlen(lex_tab[i]));
 		else if (!ft_strncmp(lex_tab[i], "|", 1))
-		{
 			lst_addback(temp);
-			temp = temp->next;
-		}
-
 	}
 	//return (parse_list);
 }
@@ -234,11 +236,6 @@ int	main(int argc, char **argv, char **envp)
 		i = -1;
 		line = readline("Mini_chiale> ");
 		test = lexing(line);
-		while (test[++i])
-		{
-			printf("%s\n", test[i]);
-		}
-		printf("\n\n");
 		parsing(test);
 	}
 	return (0);
