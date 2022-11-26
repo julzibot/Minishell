@@ -23,8 +23,6 @@ typedef struct s_cmd
 {
 	char			*cmd;
 	char			**args;
-	// int				dflt_in;
-	// int				dflt_out;
 	int				infile;
 	int				outfile;
 	struct s_cmd	*next;

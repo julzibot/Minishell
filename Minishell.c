@@ -48,6 +48,55 @@ int	ft_strlen(char *str)
 	return	(i);
 }
 
+int	ft_tablen(char **tab)
+{
+	int	i;
+
+	if (!tab)
+		return (0);
+	i = 0;
+	while (tab[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strdup(char *str)
+{
+	char	*dup;
+	int	i;
+
+	if (!str)
+		return (NULL);
+	dup = malloc(ft_strlen(str) + 1);
+	i = -1;
+	while (str[++i])
+		dup[i] = str[i];
+	dup[i] = '\0';
+	return (dup);
+}
+
+char	**token_join(char **args, char *token)
+{
+	char	**tab;
+	int		i;
+
+	i = -1;
+	tab = malloc(sizeof(char *) * (ft_tablen(args) + 2));
+	if (!args)
+	{
+		tab[0] = ft_strdup(token);
+		tab[1] = NULL;
+		return (tab);
+	}
+	while (args[++i])
+		tab[i] = ft_strdup(args[i]);
+	tab[i] = ft_strdup(token);
+	tab[i + 1] = NULL;
+	free(args);
+	free(token); 
+	return (tab);
+}
+
 //is_delim :
 //1 -> redir
 //2 -> pipe
@@ -94,7 +143,7 @@ int	lineseg(char *line, char **lex_tab)
 	return (i + quoted);
 }
  
-int	pipe_redir(char *c, char **lex_tab)
+int	lex_pipe_redir(char *c, char **lex_tab)
 {
 	char	*str;
 	int		count;
@@ -126,12 +175,12 @@ char	**lexing(char *line)
 
 	i = -1;
 	j = 0;
-	lex_tab = malloc(sizeof(char*) * 8/*arg_count(line)*/);
+	lex_tab = malloc(sizeof(char*) * 15/*arg_count(line)*/);
 	while (line[++i])
 	{
 		if (is_delim(line[i]) == 1 || is_delim(line[i]) == 2/*is pipe or redir*/)
 		{
-			i += pipe_redir(line + i, lex_tab + j);
+			i += lex_pipe_redir(line + i, lex_tab + j);
 			j++;
 		}
 		else if (is_delim(line[i]) == 3 || !is_delim(line[i]) /*is quote, or beginning of word*/)
@@ -151,8 +200,6 @@ void	lst_addback(t_cmd *parse_list)
 	t_cmd	next_cmd;
 	
 	next_cmd.next = NULL;
-	// next_cmd.dflt_in = parse_list->dflt_in;
-	// next_cmd.dflt_out = parse_list->dflt_out;
 	parse_list->next = &next_cmd;
 	parse_list = &next_cmd;
 }
@@ -164,31 +211,16 @@ void	lst_addback(t_cmd *parse_list)
 // 	// parse_list.p_out = open("dflt_out", O_CREAT | 0644);
 // }
 
-void	outfile_redir(t_cmd *parse_cmd, char **redir_ptr, int type)
-{
-	char	*filename;
-
-	filename = redir_ptr[1];
-	if (!filename)
-		return ; // error handling here
-	if (!type)
-		parse_cmd->outfile = open(filename, O_CREAT | O_RDWR, 0644);
-	else if (type)
-		parse_cmd->outfile = open(filename, O_CREAT | O_RDWR| O_APPEND, 0644);
-}
-
-void	infile_redir(t_cmd *parse_cmd, char **redir_ptr, int type)
+int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 {
 	char	*filename_delim;
 	char	*line;
 
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)
-		return ; // error handling here
+		return (0); // error handling here
 	line = NULL;
 	if (!type)
-		parse_cmd->infile = open(filename_delim, O_CREAT | O_RDWR, 0644);
-	else if (type)
 	{
 		parse_cmd->infile = open(".here_doc", O_CREAT | O_RDWR, 0644);
 		line = readline("> ");
@@ -199,6 +231,33 @@ void	infile_redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 			line = readline("> ");
 		}
 	}
+	else if (type == 2)
+		parse_cmd->infile = open(filename_delim, O_CREAT | O_RDWR, 0644);
+	else if (type == 1)
+		parse_cmd->outfile = open(filename_delim, O_CREAT | O_RDWR| O_APPEND, 0644);
+	else if (type == 3)
+		parse_cmd->outfile = open(filename_delim, O_CREAT | O_RDWR, 0644);
+	return (1);
+}
+
+int	token_type(char *token)
+{
+	if (!ft_strncmp(token, "<<", 2))
+		return (0);
+	else if (!ft_strncmp(token, ">>", 2))
+		return (1);
+	else if (!ft_strncmp(token, "<", 1))
+		return (2);
+	else if (!ft_strncmp(token, ">", 1))
+		return (3);
+	else if (!ft_strncmp(token, "|", 1))
+		return (4);
+	else if (token[0] == '\"')
+		return (5);
+	else if (token[0] == '\'')
+		return (6);
+	else
+		return (7);
 }
 
 void	parsing(char **lex_tab)
@@ -206,18 +265,33 @@ void	parsing(char **lex_tab)
 	t_cmd	parse_list;
 	t_cmd	*temp;
 	int		i;
+	// int		j;
+	int		type;
 
 	i = -1;
 	parse_list.next = NULL;
+	parse_list.args = NULL;
 	temp = &parse_list;
 	while (lex_tab[++i])
 	{
-		if (!ft_strncmp(lex_tab[i], ">", 1) || !ft_strncmp(lex_tab[i], ">>", 2))
-			outfile_redir(&parse_list, lex_tab + i, ft_strlen(lex_tab[i]) - 1);
-		else if (!ft_strncmp(lex_tab[i], "<", 1) || !ft_strncmp(lex_tab[i], "<<", 2))
-			infile_redir(&parse_list, lex_tab + i, ft_strlen(lex_tab[i]));
-		else if (!ft_strncmp(lex_tab[i], "|", 1))
-			lst_addback(temp);
+		type = token_type(lex_tab[i]);
+		if (type < 4)
+			i += redir(&parse_list, lex_tab + i, type);
+		else if (type == 4)
+			lst_addback(temp); // handle pipes
+		else
+		{
+			// if (type == 5)
+			// 	get_env_values(lex_tab + i);   // handle env_vars
+			temp->args = token_join(temp->args, lex_tab[i]);
+		}
+		// j = -1;
+		// if (temp->args)
+		// {
+		// 	while (temp->args[++j])
+		// 		printf("%s\n", temp->args[j]);
+		// }
+		// printf("\n");
 	}
 	//return (parse_list);
 }
