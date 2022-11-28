@@ -75,7 +75,7 @@ char	*ft_strdup(char *str)
 	return (dup);
 }
 
-char	**token_join(char **args, char *token)
+char	**token_join(char **args, char *token) // add a string to the end of a char**
 {
 	char	**tab;
 	int		i;
@@ -253,19 +253,54 @@ int	token_type(char *token)
 		return (6);
 }
 
-char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in unquoted tokens, store in env_vars
-{
-	int i;
+// char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in unquoted tokens, store in env_vars
+// {
+// 	int i;
 
-	i = 0;
-	while (token[i] && token[i] != '=')
-		i++;
-	if (token[i]) 
-		env_vars = token_join(env_vars, token);
-	return (env_vars);
-}
+// 	i = 0;
+// 	while (token[i] && token[i] != '=')
+// 		i++;
+// 	if (token[i]) 
+// 		env_vars = token_join(env_vars, token);
+// 	return (env_vars);
+// }
 
-char	**parsing(char **lex_tab, char **env_vars, char **env)
+// char	*get_env_var(char *token, char **env_vars)
+// {
+// 	int	i;
+// 	int	v_i;
+// 	int	j;
+// 	int	namelen;
+// 	char	*value;
+
+// 	i = 0;
+// 	j = -1;
+// 	namelen = 0;
+// 	value = NULL;
+// 	while (token[i] && token[i] != '$')
+// 		i++;
+// 	if (token[i])
+// 	{
+// 		while (env_vars[++j])
+// 		{
+// 			while (env_vars[j][namelen] != '=')
+// 				namelen++;
+// 			if (!ft_strncmp(env_vars[j], token + i + 1, namelen))
+// 			{
+// 				value = malloc(ft_strlen(token) - namelen + ft_strlen(env_vars[j] - namelen));
+// 				v_i = i;
+// 				while (env_vars[j][++namelen])
+// 					value[v_i++] = env_vars[j][namelen];
+// 				while (token[++i + namelen])
+// 					value[v_i++] = token[i + namelen];
+// 				value[v_i] = '\0';
+// 			}
+// 		}
+// 	}
+// 	return (value);
+// }
+
+char	**parsing(char **lex_tab, char **env_vars)
 {
 	t_cmd	parse_list;
 	t_cmd	*temp;
@@ -273,7 +308,6 @@ char	**parsing(char **lex_tab, char **env_vars, char **env)
 	int		type;
 
 	i = -1;
-	(void)env;
 	parse_list.next = NULL;
 	parse_list.args = NULL;
 	temp = &parse_list;
@@ -289,10 +323,16 @@ char	**parsing(char **lex_tab, char **env_vars, char **env)
 			if (type == 6)
 				env_vars = create_env_vars(lex_tab[i], env_vars);
 			// if (type < 7)
-			// 	get_env_vars(lex_tab + i);   // handle env_vars, awaiting for export implementation
+			// {
+			// 	lex_tab[i] = get_env_var(lex_tab[i], env_vars);   // handle env_vars
+			// }
 			temp->args = token_join(temp->args, lex_tab[i]);
 		}
 	}
+
+	i = -1;
+	while (temp->args[++i])
+		ft_printf(1, "%s\n", temp->args[i]);
 	return(env_vars);
 }
 
@@ -300,18 +340,17 @@ int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
+	(void)envp;
 	char	*line;
 	char	**tokens;
 	char	**env_vars;
-	int	i;
 	
 	env_vars = NULL;
 	while (1)
 	{
-		i = -1;
 		line = readline("Mini_chiale> ");
 		tokens = lexing(line);
-		env_vars = parsing(tokens, env_vars, envp);
+		env_vars = parsing(tokens, env_vars);
 	}
 	return (0);
 }
