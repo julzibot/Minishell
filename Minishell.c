@@ -253,17 +253,17 @@ int	token_type(char *token)
 		return (6);
 }
 
-// char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in unquoted tokens, store in env_vars
-// {
-// 	int i;
+char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in unquoted tokens, store in env_vars
+{
+	int i;
 
-// 	i = 0;
-// 	while (token[i] && token[i] != '=')
-// 		i++;
-// 	if (token[i]) 
-// 		env_vars = token_join(env_vars, token);
-// 	return (env_vars);
-// }
+	i = 0;
+	while (token[i] && token[i] != '=')
+		i++;
+	if (token[i] == 0) 
+		env_vars = token_join(env_vars, token);
+	return (env_vars);
+}
 
 // char	*get_env_var(char *token, char **env_vars)
 // {
@@ -276,10 +276,11 @@ int	token_type(char *token)
 // 	i = 0;
 // 	j = -1;
 // 	namelen = 0;
-// 	value = NULL;
 // 	while (token[i] && token[i] != '$')
 // 		i++;
-// 	if (token[i])
+// 	if (!token[i])
+// 		return (token);
+// 	else
 // 	{
 // 		while (env_vars[++j])
 // 		{
@@ -287,8 +288,10 @@ int	token_type(char *token)
 // 				namelen++;
 // 			if (!ft_strncmp(env_vars[j], token + i + 1, namelen))
 // 			{
-// 				value = malloc(ft_strlen(token) - namelen + ft_strlen(env_vars[j] - namelen));
-// 				v_i = i;
+// 				value = malloc(ft_strlen(token) - (2 * namelen) + ft_strlen(env_vars[j]) + 1);
+// 				v_i = 0;
+// 				while (v_i++ < i)
+// 					value[v_i] = token[v_i];
 // 				while (env_vars[j][++namelen])
 // 					value[v_i++] = env_vars[j][namelen];
 // 				while (token[++i + namelen])
@@ -296,8 +299,9 @@ int	token_type(char *token)
 // 				value[v_i] = '\0';
 // 			}
 // 		}
+// 		printf("___%s___\n", value);
+// 		return (value);
 // 	}
-// 	return (value);
 // }
 
 char	**parsing(char **lex_tab, char **env_vars)
@@ -324,8 +328,9 @@ char	**parsing(char **lex_tab, char **env_vars)
 				env_vars = create_env_vars(lex_tab[i], env_vars);
 			// if (type < 7)
 			// {
-			// 	lex_tab[i] = get_env_var(lex_tab[i], env_vars);   // handle env_vars
+			// 	temp->args = token_join(temp->args, get_env_var(lex_tab[i], env_vars));   // handle env_vars
 			// }
+			//else
 			temp->args = token_join(temp->args, lex_tab[i]);
 		}
 	}
