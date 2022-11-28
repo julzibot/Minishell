@@ -195,7 +195,7 @@ char	**lexing(char *line)
 	return (lex_tab);
 }
 
-void	lst_addback(t_cmd *parse_list)
+void	lst_next_cmd(t_cmd *parse_list)
 {
 	t_cmd	next_cmd;
 	
@@ -203,13 +203,6 @@ void	lst_addback(t_cmd *parse_list)
 	parse_list->next = &next_cmd;
 	parse_list = &next_cmd;
 }
-
-// void	list_init(t_cmd parse_list)
-// {
-// 	parse_list.next = NULL;
-// 	// parse_list.p_in = open("dflt_in", O_CREAT | 0644);
-// 	// parse_list.p_out = open("dflt_out", O_CREAT | 0644);
-// }
 
 int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 {
@@ -255,20 +248,32 @@ int	token_type(char *token)
 	else if (token[0] == '\"')
 		return (5);
 	else if (token[0] == '\'')
-		return (6);
-	else
 		return (7);
+	else
+		return (6);
 }
 
-void	parsing(char **lex_tab)
+char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in unquoted tokens, store in env_vars
+{
+	int i;
+
+	i = 0;
+	while (token[i] && token[i] != '=')
+		i++;
+	if (token[i]) 
+		env_vars = token_join(env_vars, token);
+	return (env_vars);
+}
+
+char	**parsing(char **lex_tab, char **env_vars, char **env)
 {
 	t_cmd	parse_list;
 	t_cmd	*temp;
 	int		i;
-	// int		j;
 	int		type;
 
 	i = -1;
+	(void)env;
 	parse_list.next = NULL;
 	parse_list.args = NULL;
 	temp = &parse_list;
@@ -278,39 +283,35 @@ void	parsing(char **lex_tab)
 		if (type < 4)
 			i += redir(&parse_list, lex_tab + i, type);
 		else if (type == 4)
-			lst_addback(temp); // handle pipes
+			lst_next_cmd(temp); // handle pipes here
 		else
 		{
-			// if (type == 5)
-			// 	get_env_values(lex_tab + i);   // handle env_vars
+			if (type == 6)
+				env_vars = create_env_vars(lex_tab[i], env_vars);
+			// if (type < 7)
+			// 	get_env_vars(lex_tab + i);   // handle env_vars, awaiting for export implementation
 			temp->args = token_join(temp->args, lex_tab[i]);
 		}
-		// j = -1;
-		// if (temp->args)
-		// {
-		// 	while (temp->args[++j])
-		// 		printf("%s\n", temp->args[j]);
-		// }
-		// printf("\n");
 	}
-	//return (parse_list);
+	return(env_vars);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
-	(void)envp;
 	char	*line;
-	char	**test;
+	char	**tokens;
+	char	**env_vars;
 	int	i;
 	
+	env_vars = NULL;
 	while (1)
 	{
 		i = -1;
 		line = readline("Mini_chiale> ");
-		test = lexing(line);
-		parsing(test);
+		tokens = lexing(line);
+		env_vars = parsing(tokens, env_vars, envp);
 	}
 	return (0);
 }
