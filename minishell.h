@@ -29,5 +29,7 @@ typedef struct s_cmd
 }	t_cmd;
 
 char	*get_env_vars(char *token, char **env_vars);
+char	**parsing(char **lex_tab, char **env_vars);
+char	**lexing(char *line);
 
 #endif
