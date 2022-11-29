@@ -75,6 +75,36 @@ char	*ft_strdup(char *str)
 	return (dup);
 }
 
+char	*ft_strjoin(char *s1, char *s2)
+{
+	char	*str;
+	int		i;
+	int		j;
+
+	if (!s1)
+		return (s2);
+	else if (!s2)
+		return (s1);
+	i = 0;
+	j = 0;
+	str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	while (s1[i])
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (s2[j])
+	{
+		str[i] = s2[j];
+		i++;
+		j++;
+	}
+	str[i] = '\0';
+	free(s1);
+	free(s2);
+	return (str);
+}
+
 char	**token_join(char **args, char *token) // add a string to the end of a char**
 {
 	char	**tab;
@@ -93,7 +123,7 @@ char	**token_join(char **args, char *token) // add a string to the end of a char
 	tab[i] = ft_strdup(token);
 	tab[i + 1] = NULL;
 	// free(args);
-	// free(token); 
+	free(token); 
 	return (tab);
 }
 
@@ -256,16 +286,36 @@ int	token_type(char *token)
 char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in unquoted tokens, store in env_vars
 {
 	int i;
+	int	j;
+	int	namelen;
+	char	*cpy;
 
 	i = 0;
-	while (token[i] && token[i] != '=')
+	cpy = get_env_vars(ft_strdup(token), env_vars);
+	while (cpy[i] && cpy[i] != '=')
 		i++;
-	if (token[i] == '=') 
-		env_vars = token_join(env_vars, token);
+	if (cpy[i] && cpy[i] == '=') 
+	{
+		j = 0;
+		while (env_vars && env_vars[j])
+		{
+			namelen = 0;
+			while (env_vars[j][namelen] != '=')
+				namelen++;
+			if (!ft_strncmp(env_vars[j], cpy, namelen) && cpy[namelen] == '=')
+			{
+				//free(env_vars[j]);
+				env_vars[j] = cpy;
+				return (env_vars);
+			}
+			j++;
+		}
+		env_vars = token_join(env_vars, cpy);
+	}
 	return (env_vars);
 }
 
-char	*get_env_var(char *token, char **env_vars)
+char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
 {
 	int	i;
 	int	v_i;
@@ -273,40 +323,51 @@ char	*get_env_var(char *token, char **env_vars)
 	int	namelen;
 	int	v_len;
 	char	*value;
+	char	*str;
 
 	i = 0;
-	j = -1;
-	namelen = 0;
+	value = NULL;
+	str = NULL;
+	printf("--%s\n", token);
 	while (token[i] && token[i] != '$')
 		i++;
-	if (!token[i])
-		return (token);
-	else
+	
+	str = malloc(i + 1);
+	v_i = -1;
+	while (++v_i < i)
+		str[v_i] = token[v_i];
+	str[v_i] = '\0';
+
+	while (token[i])
 	{
-		while (env_vars[++j])
+		j = 0;
+		while (env_vars && env_vars[j])
 		{
-			//printf("/%s/\n", env_vars[j]);
+			namelen = 0;
 			while (env_vars[j][namelen] != '=')
 				namelen++;
-			printf("||%d||\n", namelen);
-			if (!ft_strncmp(env_vars[j], token + i + 1, namelen))
+			if (!ft_strncmp(env_vars[j], token + i + 1, namelen) \
+					&& (!token[i + namelen + 1] || token[i + namelen + 1] == '$'))
 			{
-				printf("||%d||\n", ft_strlen(token) - (2 * namelen) + ft_strlen(env_vars[j]) - 1);
-				value = malloc(ft_strlen(token) - (2 * namelen) + ft_strlen(env_vars[j]) - 1);
-				v_i = 0;
+				value = malloc(ft_strlen(env_vars[j]) - namelen);
+				v_i = -1;
 				v_len = namelen;
-				while (v_i++ < i)
-					value[v_i] = token[v_i];
 				while (env_vars[j][++v_len])
-					value[v_i++] = env_vars[j][v_len];
-				while (token[++i + namelen])
-					value[v_i++] = token[i + namelen];
-				value[v_i] = '\0';
+					value[++v_i] = env_vars[j][v_len];
+				// while (token[++i + namelen])
+				// 	value[v_i++] = token[i + namelen];
+				value[++v_i] = '\0';
+				str = ft_strjoin(str, value);
+				i += namelen + 1;
+				while (env_vars[j + 1])
+					j++;
 			}
+			j++;
 		}
-		printf("___%s___\n", value);
-		return (value);
+		if (i == ft_strlen(str))
+			return (str);
 	}
+	return (str);
 }
 
 char	**parsing(char **lex_tab, char **env_vars)
@@ -332,18 +393,19 @@ char	**parsing(char **lex_tab, char **env_vars)
 			if (type == 6)
 				env_vars = create_env_vars(lex_tab[i], env_vars);
 			if (type < 7)
-			{
-				temp->args = token_join(temp->args, get_env_var(lex_tab[i], env_vars));   // handle env_vars
-			}
+				temp->args = token_join(temp->args, get_env_vars(lex_tab[i], env_vars));
 			else
 				temp->args = token_join(temp->args, lex_tab[i]);
 		}
 	}
 
 	i = -1;
-	while (temp->args[++i])
+	while (temp->args && temp->args[++i])
 		printf("%s\n", temp->args[i]);
-	return(env_vars);
+	i = -1;
+	while (env_vars && env_vars[++i])
+		printf("env_var %d : %s\n", i, env_vars[i]);
+	return(env_vars);	
 }
 
 int	main(int argc, char **argv, char **envp)

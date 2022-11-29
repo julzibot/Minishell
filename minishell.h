@@ -28,5 +28,6 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
+char	*get_env_vars(char *token, char **env_vars);
 
 #endif
