@@ -34,14 +34,26 @@ typedef struct s_env
 	struct s_env	*next;
 } t_env;
 
+int		is_delim(char c);
+char	**parsing(char **lex_tab, char **env_vars);
+char	**lexing(char *line);
+char	*get_env_vars(char *token, char **env_vars);
+
 /***********BASIC**********/
 int		ft_isspace(char c);
 void	ft_strcpy(char *dst, char *src);
+int		ft_abs(int a);
+int		ft_tablen(char **tab);
 
 /***********LIBFT**********/
 int		ft_strnstr(const char *haystack, const char *needle, size_t len);
 int		ft_strlen(char *s);
+char	*ft_strdup(char *str);
+char	*ft_strjoin(char *s1, char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+
+/**********UTILS***********/
+char	**token_join(char **args, char *token);
 
 /***********ENV************/
 void	ft_get_env(t_env **env_list, char **env);
