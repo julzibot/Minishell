@@ -1,27 +1,31 @@
 #include "minishell.h"
 
-int	lineseg(char *line, char **lex_tab)
+int	lineseg(char *line, int i, char **lex_tab)
 {
-	int	i;
-	int	charcount;
+	int	s_i;
 	int	quoted;
+	int	next_quoted;
 	char	*seg;
 
-	i = 0;
-	charcount = 1;
+	s_i = 0;
 	quoted = 0;
-	if (is_delim(line[i]) == 3)
+	next_quoted = 0;
+	if (is_delim(line[i]) == 1)
 		quoted = 1;
-	while (line[++i] && ((quoted && line[i] != line[0]) \
+	seg = malloc(sizeof(char*));
+	if (!quoted && i > 0 && is_delim(line[i - 1]) == 1)
+	{
+		s_i++;
+		seg[0] = line[i - 1];
+	}
+	seg[s_i++] = line[i];
+	while (line[++i] && ((quoted && line[i] != seg[0]) 
 		|| (!quoted && !is_delim(line[i]))))
-		charcount++;
-	seg = malloc(charcount + 1);
-	i = 0;
-	seg[0] = line[0];
-	while (line[++i] && ((quoted && line[i] != line[0]) 
-		|| (!quoted && !is_delim(line[i]))))
-		seg[i] = line[i];
-	seg[i] = '\0';
+		seg[s_i++] = line[i];
+	seg[s_i] = line[i];
+	if (!quoted && is_delim(line[i]) == 1)
+		next_quoted = 1;
+	seg[s_i + quoted + next_quoted] = '\0';
 	*lex_tab = seg;
 	return (i + quoted);
 }
@@ -49,7 +53,6 @@ int	lex_pipe_redir(char *c, char **lex_tab)
 	return (count);
 }
 
-
 char	**lexing(char *line)
 {
 	int	i;
@@ -61,14 +64,14 @@ char	**lexing(char *line)
 	lex_tab = malloc(sizeof(char*) * 15/*arg_count(line)*/);
 	while (line[++i])
 	{
-		if (is_delim(line[i]) == 1 || is_delim(line[i]) == 2/*is pipe or redir*/)
+		if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3/*is pipe or redir*/)
 		{
 			i += lex_pipe_redir(line + i, lex_tab + j);
 			j++;
 		}
-		else if (is_delim(line[i]) == 3 || !is_delim(line[i]) /*is quote, or beginning of word*/)
+		else if (is_delim(line[i]) == 1 || !is_delim(line[i]) /*is quote, or beginning of word*/)
 		{
-			i += lineseg(line + i, lex_tab + j);
+			i = lineseg(line, i, lex_tab + j);
 			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
 				i--;
 			j++;
@@ -128,9 +131,9 @@ int	token_type(char *token)
 		return (3);
 	else if (!ft_strncmp(token, "|", 1))
 		return (4);
-	else if (token[0] == '\"')
+	else if (token[0] == '\"' && token[ft_strlen(token) - 1] == '\"')
 		return (5);
-	else if (token[0] == '\'')
+	else if (token[0] == '\'' && token[ft_strlen(token) - 1] == '\'')
 		return (7);
 	else
 		return (6);
@@ -168,29 +171,41 @@ char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in 
 	return (env_vars);
 }
 
+// int	search_name()
+
 char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
 {
 	int	i;
 	int	v_i;
 	int	j;
+	int	quoted;
 	int	namelen;
 	int	v_len;
 	char	*value;
 	char	*str;
 
 	i = 0;
+	quoted = 0;
 	value = NULL;
 	str = NULL;
 	printf("--%s\n", token);
-	while (token[i] && token[i] != '$')
+	if (!token)
+		return (NULL);
+	if (token && token[0] == '"')
+		i++;
+	while (token && token[i] && token[i] != '$')
 		i++;
 	
+	// keep the first part of the token (eg "stuff" in "stuff$NAME")
 	str = malloc(i + 1);
 	v_i = -1;
-	while (++v_i < i)
+	// if (token[0] == '"')
+	// 	skip++;
+	while (++v_i < i && token[v_i])
 		str[v_i] = token[v_i];
 	str[v_i] = '\0';
 
+	// successively change $NAME# to VALUE#. if !FALSENAME, the "$FALSENAME" part of the token is eliminated
 	while (token[i])
 	{
 		j = 0;
@@ -200,27 +215,97 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 			while (env_vars[j][namelen] != '=')
 				namelen++;
 			if (!ft_strncmp(env_vars[j], token + i + 1, namelen) \
-					&& (!token[i + namelen + 1] || token[i + namelen + 1] == '$'))
+					&& (!token[i + namelen + 1] || token[i + namelen + 1] == '$' \
+					|| token[i + namelen + 1] == '"')) // if NAME matches in the token
 			{
-				value = malloc(ft_strlen(env_vars[j]) - namelen);
+				if (token[0] == '"' && token[i + namelen + 1] == '"')
+					quoted = 1;
+				value = malloc(ft_strlen(env_vars[j]) - namelen + quoted);
 				v_i = -1;
 				v_len = namelen;
 				while (env_vars[j][++v_len])
 					value[++v_i] = env_vars[j][v_len];
-				// while (token[++i + namelen])
-				// 	value[v_i++] = token[i + namelen];
-				value[++v_i] = '\0';
+				value[++v_i] = '"';
+				value[++v_i + quoted] = '\0';
 				str = ft_strjoin(str, value);
-				i += namelen + 1;
 				while (env_vars[j + 1])
 					j++;
 			}
 			j++;
 		}
-		if (i == ft_strlen(str))
-			return (str);
+		while (token[++i] && token[i] != '$')
+			;
 	}
 	return (str);
+}
+
+char	*rem_quotes(char *str)
+{
+	int	i;
+	int	len;
+	char	*ret;
+
+	if (!str)
+		return (NULL);
+	len = ft_strlen(str);
+	ret = malloc(len);
+	if (str[0] == '"')
+	{
+		i = 0;
+		while (str[++i])
+			ret[i - 1] = str[i];
+		ret[i - 1] = 0;
+	}
+	else if (str[len - 1] == '"')
+	{
+		i = -1;
+		while (str[++i] != '"')
+			ret[i] = str[i];
+		ret[i] = 0;
+	}
+	free(str);
+	return (ret);
+}
+
+char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
+{
+	int	i;
+	int	j;
+	int	quote_at_end;
+	char	*str;
+
+	i = ft_strlen(token) - 1;
+	quote_at_end = 0;
+	j = 0;
+	if (token[i] == '"')
+		quote_at_end = 1;
+	while (quote_at_end)
+	{
+		str = get_env_vars(lex_tab[j], env_vars);
+		printf("//%s//\n", str);
+		token = rem_quotes(token);
+		str = rem_quotes(str);
+		token = ft_strjoin(token, str);
+		i = ft_strlen(token) - 1;
+		if (!(token[i] == '"'))
+			quote_at_end = 0;
+		j++;
+	}
+	return (token);
+}
+
+int	quotes_skip(char **tab)
+{
+	int	count;
+
+	count = 0;
+	while (tab[0][ft_strlen(tab[0]) - 1] == '"' \
+		&& tab[1][0] == '"')
+	{
+		count++;
+		tab++;
+	}
+	return (count);
 }
 
 char	**parsing(char **lex_tab, char **env_vars)
@@ -229,8 +314,10 @@ char	**parsing(char **lex_tab, char **env_vars)
 	t_cmd	*temp;
 	int		i;
 	int		type;
+	char	*str;
 
 	i = -1;
+	str = NULL;
 	parse_list.next = NULL;
 	parse_list.args = NULL;
 	temp = &parse_list;
@@ -246,7 +333,12 @@ char	**parsing(char **lex_tab, char **env_vars)
 			if (type == 6)
 				env_vars = create_env_vars(lex_tab[i], env_vars);
 			if (type < 7)
-				temp->args = token_join(temp->args, get_env_vars(lex_tab[i], env_vars));
+			{
+				//i += quotes_skip(lex_tab + i);
+				str = fuse_quotes(get_env_vars(lex_tab[i], env_vars), lex_tab + i + 1, env_vars);
+				temp->args = token_join(temp->args, str);
+				i += quotes_skip(lex_tab + i);
+			}
 			else
 				temp->args = token_join(temp->args, lex_tab[i]);
 		}

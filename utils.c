@@ -123,11 +123,11 @@ char	**token_join(char **args, char *token) // add a string to the end of a char
 //0 -> not a delim
 int	is_delim(char c)
 {	
-	if (c == '<' || c == '>')
+	if (c == '\'' || c == '\"')
 		return (1);
 	else if (c == '|')
 		return (2);
-	else if (c == '\'' || c == '\"')
+	else if (c == '<' || c == '>')
 		return (3);
 	else if (c == ' ' || c == '	')
 		return (4);
