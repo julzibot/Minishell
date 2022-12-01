@@ -188,7 +188,6 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	quoted = 0;
 	value = NULL;
 	str = NULL;
-	printf("--%s\n", token);
 	if (!token)
 		return (NULL);
 	if (token && token[0] == '\"')
@@ -248,7 +247,7 @@ char	*rem_quotes(char *str)
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
-	ret = malloc(len);
+	ret = malloc(len + 1);
 	if (str[0] == '\"')
 	{
 		i = 0;
@@ -286,10 +285,11 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 		str = get_env_vars(lex_tab[j], env_vars);
 		printf("//%s//\n", str);
 		token = rem_quotes(token);
-		printf("after quotes 1: %s\n", token);
-		str = rem_quotes(str);
-		printf("after quotes 2: %s\n", str);
-		token = ft_strjoin(token, str);
+		if (str && str[0] == '\"')
+		{
+			str = rem_quotes(str);
+			token = ft_strjoin(token, str);
+		}
 		i = ft_strlen(token) - 1;
 		if (!(token[i] == '\"'))
 			quote_at_end = 0;
@@ -303,8 +303,8 @@ int	quotes_skip(char **tab)
 	int	count;
 
 	count = 0;
-	while (tab[0][ft_strlen(tab[0]) - 1] == '"' \
-		&& tab[1] && tab[1][0] == '"')
+	while (tab[0][ft_strlen(tab[0]) - 1] == '\"' \
+		&& tab[1] && tab[1][0] == '\"')
 	{
 		count++;
 		tab++;
@@ -320,6 +320,10 @@ char	**parsing(char **lex_tab, char **env_vars)
 	int		type;
 	char	*str;
 
+	i = -1;
+	while (lex_tab[++i])
+		printf("lex %d : %s\n", i, lex_tab[i]);
+	
 	i = -1;
 	str = NULL;
 	parse_list.next = NULL;
