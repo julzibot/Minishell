@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
+/*   Updated: 2022/12/01 21:35:38 by mstojilj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_abs(int a)
@@ -5,6 +17,21 @@ int	ft_abs(int a)
 	if (a < 0)
 		return (-a);
 	return (a);
+}
+
+void	ft_strcpy(char *dst, char *src)
+{
+	int	i;
+
+	i = 0;
+	if (src == NULL)
+		return ;
+	while (src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
 }
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)

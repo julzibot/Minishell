@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   milan.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 13:12:46 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/11/30 10:37:42 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/01 21:36:17 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,42 +145,42 @@ void	ft_unset(t_env **env_list, char *s)
 		ft_printf(2, "%s: not a valid identifier\n", s);
 }
 
-int	main(int argc, char **argv, char **env)
-{
-	(void)argc;
-	(void)argv;
-	t_env	*env_lst;
-	char	*line;
+// int	main(int argc, char **argv, char **env)
+// {
+// 	(void)argc;
+// 	(void)argv;
+// 	t_env	*env_lst;
+// 	char	*line;
 	
-	env_lst = NULL;
-	ft_get_env(&env_lst, env); // Copy original ENV to env_list
+// 	env_lst = NULL;
+// 	ft_get_env(&env_lst, env); // Copy original ENV to env_list
 
-	int i = 0;
-	for (t_env *curr = env_lst; curr; curr = curr->next) // Prints the ENV
-	{
-		if (curr == NULL)
-					break ;
-		printf("%d - %s\n", i, curr->line);
-		i++;
-	}
-	ft_add_after(&env_lst, 18, "hello=milan"); // Add new ENV variable
-	ft_add_after(&env_lst, 18, "JULES=VERNE");
-	while (1)
-	{
-		line = readline("Minichelou: ");
-		if (strcmp(line, "export") == 0)       // If command is export
-		{
-			i = 0;
-			for (t_env *curr = env_lst; curr; curr = curr->next) // Prints the ENV
-			{
-				if (curr == NULL)
-					break ;
-				printf("%d - %s\n", i, curr->line);
-				i++;
-			}
-		}
-		else if (strcmp(line, "unset hello") == 0) // If command is "unset hello"
-			ft_unset(&env_lst, "hello");           // Unsets the variable
-	}
-	return (0);
-}
+// 	int i = 0;
+// 	for (t_env *curr = env_lst; curr; curr = curr->next) // Prints the ENV
+// 	{
+// 		if (curr == NULL)
+// 					break ;
+// 		printf("%d - %s\n", i, curr->line);
+// 		i++;
+// 	}
+// 	ft_add_after(&env_lst, 18, "hello=milan"); // Add new ENV variable
+// 	ft_add_after(&env_lst, 18, "JULES=VERNE");
+// 	while (1)
+// 	{
+// 		line = readline("Minichelou: ");
+// 		if (strcmp(line, "export") == 0)       // If command is export
+// 		{
+// 			i = 0;
+// 			for (t_env *curr = env_lst; curr; curr = curr->next) // Prints the ENV
+// 			{
+// 				if (curr == NULL)
+// 					break ;
+// 				printf("%d - %s\n", i, curr->line);
+// 				i++;
+// 			}
+// 		}
+// 		else if (strcmp(line, "unset hello") == 0) // If command is "unset hello"
+// 			ft_unset(&env_lst, "hello");           // Unsets the variable
+// 	}
+// 	return (0);
+// }

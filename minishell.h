@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/11/30 19:07:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/01 21:44:56 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,16 @@
 # define MINISHELL_H
 # include <unistd.h>
 # include <stdio.h>
+# include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
+# include <dirent.h>
 # include "./ft_printf/ft_printf.h"
+
+# ifndef PATH_MAX
+# define PATH_MAX 4096
+# endif
 
 typedef struct s_cmd
 {
@@ -71,6 +77,9 @@ int		ft_get_echo_n(char *s, int start);	 // Gets the echo -n line
 void	ft_export(t_env **env_list, char *line);
 void	ft_add_after(t_env **env_list, int line_nb, char *s);
 
+/***********DIRECTORY******/
+void	ft_cd(char *line);
+char	*ft_pwd(void);
 
 /***********UNSET**********/
 void	ft_unset(t_env **env_list, char *s);
