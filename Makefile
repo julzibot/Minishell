@@ -6,7 +6,7 @@
 #    By: jibot <marvin@42.fr>                       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2022/08/01 17:31:49 by jibot            ###   ########.fr        #
+#    Updated: 2022/12/01 04:07:30 by jibot            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC		= gcc -Wall -Wextra -Werror
 
 RM		= rm -f
 
-SRCS	= Minishell.c
+SRCS	= Minishell.c jules.c utils.c
 
 OBJS	= ${SRCS:.c=.o}
 

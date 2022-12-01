@@ -191,7 +191,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	printf("--%s\n", token);
 	if (!token)
 		return (NULL);
-	if (token && token[0] == '"')
+	if (token && token[0] == '\"')
 		i++;
 	while (token && token[i] && token[i] != '$')
 		i++;
@@ -218,14 +218,14 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 					&& (!token[i + namelen + 1] || token[i + namelen + 1] == '$' \
 					|| token[i + namelen + 1] == '"')) // if NAME matches in the token
 			{
-				if (token[0] == '"' && token[i + namelen + 1] == '"')
+				if (token[0] == '\"' && token[i + namelen + 1] == '\"')
 					quoted = 1;
 				value = malloc(ft_strlen(env_vars[j]) - namelen + quoted);
 				v_i = -1;
 				v_len = namelen;
 				while (env_vars[j][++v_len])
 					value[++v_i] = env_vars[j][v_len];
-				value[++v_i] = '"';
+				value[++v_i] = '\"';
 				value[++v_i + quoted] = '\0';
 				str = ft_strjoin(str, value);
 				while (env_vars[j + 1])
@@ -249,17 +249,17 @@ char	*rem_quotes(char *str)
 		return (NULL);
 	len = ft_strlen(str);
 	ret = malloc(len);
-	if (str[0] == '"')
+	if (str[0] == '\"')
 	{
 		i = 0;
 		while (str[++i])
 			ret[i - 1] = str[i];
 		ret[i - 1] = 0;
 	}
-	else if (str[len - 1] == '"')
+	else if (str[len - 1] == '\"')
 	{
 		i = -1;
-		while (str[++i] != '"')
+		while (str[++i] != '\"')
 			ret[i] = str[i];
 		ret[i] = 0;
 	}
@@ -274,6 +274,8 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	int	quote_at_end;
 	char	*str;
 
+	if (token_type(token) == 5)
+		token = rem_quotes(token);
 	i = ft_strlen(token) - 1;
 	quote_at_end = 0;
 	j = 0;
@@ -284,10 +286,12 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 		str = get_env_vars(lex_tab[j], env_vars);
 		printf("//%s//\n", str);
 		token = rem_quotes(token);
+		printf("after quotes 1: %s\n", token);
 		str = rem_quotes(str);
+		printf("after quotes 2: %s\n", str);
 		token = ft_strjoin(token, str);
 		i = ft_strlen(token) - 1;
-		if (!(token[i] == '"'))
+		if (!(token[i] == '\"'))
 			quote_at_end = 0;
 		j++;
 	}
@@ -300,7 +304,7 @@ int	quotes_skip(char **tab)
 
 	count = 0;
 	while (tab[0][ft_strlen(tab[0]) - 1] == '"' \
-		&& tab[1][0] == '"')
+		&& tab[1] && tab[1][0] == '"')
 	{
 		count++;
 		tab++;
