@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/01 21:44:56 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/01 21:58:11 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
@@ -64,6 +65,7 @@ char	**token_join(char **args, char *token);
 /***********ENV************/
 void	ft_get_env(t_env **env_list, char **env);
 void	ft_print_env(t_env **env_lst);
+char	*ft_get_env_var(char *line, char *remove);
 void	ft_add_queue(t_env **root, char *s);
 
 /***********ECHO***********/
