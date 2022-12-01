@@ -131,9 +131,9 @@ int	token_type(char *token)
 		return (3);
 	else if (!ft_strncmp(token, "|", 1))
 		return (4);
-	else if (token[0] == '\"' && token[ft_strlen(token) - 1] == '\"')
+	else if (token[0] == '\"' && token[ft_strlen(token) - 1] == '\"' && ft_strlen(token) > 1)
 		return (5);
-	else if (token[0] == '\'' && token[ft_strlen(token) - 1] == '\'')
+	else if (token[0] == '\'' && token[ft_strlen(token) - 1] == '\'' && ft_strlen(token) > 1)
 		return (7);
 	else
 		return (6);
@@ -196,14 +196,14 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 		i++;
 	
 	// keep the first part of the token (eg "stuff" in "stuff$NAME")
-	str = malloc(i + 1);
-	v_i = -1;
-	// if (token[0] == '"')
-	// 	skip++;
-	while (++v_i < i && token[v_i])
-		str[v_i] = token[v_i];
-	str[v_i] = '\0';
-
+	if (i > 0)
+	{
+		str = malloc(i + 1);
+		v_i = -1;
+		while (++v_i < i && token[v_i])
+			str[v_i] = token[v_i];
+		str[v_i] = '\0';
+	}
 	// successively change $NAME# to VALUE#. if !FALSENAME, the "$FALSENAME" part of the token is eliminated
 	while (token[i])
 	{
@@ -235,6 +235,8 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 		while (token[++i] && token[i] != '$')
 			;
 	}
+	if (!str && token[i - 1] == '\"')
+		str = ft_strjoin(str, ft_strdup("\""));
 	return (str);
 }
 
@@ -275,9 +277,9 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 
 	if (token_type(token) == 5)
 		token = rem_quotes(token);
-	i = ft_strlen(token) - 1;
 	quote_at_end = 0;
 	j = 0;
+	i = ft_strlen(token) - 1;
 	if (token[i] == '"')
 		quote_at_end = 1;
 	while (quote_at_end)
