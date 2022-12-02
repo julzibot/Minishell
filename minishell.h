@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/01 21:58:11 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/02 15:21:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@
 
 typedef struct s_cmd
 {
-	char			*cmd;
-	char			**args;
-	char			**env_vars;
-	int				infile;
-	int				outfile;
+	char			*cmd;       // cd
+	char			**args;     // cd ../folder
+	char			**env_vars; // a=b (export)
+	int				infile;     // fd
+	int				outfile;    // fd
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -41,6 +41,10 @@ typedef struct s_env
 	char			*line;
 	struct s_env	*next;
 } t_env;
+
+/*********MILAN 2/12/2022*********/
+char	*ft_remove_cmd(char *line, char *remove);
+int		ft_get_to_str(char *line, char *remove, int *j);
 
 int		is_delim(char c);
 t_cmd	*parsing(char **lex_tab, t_cmd *parse_list);
