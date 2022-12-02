@@ -347,14 +347,11 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			if (type == 6)
 				parse_list->env_vars = create_env_vars(lex_tab[i], parse_list->env_vars);
 			if (type < 7)
-			{
 				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars);
-				printf("token %d : %s\n", i, str);
-				temp->args = token_join(temp->args, str);
-				i += quotes_skip(lex_tab + i);
-			}
 			else
-				temp->args = token_join(temp->args, lex_tab[i]);
+				str = fuse_quotes(lex_tab[i], lex_tab + i + 1, parse_list->env_vars);
+			temp->args = token_join(temp->args, str);
+			i += quotes_skip(lex_tab + i);
 		}
 	}
 
