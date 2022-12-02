@@ -315,9 +315,9 @@ int	quotes_skip(char **tab)
 	return (count);
 }
 
-char	**parsing(char **lex_tab, char **env_vars)
+t_cmd	*parsing(char **lex_tab)
 {
-	t_cmd	parse_list;
+	t_cmd	*parse_list;
 	t_cmd	*temp;
 	int		i;
 	int		type;
@@ -329,24 +329,26 @@ char	**parsing(char **lex_tab, char **env_vars)
 	
 	i = -1;
 	str = NULL;
-	parse_list.next = NULL;
-	parse_list.args = NULL;
-	temp = &parse_list;
+	parse_list = malloc(sizeof(t_cmd));
+	parse_list->next = NULL;
+	parse_list->args = NULL;
+	parse_list->env_vars = NULL;
+	temp = parse_list;
 	while (lex_tab[++i])
 	{
 		type = token_type(lex_tab[i]);
 		if (type < 4)
-			i += redir(&parse_list, lex_tab + i, type);
+			i += redir(parse_list, lex_tab + i, type);
 		else if (type == 4)
 			lst_next_cmd(temp); // handle pipes here
 		else
 		{
 			if (type == 6)
-				env_vars = create_env_vars(lex_tab[i], env_vars);
+				parse_list->env_vars = create_env_vars(lex_tab[i], parse_list->env_vars);
 			if (type < 7)
 			{
 				//i += quotes_skip(lex_tab + i);
-				str = fuse_quotes(get_env_vars(lex_tab[i], env_vars), lex_tab + i + 1, env_vars);
+				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars);
 				temp->args = token_join(temp->args, str);
 				i += quotes_skip(lex_tab + i);
 			}
@@ -359,7 +361,7 @@ char	**parsing(char **lex_tab, char **env_vars)
 	while (temp->args && temp->args[++i])
 		printf("%s\n", temp->args[i]);
 	i = -1;
-	while (env_vars && env_vars[++i])
-		printf("env_var %d : %s\n", i, env_vars[i]);
-	return(env_vars);	
+	while (parse_list->env_vars && parse_list->env_vars[++i])
+		printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
+	return(parse_list);	
 }

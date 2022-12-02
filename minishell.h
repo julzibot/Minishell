@@ -30,6 +30,7 @@ typedef struct s_cmd
 {
 	char			*cmd;
 	char			**args;
+	char			**env_vars;
 	int				infile;
 	int				outfile;
 	struct s_cmd	*next;
@@ -42,7 +43,7 @@ typedef struct s_env
 } t_env;
 
 int		is_delim(char c);
-char	**parsing(char **lex_tab, char **env_vars);
+t_cmd	*parsing(char **lex_tab);
 char	**lexing(char *line);
 char	*get_env_vars(char *token, char **env_vars);
 
