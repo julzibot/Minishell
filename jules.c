@@ -148,9 +148,9 @@ char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in 
 
 	i = 0;
 	cpy = get_env_vars(ft_strdup(token), env_vars);
-	while (cpy[i] && cpy[i] != '=')
+	while (cpy && cpy[i] && cpy[i] != '=')
 		i++;
-	if (cpy[i] && cpy[i] == '=') 
+	if (cpy && cpy[i] && cpy[i] == '=') 
 	{
 		j = 0;
 		while (env_vars && env_vars[j])
@@ -211,7 +211,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 		while (env_vars && env_vars[j])
 		{
 			namelen = 0;
-			while (env_vars[j][namelen] != '=')
+			while (env_vars && env_vars[j][namelen] != '=')
 				namelen++;
 			if (!ft_strncmp(env_vars[j], token + i + 1, namelen) \
 					&& (!token[i + namelen + 1] || token[i + namelen + 1] == '$' \
@@ -235,7 +235,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 		while (token[++i] && token[i] != '$')
 			;
 	}
-	if (!str && token[i - 1] == '\"')
+	if (!str && token[i - 1] && token[i - 1] == '\"')
 		str = ft_strjoin(str, ft_strdup("\""));
 	return (str);
 }
@@ -275,12 +275,13 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	int	quote_at_end;
 	char	*str;
 
-	if (token_type(token) == 5)
+
+	if (token && (token_type(token) == 5 || token[0] == '\"'))
 		token = rem_quotes(token);
 	quote_at_end = 0;
 	j = 0;
 	i = ft_strlen(token) - 1;
-	if (token[i] == '"')
+	if (token && token[i] && token[i] == '"')
 		quote_at_end = 1;
 	while (quote_at_end)
 	{
