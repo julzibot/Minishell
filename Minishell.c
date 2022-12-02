@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   Minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jibot <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/03/23 17:49:12 by jibot            ###   ########.fr       */
+/*   Updated: 2022/12/01 21:36:32 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -408,21 +408,21 @@
 // 	return(env_vars);	
 // }
 
-int	main(int argc, char **argv, char **envp)
-{
-	(void)argc;
-	(void)argv;
-	(void)envp;
-	char	*line;
-	char	**tokens;
-	char	**env_vars;
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	(void)argc;
+// 	(void)argv;
+// 	(void)envp;
+// 	char	*line;
+// 	char	**tokens;
+// 	char	**env_vars;
 	
-	env_vars = NULL;
-	while (1)
-	{
-		line = readline("Mini_chiale> ");
-		tokens = lexing(line);
-		env_vars = parsing(tokens, env_vars);
-	}
-	return (0);
-}
+// 	env_vars = NULL;
+// 	while (1)
+// 	{
+// 		line = readline("Mini_chiale> ");
+// 		tokens = lexing(line);
+// 		env_vars = parsing(tokens, env_vars);
+// 	}
+// 	return (0);
+// }
