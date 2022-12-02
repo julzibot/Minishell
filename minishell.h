@@ -43,7 +43,7 @@ typedef struct s_env
 } t_env;
 
 int		is_delim(char c);
-t_cmd	*parsing(char **lex_tab);
+t_cmd	*parsing(char **lex_tab, t_cmd *parse_list);
 char	**lexing(char *line);
 char	*get_env_vars(char *token, char **env_vars);
 

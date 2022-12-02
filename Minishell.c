@@ -21,11 +21,13 @@ int	main(int argc, char **argv, char **envp)
 	char	**tokens;
 	t_cmd *parse_list;
 	
+	parse_list = malloc(sizeof(t_cmd));
+	parse_list->env_vars = NULL;
 	while (1)
 	{
 		line = readline("Mini_chiale> ");
 		tokens = lexing(line);
-		parse_list = parsing(tokens);
+		parse_list = parsing(tokens ,parse_list);
 	}
 	return (0);
 }
