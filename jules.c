@@ -13,7 +13,7 @@ int	lineseg(char *line, int i, char **lex_tab)
 	if (is_delim(line[i]) == 1)
 		quoted = 1;
 	seg = malloc(sizeof(char*));
-	if (!quoted && i > 0 && is_delim(line[i - 1]) == 1)
+	if (/*!quoted && */i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 	{
 		s_i++;
 		seg[0] = line[i - 1];
@@ -124,9 +124,9 @@ int	token_type(char *token)
 		return (3);
 	else if (!ft_strncmp(token, "|", 1))
 		return (4);
-	else if (token[0] == '\"' && token[ft_strlen(token) - 1] == '\"' && ft_strlen(token) > 1)
+	else if (token[0] == '\"' && (token[ft_strlen(token) - 1] == '\"' || token[ft_strlen(token) - 2] == '\"') && ft_strlen(token) > 1)
 		return (5);
-	else if (token[0] == '\'' && token[ft_strlen(token) - 1] == '\'' && ft_strlen(token) > 1)
+	else if (token[0] == '\'' && (token[ft_strlen(token) - 1] == '\'' || token[ft_strlen(token) - 1] == '\'') && ft_strlen(token) > 1)
 		return (7);
 	else
 		return (6);
@@ -249,7 +249,7 @@ char	*rem_quotes(char *str)
 		i = 0;
 		while (str[++i])
 			ret[i - 1] = str[i];
-		ret[i - 1] = 0;
+		ret[i - 1] = '\0';
 	}
 	else if (str[len - 1] == '\"' || str[len - 1] == '\'')
 	{
@@ -257,7 +257,7 @@ char	*rem_quotes(char *str)
 		i = -1;
 		while (str[++i] != q)
 			ret[i] = str[i];
-		ret[i] = 0;
+		ret[i] = '\0';
 	}
 	free(str);
 	return (ret);
@@ -266,11 +266,12 @@ char	*rem_quotes(char *str)
 char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 {
 	int	i;
+	int	type;
 	int	j;
 	int	quote_at_end;
 	char	*str;
 
-
+	//type = token_type(token);
 	if (token && (ft_abs(token_type(token)) - 6 == 1 || (ft_strlen(token) > 1 && (token[0] == '\"' || token[0] == '\''))))
 		token = rem_quotes(token);
 	quote_at_end = 0;
@@ -278,16 +279,21 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	i = ft_strlen(token) - 1;
 	if (token && token[i] && (token[i] == '\"' || token[i] == '\''))
 		quote_at_end = 1;
-	while (quote_at_end)
+	while (quote_at_end && lex_tab[j])
 	{
-		if (token_type(token) < 7)
+		type = token_type(lex_tab[j]);
+		if (type < 7)
 			str = get_env_vars(lex_tab[j], env_vars);
+		else
+			str = ft_strdup(lex_tab[j]);
 		token = rem_quotes(token);
-		if (str && ft_strlen (str) > 1 && (str[0] == '\"' || str[0] == '\''))
-		{
+		while (str && ft_strlen (str) > 1 && (str[0] == '\"' || str[0] == '\''))
 			str = rem_quotes(str);
+
+		if (str && ft_strlen (str) > 1 && is_delim(str[ft_strlen(str) - 1]) == 1 && !lex_tab[j + 1])
+			str = rem_quotes(str);
+		if (str && ft_strlen (str) > 1 && str[0] != '\"' && str[0] != '\'')
 			token = ft_strjoin(token, str);
-		}
 		else if (str && (str[0] == '\"' || str[0] == '\'') && !str[1])
 			token = ft_strjoin(token, str);
 		i = ft_strlen(token) - 1;
@@ -295,6 +301,8 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 			quote_at_end = 0;
 		j++;
 	}
+	if (token && is_delim(token[ft_strlen(token) - 1]) == 1)
+		token = rem_quotes(token);
 	return (token);
 }
 
