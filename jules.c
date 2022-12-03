@@ -6,12 +6,16 @@ int	lineseg(char *line, int i, char **lex_tab)
 	int	quoted;
 	int	next_quoted;
 	char	*seg;
+	char	q_type;
 
 	s_i = 0;
 	quoted = 0;
 	next_quoted = 0;
 	if (is_delim(line[i]) == 1)
+	{
 		quoted = 1;
+		q_type = line[i];
+	}
 	seg = malloc(sizeof(char*));
 	if (/*!quoted && */i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 	{
@@ -19,7 +23,7 @@ int	lineseg(char *line, int i, char **lex_tab)
 		seg[0] = line[i - 1];
 	}
 	seg[s_i++] = line[i];
-	while (line[++i] && ((quoted && line[i] != seg[0]) 
+	while (line[++i] && ((quoted && line[i] != q_type) 
 		|| (!quoted && !is_delim(line[i]))))
 		seg[s_i++] = line[i];
 	seg[s_i] = line[i];
@@ -232,7 +236,6 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	}
 	if (token[i - 1] == '\"' &&  (!str || str[ft_strlen(str) - 1] != '\"'))
 		str = ft_strjoin(str, ft_strdup("\""));
-	printf("TARACEMAUDITE  %s\n", str);
 	return (str);
 }
 
@@ -355,7 +358,6 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 		{
 			if (type == 6)
 				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars);
-			printf("test %s\n", lex_tab[i]);
 			if (type < 7)
 				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars);
 			else
