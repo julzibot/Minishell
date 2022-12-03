@@ -126,7 +126,7 @@ int	token_type(char *token)
 		return (4);
 	else if (token[0] == '\"' && (token[ft_strlen(token) - 1] == '\"' || token[ft_strlen(token) - 2] == '\"') && ft_strlen(token) > 1)
 		return (5);
-	else if (token[0] == '\'' && (token[ft_strlen(token) - 1] == '\'' || token[ft_strlen(token) - 1] == '\'') && ft_strlen(token) > 1)
+	else if (token[0] == '\'' && (token[ft_strlen(token) - 1] == '\'' || token[ft_strlen(token) - 2] == '\'') && ft_strlen(token) > 1)
 		return (7);
 	else
 		return (6);
@@ -140,7 +140,7 @@ char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in 
 	char	*cpy;
 
 	i = 0;
-	cpy = get_env_vars(ft_strdup(token), env_vars);
+	cpy = get_env_vars(token, env_vars);
 	while (cpy && cpy[i] && cpy[i] != '=')
 		i++;
 	if (cpy && cpy[i] && cpy[i] == '=') 
@@ -159,8 +159,10 @@ char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in 
 			}
 			j++;
 		}
-		env_vars = token_join(env_vars, cpy);
+		env_vars = token_join(env_vars, ft_strdup(cpy));
 	}
+	free(token);
+	free(cpy);
 	return (env_vars);
 }
 
@@ -230,6 +232,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	}
 	if (token[i - 1] == '\"' &&  (!str || str[ft_strlen(str) - 1] != '\"'))
 		str = ft_strjoin(str, ft_strdup("\""));
+	printf("TARACEMAUDITE  %s\n", str);
 	return (str);
 }
 
@@ -292,7 +295,7 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 
 		if (str && ft_strlen (str) > 1 && is_delim(str[ft_strlen(str) - 1]) == 1 && !lex_tab[j + 1])
 			str = rem_quotes(str);
-		if (str && ft_strlen (str) > 1 && str[0] != '\"' && str[0] != '\'')
+		if (str /*&& ft_strlen (str) > 1 */&& str[0] != '\"' && str[0] != '\'')
 			token = ft_strjoin(token, str);
 		else if (str && (str[0] == '\"' || str[0] == '\'') && !str[1])
 			token = ft_strjoin(token, str);
@@ -303,6 +306,7 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	}
 	if (token && is_delim(token[ft_strlen(token) - 1]) == 1)
 		token = rem_quotes(token);
+	printf("AAAA  %s\n", token);
 	return (token);
 }
 
@@ -350,7 +354,8 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 		else
 		{
 			if (type == 6)
-				parse_list->env_vars = create_env_vars(lex_tab[i], parse_list->env_vars);
+				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars);
+			printf("test %s\n", lex_tab[i]);
 			if (type < 7)
 				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars);
 			else
