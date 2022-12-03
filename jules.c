@@ -35,10 +35,10 @@ int	lex_pipe_redir(char *c, char **lex_tab)
 	char	*str;
 	int		count;
 
-	if (is_delim(c[0]) == 1 && c[0] == c[1])
+	if (is_delim(c[0]) == 3 && c[0] == c[1])
 	{
 		str = malloc(3);
-		str[1] = c[0];
+		str[1] = c[1];
 		str[2] = '\0';
 		count = 1;
 	}
@@ -207,7 +207,6 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	// successively change $NAME# to VALUE#. if !FALSENAME, the "$FALSENAME" part of the token is eliminated
 	while (token[i])
 	{
-		printf("start : %c\n", token[i]);
 		j = 0;
 		while (env_vars && env_vars[j])
 		{
@@ -290,7 +289,6 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	{
 		if (token_type(token) < 7)
 			str = get_env_vars(lex_tab[j], env_vars);
-		printf("//%s//\n", str);
 		token = rem_quotes(token);
 		if (str && ft_strlen (str) > 1 && (str[0] == '\"' || str[0] == '\''))
 		{
