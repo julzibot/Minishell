@@ -35,20 +35,13 @@ int	lex_pipe_redir(char *c, char **lex_tab)
 	char	*str;
 	int		count;
 
+	count = 0;
 	if (is_delim(c[0]) == 3 && c[0] == c[1])
-	{
-		str = malloc(3);
-		str[1] = c[1];
-		str[2] = '\0';
 		count = 1;
-	}
-	else
-	{
-		str = malloc(2);
-		str[1] = '\0';
-		count = 0;
-	}
+	str = malloc(2 + count);
 	str[0] = c[0];
+	str[count] = c[0];
+	str[1 + count] = '\0';
 	*lex_tab = str;
 	return (count);
 }
