@@ -246,22 +246,24 @@ char	*rem_quotes(char *str)
 	int	i;
 	int	len;
 	char	*ret;
+	char	q;
 
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
 	ret = malloc(len + 1);
-	if (str[0] == '\"')
+	if (str[0] == '\"' || str[0] == '\'')
 	{
 		i = 0;
 		while (str[++i])
 			ret[i - 1] = str[i];
 		ret[i - 1] = 0;
 	}
-	else if (str[len - 1] == '\"')
+	else if (str[len - 1] == '\"' || str[len - 1] == '\'')
 	{
+		q = str[len - 1];
 		i = -1;
-		while (str[++i] != '\"')
+		while (str[++i] != q)
 			ret[i] = str[i];
 		ret[i] = 0;
 	}
@@ -277,25 +279,28 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	char	*str;
 
 
-	if (token && (token_type(token) == 5 || (ft_strlen(token) > 1 && token[0] == '\"')))
+	if (token && (ft_abs(token_type(token)) - 6 == 1 || (ft_strlen(token) > 1 && (token[0] == '\"' || token[0] == '\''))))
 		token = rem_quotes(token);
 	quote_at_end = 0;
 	j = 0;
 	i = ft_strlen(token) - 1;
-	if (token && token[i] && token[i] == '\"')
+	if (token && token[i] && (token[i] == '\"' || token[i] == '\''))
 		quote_at_end = 1;
 	while (quote_at_end)
 	{
-		str = get_env_vars(lex_tab[j], env_vars);
+		if (token_type(token) < 7)
+			str = get_env_vars(lex_tab[j], env_vars);
 		printf("//%s//\n", str);
 		token = rem_quotes(token);
-		if (str && str[0] == '\"')
+		if (str && ft_strlen (str) > 1 && (str[0] == '\"' || str[0] == '\''))
 		{
 			str = rem_quotes(str);
 			token = ft_strjoin(token, str);
 		}
+		else if (str && (str[0] == '\"' || str[0] == '\'') && !str[1])
+			token = ft_strjoin(token, str);
 		i = ft_strlen(token) - 1;
-		if (!(token[i] == '\"'))
+		if (!(token[i] == '\"' || token[i] == '\''))
 			quote_at_end = 0;
 		j++;
 	}
@@ -307,8 +312,9 @@ int	quotes_skip(char **tab)
 	int	count;
 
 	count = 0;
-	while (tab[0][ft_strlen(tab[0]) - 1] == '\"' \
-		&& tab[1] && tab[1][0] == '\"')
+	while ((tab[0][ft_strlen(tab[0]) - 1] == '\"' \
+		&& tab[1] && tab[1][0] == '\"') || (tab[0][ft_strlen(tab[0]) - 1] == '\'' \
+		&& tab[1] && tab[1][0] == '\''))
 	{
 		count++;
 		tab++;
@@ -349,7 +355,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			if (type < 7)
 				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars);
 			else
-				str = fuse_quotes(lex_tab[i], lex_tab + i + 1, parse_list->env_vars);
+				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab + i + 1, parse_list->env_vars);
 			temp->args = token_join(temp->args, str);
 			i += quotes_skip(lex_tab + i);
 		}
