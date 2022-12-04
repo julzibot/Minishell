@@ -128,9 +128,9 @@ int	token_type(char *token)
 		return (3);
 	else if (!ft_strncmp(token, "|", 1))
 		return (4);
-	else if (token[0] == '\"' && (token[ft_strlen(token) - 1] == '\"' || token[ft_strlen(token) - 2] == '\"') && ft_strlen(token) > 1)
+	else if (token[ft_strlen(token) - 1] == '\"' && (token[0] == '\"' || (token[0] == '\'' && token[1] == '\"')) && ft_strlen(token) > 1)
 		return (5);
-	else if (token[0] == '\'' && (token[ft_strlen(token) - 1] == '\'' || token[ft_strlen(token) - 2] == '\'') && ft_strlen(token) > 1)
+	else if (token[ft_strlen(token) - 1] == '\'' && (token[0] == '\'' || (token[0] == '\"' && token[1] == '\'')) && ft_strlen(token) > 1)
 		return (7);
 	else
 		return (6);
@@ -183,13 +183,14 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	char	*value;
 	char	*str;
 
+	//printf("get_vars IN : %s\n", token);
 	i = 0;
 	quoted = 0;
 	value = NULL;
 	str = NULL;
 	if (!token)
 		return (NULL);
-	if (token[0] == '\"')
+	while (token[i] == '\"' || token[i] == '\'')
 		i++;
 	while (token[i] && token[i] != '$')
 		i++;
@@ -214,9 +215,9 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 				namelen++;
 			if (!ft_strncmp(env_vars[j], token + i + 1, namelen) \
 					&& (!token[i + namelen + 1] || token[i + namelen + 1] == '$' \
-					|| token[i + namelen + 1] == '\"')) // if NAME matches in the token
+					|| token[i + namelen + 1] == '\"' || token[i + namelen + 1] == '\'')) // if NAME matches in the token
 			{
-				if (token[0] == '\"' && token[i + namelen + 1] == '\"')
+				if ((token[0] == '\"' || token[1] == '\"') && token[i + namelen + 1] == '\"')
 					quoted = 1;
 				value = malloc(ft_strlen(env_vars[j]) - namelen + quoted);
 				v_i = -1;
@@ -236,6 +237,9 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	}
 	if (token[i - 1] == '\"' &&  (!str || str[ft_strlen(str) - 1] != '\"'))
 		str = ft_strjoin(str, ft_strdup("\""));
+	else if (token[i - 1] == '\'' &&  (!str || str[ft_strlen(str) - 1] != '\''))
+		str = ft_strjoin(str, ft_strdup("\'"));
+	//printf("get_vars OUT : %s\n", str);
 	return (str);
 }
 
@@ -278,7 +282,7 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	char	*str;
 
 	//type = token_type(token);
-	if (token && (ft_abs(token_type(token)) - 6 == 1 || (ft_strlen(token) > 1 && (token[0] == '\"' || token[0] == '\''))))
+	while (token && (ft_abs(token_type(token)) - 6 == 1 || (ft_strlen(token) > 1 && (token[0] == '\"' || token[0] == '\''))))
 		token = rem_quotes(token);
 	quote_at_end = 0;
 	j = 0;
@@ -296,7 +300,7 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 		while (str && ft_strlen (str) > 1 && (str[0] == '\"' || str[0] == '\''))
 			str = rem_quotes(str);
 
-		if (str && ft_strlen (str) > 1 && is_delim(str[ft_strlen(str) - 1]) == 1 && !lex_tab[j + 1])
+		if (str && ft_strlen (str) > 1 && is_delim(str[ft_strlen(str) - 1]) == 1 && (!lex_tab[j + 1] || is_delim(lex_tab[j + 1][0]) != 1))
 			str = rem_quotes(str);
 		if (str /*&& ft_strlen (str) > 1 */&& str[0] != '\"' && str[0] != '\'')
 			token = ft_strjoin(token, str);
@@ -309,7 +313,6 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	}
 	if (token && is_delim(token[ft_strlen(token) - 1]) == 1)
 		token = rem_quotes(token);
-	printf("AAAA  %s\n", token);
 	return (token);
 }
 
