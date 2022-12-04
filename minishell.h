@@ -34,6 +34,7 @@ typedef	struct	s_cmd
 	int				infile;     // fd
 	int				outfile;    // fd
 	int				*quoted;
+	int				*space_after;
 	struct s_cmd	*next;
 }	t_cmd;
 

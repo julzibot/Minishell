@@ -60,9 +60,11 @@ char	**lexing(char *line, t_cmd *parse_list)
 	j = 0;
 	lex_tab = malloc(sizeof(char*) * 15/*arg_count(line)*/);
 	parse_list->quoted = malloc(sizeof(int) * 15/*arg_count(line)*/);
+	parse_list->space_after = malloc(sizeof(int) * 15/*arg_count(line)*/);
 	while (line[++i])
 	{
 		parse_list->quoted[j] = 0;
+		parse_list->space_after[j] = 0;
 		if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3/*is pipe or redir*/)
 		{
 			i += lex_pipe_redir(line + i, lex_tab + j);
@@ -75,6 +77,8 @@ char	**lexing(char *line, t_cmd *parse_list)
 			i = lineseg(line, i, lex_tab + j);
 			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
 				i--;
+			else
+				parse_list->space_after[j] = 1;
 			j++;
 		}
 	}
@@ -277,7 +281,7 @@ char	*rem_quotes(char *str)
 	return (ret);
 }
 
-char	*fuse_quotes(char *token, char **lex_tab, char **env_vars, int	*quoted)
+char	*fuse_quotes(char *token, char **lex_tab, char **env_vars, int	*quoted, int *space_after)
 {
 	int	i;
 	int	type;
@@ -293,7 +297,7 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars, int	*quoted)
 	i = ft_strlen(token) - 1;
 	if (token && token[i] && (token[i] == '\"' || token[i] == '\''))
 		quote_at_end = 1;
-	while (quote_at_end && lex_tab[j])
+	while (quote_at_end && lex_tab[j] && !space_after[j])
 	{
 		type = token_type(lex_tab[j], quoted[j]);
 		if (type < 7)
@@ -366,9 +370,9 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			if (type == 6)
 				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars);
 			if (type < 7)
-				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars, parse_list->quoted);
+				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars, parse_list->quoted, parse_list->space_after + i);
 			else
-				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab + i + 1, parse_list->env_vars, parse_list->quoted);
+				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab + i + 1, parse_list->env_vars, parse_list->quoted, parse_list->space_after + i);
 			temp->args = token_join(temp->args, str);
 			i += quotes_skip(lex_tab + i);
 		}

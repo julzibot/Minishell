@@ -24,6 +24,7 @@ int	main(int argc, char **argv, char **envp)
 	parse_list = malloc(sizeof(t_cmd));
 	parse_list->env_vars = NULL;
 	parse_list->quoted = NULL;
+	parse_list->space_after = NULL;
 	while (1)
 	{
 		line = readline("Mini_chiale> ");
