@@ -324,14 +324,14 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars, int	*quoted, int
 	return (token);
 }
 
-int	quotes_skip(char **tab)
+int	quotes_skip(char **tab, int *space_after)
 {
 	int	count;
 
 	count = 0;
-	while ((tab[0][ft_strlen(tab[0]) - 1] == '\"' \
+	while (!space_after[count] && ((tab[0][ft_strlen(tab[0]) - 1] == '\"' \
 		&& tab[1] && tab[1][0] == '\"') || (tab[0][ft_strlen(tab[0]) - 1] == '\'' \
-		&& tab[1] && tab[1][0] == '\''))
+		&& tab[1] && tab[1][0] == '\'')))
 	{
 		count++;
 		tab++;
@@ -374,7 +374,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			else
 				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab + i + 1, parse_list->env_vars, parse_list->quoted, parse_list->space_after + i);
 			temp->args = token_join(temp->args, str);
-			i += quotes_skip(lex_tab + i);
+			i += quotes_skip(lex_tab + i, parse_list->space_after + i);
 		}
 	}
 
