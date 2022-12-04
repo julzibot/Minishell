@@ -26,15 +26,23 @@
 # define PATH_MAX 4096
 # endif
 
-typedef struct s_cmd
+typedef	struct	s_cmd
 {
 	char			*cmd;       // cd
 	char			**args;     // cd ../folder
 	char			**env_vars; // a=b (export)
 	int				infile;     // fd
 	int				outfile;    // fd
+	int				*quoted;
 	struct s_cmd	*next;
 }	t_cmd;
+
+// typedef	struct s_lex
+// {
+// 	char	*token;
+// 	int		quoted;
+// 	struct	s_lex	*next;
+// }	t_lex;
 
 typedef struct s_env
 {
@@ -48,7 +56,7 @@ int		ft_get_to_str(char *line, char *remove, int *j);
 
 int		is_delim(char c);
 t_cmd	*parsing(char **lex_tab, t_cmd *parse_list);
-char	**lexing(char *line);
+char	**lexing(char *line, t_cmd *parse_list);
 char	*get_env_vars(char *token, char **env_vars);
 
 /***********BASIC**********/

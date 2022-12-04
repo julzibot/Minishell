@@ -50,7 +50,7 @@ int	lex_pipe_redir(char *c, char **lex_tab)
 	return (count);
 }
 
-char	**lexing(char *line)
+char	**lexing(char *line, t_cmd *parse_list)
 {
 	int	i;
 	int j;
@@ -59,8 +59,10 @@ char	**lexing(char *line)
 	i = -1;
 	j = 0;
 	lex_tab = malloc(sizeof(char*) * 15/*arg_count(line)*/);
+	parse_list->quoted = malloc(sizeof(int) * 15/*arg_count(line)*/);
 	while (line[++i])
 	{
+		parse_list->quoted[j] = 0;
 		if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3/*is pipe or redir*/)
 		{
 			i += lex_pipe_redir(line + i, lex_tab + j);
@@ -68,6 +70,8 @@ char	**lexing(char *line)
 		}
 		else if (is_delim(line[i]) == 1 || !is_delim(line[i]) /*is quote, or beginning of word*/)
 		{
+			if (is_delim(line[i]) == 1)
+				parse_list->quoted[j] = 1;
 			i = lineseg(line, i, lex_tab + j);
 			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
 				i--;
@@ -116,7 +120,7 @@ int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 	return (1);
 }
 
-int	token_type(char *token)
+int	token_type(char *token, int quoted)
 {
 	if (!ft_strncmp(token, "<<", 2))
 		return (0);
@@ -128,9 +132,9 @@ int	token_type(char *token)
 		return (3);
 	else if (!ft_strncmp(token, "|", 1))
 		return (4);
-	else if (token[ft_strlen(token) - 1] == '\"' && (token[0] == '\"' || (token[0] == '\'' && token[1] == '\"')) && ft_strlen(token) > 1)
+	else if (quoted && token[ft_strlen(token) - 1] == '\"' && (token[0] == '\"' || (token[0] == '\'' && token[1] == '\"')) && ft_strlen(token) > 1)
 		return (5);
-	else if (token[ft_strlen(token) - 1] == '\'' && (token[0] == '\'' || (token[0] == '\"' && token[1] == '\'')) && ft_strlen(token) > 1)
+	else if (quoted && token[ft_strlen(token) - 1] == '\'' && (token[0] == '\'' || (token[0] == '\"' && token[1] == '\'')) && ft_strlen(token) > 1)
 		return (7);
 	else
 		return (6);
@@ -273,7 +277,7 @@ char	*rem_quotes(char *str)
 	return (ret);
 }
 
-char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
+char	*fuse_quotes(char *token, char **lex_tab, char **env_vars, int	*quoted)
 {
 	int	i;
 	int	type;
@@ -282,16 +286,16 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars)
 	char	*str;
 
 	//type = token_type(token);
-	while (token && (ft_abs(token_type(token)) - 6 == 1 || (ft_strlen(token) > 1 && (token[0] == '\"' || token[0] == '\''))))
+	j = 0;
+	while (token && (ft_abs(token_type(token, quoted[0])) - 6 == 1 || (ft_strlen(token) > 1 && (token[0] == '\"' || token[0] == '\''))))
 		token = rem_quotes(token);
 	quote_at_end = 0;
-	j = 0;
 	i = ft_strlen(token) - 1;
 	if (token && token[i] && (token[i] == '\"' || token[i] == '\''))
 		quote_at_end = 1;
 	while (quote_at_end && lex_tab[j])
 	{
-		type = token_type(lex_tab[j]);
+		type = token_type(lex_tab[j], quoted[j]);
 		if (type < 7)
 			str = get_env_vars(lex_tab[j], env_vars);
 		else
@@ -352,7 +356,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	// EXPANSION
 	while (lex_tab[++i])
 	{
-		type = token_type(lex_tab[i]);
+		type = token_type(lex_tab[i], parse_list->quoted[i]);
 		if (type < 4)
 			i += redir(parse_list, lex_tab + i, type);
 		else if (type == 4)
@@ -362,9 +366,9 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			if (type == 6)
 				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars);
 			if (type < 7)
-				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars);
+				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab + i + 1, parse_list->env_vars, parse_list->quoted);
 			else
-				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab + i + 1, parse_list->env_vars);
+				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab + i + 1, parse_list->env_vars, parse_list->quoted);
 			temp->args = token_join(temp->args, str);
 			i += quotes_skip(lex_tab + i);
 		}
