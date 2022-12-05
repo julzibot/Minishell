@@ -109,9 +109,9 @@ char	**lexing(char *line, t_cmd *parse_list)
 
 	i = -1;
 	j = 0;
-	lex_tab = malloc(sizeof(char*) * arg_count(line));
-	parse_list->quoted = malloc(sizeof(int) * arg_count(line));
-	parse_list->space_after = malloc(sizeof(int) * arg_count(line));
+	lex_tab = malloc(sizeof(char*) * (arg_count(line) + 1));
+	parse_list->quoted = malloc(sizeof(int) * arg_count(line) + 1);
+	parse_list->space_after = malloc(sizeof(int) * arg_count(line) + 1);
 	while (line[++i])
 	{
 		parse_list->quoted[j] = 0;
@@ -134,6 +134,8 @@ char	**lexing(char *line, t_cmd *parse_list)
 		}
 	}
 	lex_tab[j] = NULL;
+	//parse_list->quoted[++j] = '\0';
+	//parse_list->space_after[++j] = '\0';
 	return (lex_tab);
 }
 
