@@ -1,5 +1,30 @@
 #include "minishell.h"
 
+int	seg_size(char *line, int i)
+{
+	int	count;
+	int	quoted;
+	char	q_type;
+
+	quoted = 0;
+	count = 1;
+	if (is_delim(line[i]) == 1)
+	{
+		quoted = 1;
+		q_type = line[i];
+	}
+	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
+	{
+		count++;
+	}
+	while (line[++i] && ((quoted && line[i] != q_type) 
+		|| (!quoted && !is_delim(line[i]))))
+		count++;
+	if (!quoted && is_delim(line[i]) == 1)
+		count++;
+	return (count + quoted + 1);
+}
+
 int	lineseg(char *line, int i, char **lex_tab)
 {
 	int	s_i;
@@ -16,8 +41,8 @@ int	lineseg(char *line, int i, char **lex_tab)
 		quoted = 1;
 		q_type = line[i];
 	}
-	seg = malloc(sizeof(char*));
-	if (/*!quoted && */i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
+	seg = malloc(seg_size(line, i));
+	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 	{
 		s_i++;
 		seg[0] = line[i - 1];
@@ -50,6 +75,32 @@ int	lex_pipe_redir(char *c, char **lex_tab)
 	return (count);
 }
 
+int	arg_count(char *line)
+{
+	int	count;
+	int	i;
+
+	i = -1;
+	count = 1;
+	while (line && line[++i])
+	{
+		if (is_delim(line[i]) == 3 && line[0] == line[1])
+			i += 2;
+		else if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3)
+			i++;
+		else if (is_delim(line[i]) == 1 || !is_delim(line[i]))
+		{
+			i += seg_size(line, i);
+			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
+				i--;
+		}
+		else
+			count--;
+		count++;
+	}
+	return (count);
+}
+
 char	**lexing(char *line, t_cmd *parse_list)
 {
 	int	i;
@@ -58,9 +109,9 @@ char	**lexing(char *line, t_cmd *parse_list)
 
 	i = -1;
 	j = 0;
-	lex_tab = malloc(sizeof(char*) * 15/*arg_count(line)*/);
-	parse_list->quoted = malloc(sizeof(int) * 15/*arg_count(line)*/);
-	parse_list->space_after = malloc(sizeof(int) * 15/*arg_count(line)*/);
+	lex_tab = malloc(sizeof(char*) * arg_count(line));
+	parse_list->quoted = malloc(sizeof(int) * arg_count(line));
+	parse_list->space_after = malloc(sizeof(int) * arg_count(line));
 	while (line[++i])
 	{
 		parse_list->quoted[j] = 0;
@@ -166,7 +217,7 @@ char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in 
 			if (!ft_strncmp(env_vars[j], cpy, namelen) && cpy[namelen] == '=')
 			{
 				free(env_vars[j]);
-				env_vars[j] = cpy;
+				env_vars[j] = ft_strdup(cpy);
 				return (env_vars);
 			}
 			j++;
@@ -198,6 +249,8 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	str = NULL;
 	if (!token)
 		return (NULL);
+	else if (token[0] == '$' && !token[1])
+		return (ft_strdup(token));
 	while (token[i] == '\"' || token[i] == '\'')
 		i++;
 	while (token[i] && token[i] != '$')
