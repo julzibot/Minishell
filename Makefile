@@ -6,22 +6,23 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2022/12/01 21:56:16 by mstojilj         ###   ########.fr        #
+#    Updated: 2022/12/05 17:46:50 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	= minishell
 
-CC		= gcc -Wall -Wextra -Werror
+CC		= gcc -Wall -Wextra -Werror -g
 
 RM		= rm -f
 
 SRCS	= Minishell.c jules.c utils.c \
-			milan.c \
 			builtin/env.c \
 			builtin/echo.c \
+			builtin/unset.c \
 			builtin/export.c \
 			builtin/directory.c \
+			builtin/builtin_utils.c \
 
 OBJS	= ${SRCS:.c=.o}
 

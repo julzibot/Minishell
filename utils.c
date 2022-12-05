@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/01 21:35:38 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:35:47 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,18 @@ int	ft_strlen(char *str)
 	return	(i);
 }
 
+int	ft_varlen(char *str)
+{
+	int	i;
+
+	if (!str)
+		return (0);
+	i = 0;
+	while (str[i] != '=' && str[i])
+		i++;
+	return	(i);
+}
+
 int	ft_tablen(char **tab)
 {
 	int	i;
@@ -115,8 +127,8 @@ char	*ft_strjoin(char *s1, char *s2)
 		j++;
 	}
 	str[i] = '\0';
-	free(s1);
-	free(s2);
+	//free(s1);
+	//free(s2);
 	return (str);
 }
 

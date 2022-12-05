@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/01 21:45:57 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/05 14:20:21 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,19 +47,19 @@ char	*ft_pwd(void)
 	return (cwd);
 }
 
-int	main(int argc, char **argv, char **env)
-{
-	(void)argc;
-	(void)argv;
-	char	*line;
+// int	main(int argc, char **argv, char **env)
+// {
+// 	(void)argc;
+// 	(void)argv;
+// 	char	*line;
 
-	while (1)
-	{
-		line = readline("Minishell: ");
-		if (ft_strncmp(line, "cd", 4) == 0)
-		{
-			ft_cd(line);
-			execve("/bin/ls", argv, env);
-		}
-	}
-}
+// 	while (1)
+// 	{
+// 		line = readline("Minishell: ");
+// 		if (ft_strncmp(line, "cd", 4) == 0)
+// 		{
+// 			ft_cd(line);
+// 			execve("/bin/ls", argv, env);
+// 		}
+// 	}
+// }
