@@ -23,17 +23,13 @@ int	seg_size(char *line, int i)
 	return (count + quoted + 1);
 }
 
-int	lineseg(char *line, int i, char **lex_tab)
+int	lineseg(char *line, int i, char **lex_tab, int quoted)
 {
 	int	s_i;
-	int	quoted;
 	char	*seg;
 	int	q_type;
 
 	s_i = 0;
-	quoted = 0;
-	if (is_delim(line[i]) == 1)
-		quoted = 1;
 	q_type = i;
 	seg = malloc(seg_size(line, i));
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
@@ -115,7 +111,7 @@ char	**lexing(char *line, t_cmd *parse_list)
 		{
 			if (is_delim(line[i]) == 1)
 				parse_list->quoted[j] = 1;
-			i = lineseg(line, i, lex_tab + j);
+			i = lineseg(line, i, lex_tab + j, parse_list->quoted[j]);
 			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
 				i--;
 			else
@@ -248,22 +244,59 @@ char	*get_vars_init(char *token, char *str)
 	return (str);
 }
 
+char	*get_value(char *token, int namelen, char *env_vars, char *str)
+{
+	int	v_i;
+	int	v_len;
+	int	quoted;
+	char	*value;
+
+	quoted = 0;
+	if ((token[0] == '\"' || token[1] == '\"') && token[namelen + 1] == '\"')
+		quoted = 1;
+	value = malloc(ft_strlen(env_vars) - namelen + quoted);
+	v_i = -1;
+	v_len = namelen;
+	while (env_vars[++v_len])
+		value[++v_i] = env_vars[v_len];
+	value[++v_i] = '\"';
+	value[v_i + quoted] = '\0';
+	str = ft_strjoin(str, value);
+
+	return (str);
+}
+
+char	*check_var_name(char *token, char **env_vars, char *str)
+{
+	int	j;
+	int	namelen;
+
+	j = 0;
+	while (env_vars && env_vars[j])
+	{
+		namelen = 0;
+		while (env_vars && env_vars[j][namelen] != '=')
+			namelen++;
+		if (!ft_strncmp(env_vars[j], token + 1, namelen) \
+				&& (!token[namelen + 1] || token[namelen + 1] == '$' \
+				|| token[namelen + 1] == '\"' || token[namelen + 1] == '\'')) // if NAME matches in the token
+		{
+			str = get_value(token, namelen, env_vars[j], str);
+			while (env_vars[j + 1])
+				j++;
+		}
+		j++;
+	}
+	return (str);
+}
+
 char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
 {
 	int	i;
-	int	v_i;
-	int	j;
-	int	quoted;
-	int	namelen;
-	int	v_len;
-	char	*value;
 	char	*str;
 
-	//printf("get_vars IN : %s\n", token);
+	//printf("GET_IN  %s\n", token);
 	i = 0;
-	quoted = 0;
-	
-	value = NULL;
 	str = NULL;
 	if (!token)
 		return (NULL);
@@ -275,31 +308,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	// successively change $NAME# to VALUE#. if !FALSENAME, the "$FALSENAME" part of the token is eliminated
 	while (token[i])
 	{
-		j = 0;
-		while (env_vars && env_vars[j])
-		{
-			namelen = 0;
-			while (env_vars && env_vars[j][namelen] != '=')
-				namelen++;
-			if (!ft_strncmp(env_vars[j], token + i + 1, namelen) \
-					&& (!token[i + namelen + 1] || token[i + namelen + 1] == '$' \
-					|| token[i + namelen + 1] == '\"' || token[i + namelen + 1] == '\'')) // if NAME matches in the token
-			{
-				if ((token[0] == '\"' || token[1] == '\"') && token[i + namelen + 1] == '\"')
-					quoted = 1;
-				value = malloc(ft_strlen(env_vars[j]) - namelen + quoted);
-				v_i = -1;
-				v_len = namelen;
-				while (env_vars[j][++v_len])
-					value[++v_i] = env_vars[j][v_len];
-				value[++v_i] = '\"';
-				value[v_i + quoted] = '\0';
-				str = ft_strjoin(str, value);
-				while (env_vars[j + 1])
-					j++;
-			}
-			j++;
-		}
+		str = check_var_name(token + i, env_vars, str);
 		while (token[++i] && token[i] != '$')
 			;
 	}
@@ -307,7 +316,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 		str = ft_strjoin(str, ft_strdup("\""));
 	else if (token[i - 1] == '\'' &&  (!str || str[ft_strlen(str) - 1] != '\''))
 		str = ft_strjoin(str, ft_strdup("\'"));
-	//printf("get_vars OUT : %s\n", str);
+	//printf("GET_OUT  %s\n", str);
 	return (str);
 }
 
@@ -359,7 +368,10 @@ char	*fuse_quotes(char *token, char **lex_tab, char **env_vars, int	*quoted, int
 		quote_at_end = 1;
 	while (quote_at_end && lex_tab[j] && !space_after[j])
 	{
-		type = token_type(lex_tab[j], quoted[j]);
+		type = token_type(lex_tab[j], quoted[j + 1]);
+		// printf("quoted : %d\n", quoted[j]);
+		// printf("token : %s\n", lex_tab[j]);
+		// printf("type : %d\n", type);
 		if (type < 7)
 			str = get_env_vars(lex_tab[j], env_vars);
 		else
