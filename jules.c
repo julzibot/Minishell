@@ -108,10 +108,7 @@ char	**lexing(char *line, t_cmd *parse_list)
 		parse_list->quoted[j] = 0;
 		parse_list->space_after[j] = 0;
 		if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3/*is pipe or redir*/)
-		{
-			i += lex_pipe_redir(line + i, lex_tab + j);
-			j++;
-		}
+			i += lex_pipe_redir(line + i, lex_tab + j++);
 		else if (is_delim(line[i]) == 1 || !is_delim(line[i]) /*is quote, or beginning of word*/)
 		{
 			if (is_delim(line[i]) == 1)
@@ -186,11 +183,32 @@ int	token_type(char *token, int quoted)
 		return (6);
 }
 
+char	**create_var(char **env_vars, char *cpy)
+{
+	int	j;
+	int	namelen;
+
+	j = 0;
+	while (env_vars && env_vars[j])
+	{
+		namelen = 0;
+		while (env_vars[j][namelen] != '=')
+			namelen++;
+		if (!ft_strncmp(env_vars[j], cpy, namelen) && cpy[namelen] == '=')
+		{
+			free(env_vars[j]);
+			env_vars[j] = ft_strdup(cpy);
+			return (env_vars);
+		}
+		j++;
+	}
+	env_vars = token_join(env_vars, ft_strdup(cpy));
+	return (env_vars);
+}
+
 char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in unquoted tokens, store in env_vars
 {
 	int i;
-	int	j;
-	int	namelen;
 	char	*cpy;
 
 	i = 0;
@@ -198,23 +216,7 @@ char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in 
 	while (cpy && cpy[i] && cpy[i] != '=')
 		i++;
 	if (cpy && cpy[i] && cpy[i] == '=') 
-	{
-		j = 0;
-		while (env_vars && env_vars[j])
-		{
-			namelen = 0;
-			while (env_vars[j][namelen] != '=')
-				namelen++;
-			if (!ft_strncmp(env_vars[j], cpy, namelen) && cpy[namelen] == '=')
-			{
-				free(env_vars[j]);
-				env_vars[j] = ft_strdup(cpy);
-				return (env_vars);
-			}
-			j++;
-		}
-		env_vars = token_join(env_vars, ft_strdup(cpy));
-	}
+		env_vars = create_var(env_vars, cpy);
 	free(token);
 	free(cpy);
 	return (env_vars);
