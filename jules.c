@@ -28,24 +28,26 @@ int	lineseg(char *line, int i, char **lex_tab)
 	int	s_i;
 	int	quoted;
 	char	*seg;
-	char	q_type;
+	int	q_type;
 
 	s_i = 0;
 	quoted = 0;
 	if (is_delim(line[i]) == 1)
 		quoted = 1;
-	q_type = line[i];
+	q_type = i;
 	seg = malloc(seg_size(line, i));
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 		seg[s_i++] = line[i - 1];
 	seg[s_i++] = line[i];
-	while (line[++i] && ((quoted && line[i] != q_type) 
+	while (line[++i] && ((quoted && line[i] != line[q_type]) 
 		|| (!quoted && !is_delim(line[i]))))
 		seg[s_i++] = line[i];
 	seg[s_i] = line[i];
 	if (!quoted && is_delim(line[i]) == 1)
-		quoted = 1;
-	seg[s_i + quoted] = '\0';
+		q_type = 1;
+	else
+		q_type = 0;
+	seg[s_i + quoted + q_type] = '\0';
 	*lex_tab = seg;
 	return (i + quoted);
 }
@@ -222,7 +224,29 @@ char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in 
 	return (env_vars);
 }
 
-// int	search_name()
+char	*get_vars_init(char *token, char *str)
+{
+	int	i;
+	int	v_i;
+
+	i = 0;
+	v_i = 0;
+	while (token[i] == '\"' || token[i] == '\'')
+		i++;
+	while (token[i] && token[i] != '$')
+		i++;
+	
+	// keep the first part of the token (eg "stuff" in "stuff$NAME")
+	if (i > 0)
+	{
+		str = malloc(i + 1);
+		v_i = -1;
+		while (++v_i < i && token[v_i])
+			str[v_i] = token[v_i];
+		str[v_i] = '\0';
+	}
+	return (str);
+}
 
 char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
 {
@@ -238,26 +262,16 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	//printf("get_vars IN : %s\n", token);
 	i = 0;
 	quoted = 0;
+	
 	value = NULL;
 	str = NULL;
 	if (!token)
 		return (NULL);
 	else if (token[0] == '$' && !token[1])
 		return (ft_strdup(token));
-	while (token[i] == '\"' || token[i] == '\'')
+	str = get_vars_init(token, str);
+	while (str && str[i])
 		i++;
-	while (token[i] && token[i] != '$')
-		i++;
-	
-	// keep the first part of the token (eg "stuff" in "stuff$NAME")
-	if (i > 0)
-	{
-		str = malloc(i + 1);
-		v_i = -1;
-		while (++v_i < i && token[v_i])
-			str[v_i] = token[v_i];
-		str[v_i] = '\0';
-	}
 	// successively change $NAME# to VALUE#. if !FALSENAME, the "$FALSENAME" part of the token is eliminated
 	while (token[i])
 	{
