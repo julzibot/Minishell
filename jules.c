@@ -14,9 +14,7 @@ int	seg_size(char *line, int i)
 		q_type = line[i];
 	}
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
-	{
 		count++;
-	}
 	while (line[++i] && ((quoted && line[i] != q_type) 
 		|| (!quoted && !is_delim(line[i]))))
 		count++;
@@ -29,32 +27,25 @@ int	lineseg(char *line, int i, char **lex_tab)
 {
 	int	s_i;
 	int	quoted;
-	int	next_quoted;
 	char	*seg;
 	char	q_type;
 
 	s_i = 0;
 	quoted = 0;
-	next_quoted = 0;
 	if (is_delim(line[i]) == 1)
-	{
 		quoted = 1;
-		q_type = line[i];
-	}
+	q_type = line[i];
 	seg = malloc(seg_size(line, i));
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
-	{
-		s_i++;
-		seg[0] = line[i - 1];
-	}
+		seg[s_i++] = line[i - 1];
 	seg[s_i++] = line[i];
 	while (line[++i] && ((quoted && line[i] != q_type) 
 		|| (!quoted && !is_delim(line[i]))))
 		seg[s_i++] = line[i];
 	seg[s_i] = line[i];
 	if (!quoted && is_delim(line[i]) == 1)
-		next_quoted = 1;
-	seg[s_i + quoted + next_quoted] = '\0';
+		quoted = 1;
+	seg[s_i + quoted] = '\0';
 	*lex_tab = seg;
 	return (i + quoted);
 }
@@ -134,8 +125,6 @@ char	**lexing(char *line, t_cmd *parse_list)
 		}
 	}
 	lex_tab[j] = NULL;
-	//parse_list->quoted[++j] = '\0';
-	//parse_list->space_after[++j] = '\0';
 	return (lex_tab);
 }
 
