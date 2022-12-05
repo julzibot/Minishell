@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/01 21:58:34 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:47:10 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,55 +47,72 @@ void	ft_add_after(t_env **env_list, int line_nb, char *s)
 	}
 }
 
-void	ft_remove_line(t_env **env_list, t_env *node)
+char	*ft_add_quotes(char *var)
 {
-	t_env	*curr;
-	t_env	*prev;
-
-	curr = *env_list;
-	while (curr)
-	{
-		if (strcmp(curr->line, node->line) == 0) // Add FT_STRCMP
-		{
-			prev->next = curr->next;
-			free(curr);
-			return ;
-		}
-		prev = curr;
-		curr = curr->next;
-	}
-}
-
-// Unsets ENV variable
-
-void	ft_unset(t_env **env_list, char *s)
-{
-	t_env	*curr;
-	int		n;
-
-	n = ft_strlen(s) - 1;
-	curr = *env_list;
-	while (curr)
-	{
-		if (ft_strncmp(curr->line, s, n) == 0)
-		{
-			ft_remove_line(env_list, curr);
-			return ;
-		}
-		curr = curr->next;
-	}
-	if (curr == NULL)
-		ft_printf(2, "%s: not a valid identifier\n", s);
-}
-
-void	ft_export(t_env **env_list, char *line)
-{
-	(void)env_list;
+	int		i;
+	int		j;
 	char	*env_var;
+	
+	i = 0;
+	j = 0;
+	env_var = malloc(sizeof(char) * (ft_strlen(var) + 3));
+	if (!env_var)
+		exit(1);
+	while (var[i])
+	{
+		if (env_var[j - 1] == '=')
+		{
+			env_var[j] = '\"';
+			j++;
+		}
+		env_var[j] = var[i];
+		if (var[i + 1] == '\0')
+		{
+			j++;
+			env_var[j] = '\"';
+			j++;
+		}
+		i++;
+		j++;
+	}
+	env_var[j] = '\0';
+	return (env_var);
+}
 
-	env_var = ft_get_env_var(line, "export");
+int	ft_verify_double(t_env *env_list, char *line)
+{
+	t_env	*curr;
+
+	curr = env_list;
+	while (curr)
+	{
+		if (strcmp(curr->line, line) == 0)
+			return (1);
+		curr = curr->next;
+	}
+	return (0);
+}
+
+void	ft_get_export(t_env **exp_list)
+{
+	t_env	*curr;
+
+	curr = *exp_list;
+	while (curr)
+	{
+		curr->line = ft_add_quotes(curr->line);
+		curr->line = ft_strjoin("declare -x ", curr->line);
+		curr = curr->next;
+	}
+}
+
+void	ft_export(t_env **env_list, t_env **exp_list, char *line)
+{
 	//printf("ENV_VAR: %s\n", env_var);
-	ft_add_after(env_list, 18, env_var);
+	if (ft_verify_double(*env_list, line) == 1)
+		return ;
+	ft_add_after(env_list, 18, line);
+	ft_add_after(exp_list, 18, ft_strjoin("declare -x ", ft_add_quotes(line)));
 }
 
 // int	main(int argc, char **argv, char **env)

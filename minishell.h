@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/02 15:21:08 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/05 17:11:39 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	**token_join(char **args, char *token);
 
 /***********ENV************/
+int		ft_varlen(char *str);
 void	ft_get_env(t_env **env_list, char **env);
 void	ft_print_env(t_env **env_lst);
 char	*ft_get_env_var(char *line, char *remove);
@@ -90,15 +91,17 @@ int		ft_get_echo_line(char *s);			 // Gets the echo line
 int		ft_get_echo_n(char *s, int start);	 // Gets the echo -n line
 
 /***********EXPORT*********/
-void	ft_export(t_env **env_list, char *line);
+void	ft_export(t_env **env_list, t_env **exp_list, char *line);
+void	ft_get_export(t_env **exp_list);
 void	ft_add_after(t_env **env_list, int line_nb, char *s);
+char	*ft_add_quotes(char *var);
 
 /***********DIRECTORY******/
 void	ft_cd(char *line);
 char	*ft_pwd(void);
 
 /***********UNSET**********/
-void	ft_unset(t_env **env_list, char *s);
+void	ft_unset(t_env **env_list, t_env **exp_list, char *s);
 void	ft_remove_line(t_env **env_list, t_env *node);
 
 #endif

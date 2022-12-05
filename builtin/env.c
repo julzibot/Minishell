@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/01 21:55:38 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/05 18:05:28 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 // t_env **env_list - environment variable list
 // int line_nb      - line after which we add new variable (line)
 // char *s          - line to add
-
 void	ft_add_queue(t_env **root, char *s) // Add line to ENV linked list
 {
 	t_env	*node;
@@ -78,39 +77,31 @@ void	ft_print_env(t_env **env_lst)
 	}
 }
 
-char	*ft_get_env_var(char *line, char *remove)
+int	main(int argc, char **argv, char **env)
 {
-	char	*env_var;
-	int		i;
-	int		j;
-
-
-	i = 0;
-	j = 0;
-	while (ft_isspace(line[i])) // isspace
-		i++;
-	while (line[i] == remove[j] && remove[j])
-	{
-		i++;
-		j++;
-	}
-	while (ft_isspace(line[i])) // isspace
-		i++;
+	(void)argc;
+	(void)argv;
+	char	*line;
+	t_env 	*env_list;
+	t_env	*exp_list;
 	
-	j = i;
-	while (line[i] && ft_isspace(line[i] == 0))
-		i++;
-	i -= j;
-	env_var = malloc(sizeof(char) * (i + 1));
-	if (!env_var)
-		return (NULL);
-	i = 0;
-	while (line[j])
+	ft_get_env(&env_list, env); // For env command
+	ft_get_env(&exp_list, env); // For export command
+	ft_get_export(&exp_list);   // Declare -x PWD="somewhere/nice/and/cozy"
+	while (1)
 	{
-		env_var[i] = line[j];
-		i++;
-		j++;
+		line = readline("MiniShelly: ");
+		if (strcmp(line, "export") == 0)
+			ft_print_env(&exp_list);
+		else if (ft_strncmp(line, "export", 6) == 0)
+			ft_export(&env_list, &exp_list, ft_remove_cmd(line, "export "));
+		else if (ft_strncmp(line, "env", 3) == 0)
+			ft_print_env(&env_list);
+		else if (ft_strncmp(line, "unset", 5) == 0)
+		{
+			ft_unset(&env_list, &exp_list, ft_remove_cmd(line, "unset "));
+		}
 	}
-	env_var[i] = '\0';
-	return (env_var);
+	ft_print_env(&exp_list);
+	return (0);
 }
