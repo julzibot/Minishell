@@ -253,17 +253,18 @@ char	*get_value(char *token, int namelen, char *env_vars, char *str)
 	char	*value;
 
 	quoted = 0;
-	sq = 0;
+	sq = 2;
 	if ((token[0] == '\"' || token[1] == '\"') && token[namelen + 1] == '\"')
 		quoted = 1;
-	if (str[ft_strlen(str) - 1] == '\'')
-		sq = 1;
+	while (token[ft_strlen(token) - 1] == '\"' && token[ft_strlen(token) - sq] == '\'')
+		sq++;
 	value = malloc(ft_strlen(env_vars) - namelen + quoted + sq);
 	v_i = -1;
 	v_len = namelen;
 	while (env_vars[++v_len])
 		value[++v_i] = env_vars[v_len];
-	value[++v_i] = '\'';
+	while (--sq > 1)
+		value[++v_i] = '\'';
 	value[v_i + sq] = '\"';
 	value[v_i + quoted + sq] = '\0';
 	str = ft_strjoin(str, value);
@@ -388,6 +389,7 @@ char	*fuse_quotes(char *token, char **lex_tab, t_cmd *plist)
 		j++;
 		//printf ("END  %s\n", token);
 	}
+	printf ("END  %s\n", token);
 	if (/*ft_abs(in_type - 6) == 1 && */token && is_delim(token[ft_strlen(token) - 1]) == 1)
 		token = rem_quotes(token, 1);
 	return (token);
