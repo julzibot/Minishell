@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/05 18:17:53 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:42:44 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ int	ft_unset_variable(t_env **list, char *s)
 
 	n = ft_varlen(s);
 	curr = *list;
-	printf("line %s size %d\n", s, n);
 	while (curr)
 	{
 		if (ft_strncmp(curr->line, s, n) == 0)

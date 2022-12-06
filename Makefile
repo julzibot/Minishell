@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2022/12/05 17:46:50 by mstojilj         ###   ########.fr        #
+#    Updated: 2022/12/06 18:57:25 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,9 @@ SRCS	= Minishell.c jules.c utils.c \
 			builtin/unset.c \
 			builtin/export.c \
 			builtin/directory.c \
+			builtin/export_utils.c \
 			builtin/builtin_utils.c \
+			exec/exec.c \
 
 OBJS	= ${SRCS:.c=.o}
 

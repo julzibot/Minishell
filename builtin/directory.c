@@ -6,30 +6,56 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/05 14:20:21 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:35:14 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_cd(char *line)
+int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
+{
+	char	*s;
+	t_env	**curr;
+
+	curr = env_list;
+	s = malloc(sizeof(char) * (PATH_MAX - 1));
+	if (!s)
+		exit(1);
+	if (getcwd(s, PATH_MAX - 1) == NULL)
+	{
+		ft_printf(2, "Cannot get current working directory path\n");
+		return (1);
+	}
+	ft_update_env(env_list, exp_list, ft_strjoin(env, s));
+	return (0);
+}
+
+void	ft_cd(t_env **exp_list, t_env **env_list, char *line)
 {
 	int		ret;
 	char	*s;
 
 	ret = 0;
-	if (ft_strncmp(line, "cd", 2) == 0 || ft_strncmp(line, "cd ~", 1) == 0)
+	if (ft_update_pwd(exp_list, env_list, "OLDPWD=") == 1) // Update OLDPWD=
+		return ;
+	if (strcmp(line, "cd") == 0 || strcmp(line, "cd ~") == 0) // ft_strcmp
 	{
+		s = malloc(sizeof(char) * (PATH_MAX - 1));
+		if (!s)
+			exit(1);
 		s = getenv("HOME");
 		ret = chdir(s);
+		ft_update_pwd(exp_list, env_list, "PWD=");
 		return ;
 	}
-	else if (ft_strncmp(line, "..", 2) == 0)
-		ret = chdir(line);
+	else if (ft_strncmp(ft_remove_cmd(line, "cd "), "..", 2) == 0)
+		ret = chdir(ft_remove_cmd(line, "cd "));
 	else if (line != NULL)
-		ret = chdir(line);
+		ret = chdir(ft_remove_cmd(line, "cd "));
 	if (ret == -1)
-		ft_printf(2, "cd: no such file or directory: ", line);
+		ft_printf(2, "cd: no such file or directory: %s\n", line);
+	if (ft_update_pwd(exp_list, env_list, "PWD=") == 1) // Update PWD=
+		return ;
 }
 
 char	*ft_pwd(void)
@@ -45,6 +71,42 @@ char	*ft_pwd(void)
 		return (NULL);
 	ft_printf(1, "%s\n", cwd);
 	return (cwd);
+}
+
+int	main(int argc, char **argv, char **env)
+{
+	(void)argc;
+	(void)argv;
+	char	*line;
+	t_env 	*env_list;
+	t_env	*exp_list;
+	
+	env_list = NULL;
+	exp_list = NULL;
+	ft_get_env(&env_list, env); // For env command
+	ft_get_env(&exp_list, env); // For export command
+	ft_get_export(&exp_list);   // Declare -x PWD="somewhere/nice/and/cozy"
+	while (1)
+	{
+		line = readline("MiniShelly: ");
+		if (strcmp(line, "export") == 0)
+			ft_print_env(&exp_list);
+		else if (ft_strncmp(line, "export", 6) == 0)
+			ft_export(&env_list, &exp_list, ft_remove_cmd(line, "export "));
+		else if (ft_strncmp(line, "env", 3) == 0)
+			ft_print_env(&env_list);
+		else if (ft_strncmp(line, "unset", 5) == 0)
+			ft_unset(&env_list, &exp_list, ft_remove_cmd(line, "unset "));
+		else if (ft_strncmp(line, "cd", 2) == 0)
+		{
+			ft_cd(&exp_list, &env_list, line);
+		}
+		else if (ft_strncmp(line, "pwd", 3) == 0)
+		{
+			ft_pwd();
+		}
+	}
+	return (0);
 }
 
 // int	main(int argc, char **argv, char **env)
