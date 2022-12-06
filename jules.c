@@ -248,25 +248,25 @@ char	*get_value(char *token, int namelen, char *env_vars, char *str)
 {
 	int	v_i;
 	int	v_len;
-	int	sq;
+	//int	sq;
 	int	quoted;
 	char	*value;
 
 	quoted = 0;
-	sq = 2;
+	//sq = 2;
 	if ((token[0] == '\"' || token[1] == '\"') && token[namelen + 1] == '\"')
 		quoted = 1;
-	while (token[ft_strlen(token) - 1] == '\"' && token[ft_strlen(token) - sq] == '\'')
-		sq++;
-	value = malloc(ft_strlen(env_vars) - namelen + quoted + sq);
+	// while (token[ft_strlen(token) - 1] == '\"' && token[ft_strlen(token) - sq] == '\'')
+	// 	sq++;
+	value = malloc(ft_strlen(env_vars) - namelen + quoted/* + sq*/);
 	v_i = -1;
 	v_len = namelen;
 	while (env_vars[++v_len])
 		value[++v_i] = env_vars[v_len];
-	while (--sq > 1)
-		value[++v_i] = '\'';
-	value[v_i + sq] = '\"';
-	value[v_i + quoted + sq] = '\0';
+	// while (--sq > 1)
+	// 	value[++v_i] = '\'';
+	value[++v_i/* + sq*/] = '\"';
+	value[v_i + quoted/* + sq*/] = '\0';
 	str = ft_strjoin(str, value);
 	return (str);
 }
@@ -275,24 +275,31 @@ char	*check_var_name(char *token, char **env_vars, char *str)
 {
 	int	j;
 	int	namelen;
+	int match;
 
-	j = 0;
-	while (env_vars && env_vars[j])
+	j = -1;
+	match = 0;
+	while (env_vars && env_vars[++j] && !match)
 	{
 		namelen = 0;
 		while (env_vars && env_vars[j][namelen] != '=')
 			namelen++;
 		if (!ft_strncmp(env_vars[j], token + 1, namelen) \
 				&& (!token[namelen + 1] || token[namelen + 1] == '$' \
-				|| token[namelen + 1] == '\"' || token[namelen + 1] == '\'')) // if NAME matches in the token
+				|| is_delim(token[namelen + 1]) == 1 || is_delim(token[namelen + 1]) == 4)) // if NAME matches in the token
 		{
 			str = get_value(token, namelen, env_vars[j], str);
-			//printf("here -- %s\n", str);
-			while (env_vars[j + 1])
-				j++;
+			match = 1;
 		}
-		j++;
 	}
+	if (!match)
+	{
+		namelen = 0;
+	 	while (token[namelen + 1] && token[namelen + 1] != '$' && is_delim(token[namelen + 1]) != 1 && is_delim(token[namelen + 1]) != 4)
+			namelen++;
+	}
+	while (token[++namelen] && token[namelen] != '$')
+		str = char_cat(str, token[namelen]);
 	return (str);
 }
 
@@ -316,7 +323,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 	{
 		str = check_var_name(token + i, env_vars, str);
 		while (token[++i] && token[i] != '$')
-			;
+			/*str = char_cat(str, token[i])*/;
 	}
 	if (token[i - 1] == '\"' &&  (!str || str[ft_strlen(str) - 1] != '\"'))
 		str = ft_strjoin(str, ft_strdup("\""));
