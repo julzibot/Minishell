@@ -6,21 +6,17 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/05 19:11:53 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:41:56 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// t_env **env_list - environment variable list
-// int line_nb      - line after which we add new variable (line)
-// char *s          - line to add
-
-void	ft_add_after(t_env **env_list, int line_nb, char *s)
+void	ft_update_var(t_env **env_list, char *s)
 {
 	t_env	*curr;
 	t_env	*new;
-	t_env	*tmp;
+	t_env	*prev;
 	int		i;
 
 	curr = *env_list;
@@ -35,65 +31,33 @@ void	ft_add_after(t_env **env_list, int line_nb, char *s)
 	ft_strcpy(new->line, s);
 	while (curr->next)
 	{
-		if (i == line_nb)
+		if (ft_strncmp(curr->line, s, ft_varlen(s)) == 0)
 		{
-			tmp = curr->next;
-			curr->next = new;
-			new->next = tmp;
+			new->next = curr->next;
+			prev->next = new;
+			free(curr);
 			return ;
 		}
 		i++;
+		prev = curr;
 		curr = curr->next;
 	}
 }
 
-char	*ft_add_quotes(char *var)
+void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
 {
-	int		i;
-	int		j;
-	char	*env_var;
-	
-	i = 0;
-	j = 0;
-	env_var = malloc(sizeof(char) * (ft_strlen(var) + 3));
-	if (!env_var)
-		exit(1);
-	while (var[i])
-	{
-		if (env_var[j - 1] == '=')
-		{
-			env_var[j] = '\"';
-			j++;
-		}
-		env_var[j] = var[i];
-		if (var[i + 1] == '\0')
-		{
-			j++;
-			env_var[j] = '\"';
-			j++;
-		}
-		i++;
-		j++;
-	}
-	env_var[j] = '\0';
-	return (env_var);
+	if (ft_verify_double(*env_list, line) == 1 || ft_verify_equal(line) == 1)
+		return ;
+	line = ft_verify_env_var(line);
+	//line = ft_var_content(env_list, exp_list, line);
+	if (line == NULL)
+		return ;
+	printf("line: %s\n", line);
+	ft_update_var(env_list, line);
+	ft_update_var(exp_list, ft_strjoin("declare -x ", ft_add_quotes(line)));
 }
 
-int	ft_verify_double(t_env *env_list, char *line)
-{
-	t_env	*curr;
-
-	curr = env_list;
-	while (curr)
-	{
-		if (strcmp(curr->line, line) == 0)
-			return (1);
-		curr = curr->next;
-	}
-	return (0);
-}
-
-void	ft_get_export(t_env **exp_list)
+void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 {
 	t_env	*curr;
 
@@ -106,67 +70,16 @@ void	ft_get_export(t_env **exp_list)
 	}
 }
 
-int	ft_verify_equal(char *s)
-{
-	int	i;
-	int	equal;
-
-	i = 0;
-	equal = 0;
-	while (s[i])
-	{
-		if (s[i] == '=')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-char	*ft_verify_env_var(char *s) // TEST!
-{
-	int		i;
-	int		len;
-	int		equal;
-	char	*str;
-
-	i = 0;
-	equal = 0;
-	while (s[i])
-	{
-		if (s[i] == '=')
-			equal = 1;
-		if (s[i] == ' ' && equal == 0)
-		{
-			ft_printf(2, "export: `=': not a valid identifier\n");
-			return (NULL);
-		}
-		if (s[i] == ' ')
-			break ;
-	}
-	len = i + 1;
-	i = 0;
-	str = malloc(sizeof(char) * len);
-	if (!str)
-		exit(1);
-	while (i <= len)
-	{
-		str[i] = s[i];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
-}
-
 void	ft_export(t_env **env_list, t_env **exp_list, char *line)
 {
-	//printf("ENV_VAR: %s\n", env_var);
 	if (ft_verify_double(*env_list, line) == 1 || ft_verify_equal(line) == 1)
 		return ;
 	line = ft_verify_env_var(line);
+	line = ft_var_content(env_list, exp_list, line);
 	if (line == NULL)
 		return ;
-	ft_add_after(env_list, 18, line);
-	ft_add_after(exp_list, 18, ft_strjoin("declare -x ", ft_add_quotes(line)));
+	ft_add_after(env_list, 17, line);
+	ft_add_after(exp_list, 17, ft_strjoin("declare -x ", ft_add_quotes(line)));
 }
 
 // int	main(int argc, char **argv, char **env)

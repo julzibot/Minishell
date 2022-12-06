@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/05 17:11:39 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:59:48 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,16 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <fcntl.h>
+# include <errno.h>
+# include <signal.h>
+# include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <fcntl.h>
-# include <dirent.h>
 # include "./ft_printf/ft_printf.h"
 
 # ifndef PATH_MAX
-# define PATH_MAX 4096
+# define PATH_MAX 1024
 # endif
 
 typedef	struct	s_cmd
@@ -82,6 +84,7 @@ void	ft_get_env(t_env **env_list, char **env);
 void	ft_print_env(t_env **env_lst);
 char	*ft_get_env_var(char *line, char *remove);
 void	ft_add_queue(t_env **root, char *s);
+void	ft_update_env(t_env **env_list, t_env **exp_list, char *line);
 
 /***********ECHO***********/
 void	ft_echo(char *s, int option);        // Echo function
@@ -95,9 +98,14 @@ void	ft_export(t_env **env_list, t_env **exp_list, char *line);
 void	ft_get_export(t_env **exp_list);
 void	ft_add_after(t_env **env_list, int line_nb, char *s);
 char	*ft_add_quotes(char *var);
+int		ft_verify_double(t_env *env_list, char *line);
+char	*ft_verify_env_var(char *s);
+char	*ft_var_content(t_env **env_list, t_env **exp_list, char *line);
+int		ft_verify_equal(char *s);
 
 /***********DIRECTORY******/
-void	ft_cd(char *line);
+void	ft_cd(t_env **exp_list, t_env **env_list, char *line);
+int		ft_update_pwd(t_env **exp_list, t_env **env_list, char *var);
 char	*ft_pwd(void);
 
 /***********UNSET**********/
