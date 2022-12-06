@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/05 17:47:10 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/05 19:11:53 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,64 @@ void	ft_get_export(t_env **exp_list)
 	}
 }
 
+int	ft_verify_equal(char *s)
+{
+	int	i;
+	int	equal;
+
+	i = 0;
+	equal = 0;
+	while (s[i])
+	{
+		if (s[i] == '=')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+char	*ft_verify_env_var(char *s) // TEST!
+{
+	int		i;
+	int		len;
+	int		equal;
+	char	*str;
+
+	i = 0;
+	equal = 0;
+	while (s[i])
+	{
+		if (s[i] == '=')
+			equal = 1;
+		if (s[i] == ' ' && equal == 0)
+		{
+			ft_printf(2, "export: `=': not a valid identifier\n");
+			return (NULL);
+		}
+		if (s[i] == ' ')
+			break ;
+	}
+	len = i + 1;
+	i = 0;
+	str = malloc(sizeof(char) * len);
+	if (!str)
+		exit(1);
+	while (i <= len)
+	{
+		str[i] = s[i];
+		i++;
+	}
+	str[i] = '\0';
+	return (str);
+}
+
 void	ft_export(t_env **env_list, t_env **exp_list, char *line)
 {
 	//printf("ENV_VAR: %s\n", env_var);
-	if (ft_verify_double(*env_list, line) == 1)
+	if (ft_verify_double(*env_list, line) == 1 || ft_verify_equal(line) == 1)
+		return ;
+	line = ft_verify_env_var(line);
+	if (line == NULL)
 		return ;
 	ft_add_after(env_list, 18, line);
 	ft_add_after(exp_list, 18, ft_strjoin("declare -x ", ft_add_quotes(line)));
