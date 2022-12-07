@@ -40,13 +40,6 @@ typedef	struct	s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
-// typedef	struct s_lex
-// {
-// 	char	*token;
-// 	int		quoted;
-// 	struct	s_lex	*next;
-// }	t_lex;
-
 typedef struct s_env
 {
 	char			*line;
@@ -57,16 +50,29 @@ typedef struct s_env
 char	*ft_remove_cmd(char *line, char *remove);
 int		ft_get_to_str(char *line, char *remove, int *j);
 
+/***********LEXING**********/
+int		arg_count(char *line);
+int		lex_pipe_redir(char *c, char **lex_tab);
+int		lineseg(char *line, int i, char **lex_tab, int quoted);
+int		seg_size(char *line, int i);
 int		is_delim(char c);
-t_cmd	*parsing(char **lex_tab, t_cmd *parse_list);
+void	tab_list_init(char *line, char **lex_tab, t_cmd *parse_list);
 char	**lexing(char *line, t_cmd *parse_list);
+
+/***********PARSING**********/
+int		token_type(char *token, int quoted);
+int		quotes_skip(char **tab, int *space_after);
+char	*fuse_quotes(char *token, char **lex_tab, t_cmd *plist, int j);
 char	*get_env_vars(char *token, char **env_vars);
+char	**create_env_vars(char	*token, char **env_vars);
+t_cmd	*parsing(char **lex_tab, t_cmd *parse_list);
 
 /***********BASIC**********/
 int		ft_isspace(char c);
 void	ft_strcpy(char *dst, char *src);
 int		ft_abs(int a);
 int		ft_tablen(char **tab);
+char    *char_cat(char *str, char c);
 
 /***********LIBFT**********/
 int		ft_strnstr(const char *haystack, const char *needle, size_t len);
