@@ -80,7 +80,7 @@ int	arg_count(char *line)
 		else if (is_delim(line[i]) == 1 || !is_delim(line[i]))
 		{
 			i += seg_size(line, i);
-			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
+			if (is_delim(line[i]) != 4)
 				i--;
 		}
 		else
@@ -280,7 +280,7 @@ char	*check_var_name(char *token, char **env_vars, char *str)
 			namelen++;
 		if (!ft_strncmp(env_vars[j], token + 1, namelen) \
 				&& (!token[namelen + 1] || token[namelen + 1] == '$' \
-				|| is_delim(token[namelen + 1]) == 1 || is_delim(token[namelen + 1]) == 4)) // if NAME matches in the token
+				|| is_delim(token[namelen + 1]) == 1 || is_delim(token[namelen + 1]) == 4))
 		{
 			str = get_value(token, namelen, env_vars[j], str);
 			match = 1;
@@ -352,13 +352,31 @@ char	*rem_quotes(char *str, int pos)
 	return (ret);
 }
 
-char	*fuse_quotes(char *token, char **lex_tab, t_cmd *plist, int j)
+char	*join_tokens(char *token, char **lex_tab, t_cmd *plist, int j)
 {
 	int	len;
 	int	type;
+	char	*str;
+
+	type = token_type(lex_tab[j + 1], plist->quoted[j + 1]);
+	if (type < 7)
+		str = get_env_vars(lex_tab[j + 1], plist->env_vars);
+	else
+		str = ft_strdup(lex_tab[j + 1]);
+	len = ft_strlen(lex_tab[j + 1]) - 1;
+	if (plist->quoted[j + 1] && lex_tab[j + 1][len] != lex_tab[j][ft_strlen(lex_tab[j]) - 1])
+		str = rem_quotes(str, 0);
+	str = rem_quotes(str, 0);
+	token = rem_quotes(token, 1);
+	token = ft_strjoin(token, str);
+	return (token);
+}
+
+char	*fuse_quotes(char *token, char **lex_tab, t_cmd *plist, int j)
+{
+	int	type;
     int is_quoted;
 	int	join_next;
-	char	*str;
 
     is_quoted = 0;
     join_next = 0;
@@ -369,18 +387,8 @@ char	*fuse_quotes(char *token, char **lex_tab, t_cmd *plist, int j)
 	while (join_next && lex_tab[j + 1] && !plist->space_after[j])
 	{
 		type = token_type(lex_tab[j + 1], plist->quoted[j + 1]);
-		if (type < 7)
-			str = get_env_vars(lex_tab[j + 1], plist->env_vars);
-		else
-			str = ft_strdup(lex_tab[j + 1]);
-		len = ft_strlen(lex_tab[j + 1]) - 1;
-		if (plist->quoted[j + 1] && lex_tab[j + 1][len] != lex_tab[j][ft_strlen(lex_tab[j]) - 1])
-			str = rem_quotes(str, 0);
-        str = rem_quotes(str, 0);
-		token = rem_quotes(token, 1);
-        token = ft_strjoin(token, str);
-        j++;
-        if (!(is_delim(token[ft_strlen(token) - 1]) == 1 && lex_tab[j + 1] && lex_tab[j + 1][0] == token[ft_strlen(token) - 1]))
+		token = join_tokens(token, lex_tab, plist, j);
+        if (!(is_delim(token[ft_strlen(token) - 1]) == 1 && lex_tab[++j + 1] && lex_tab[j + 1][0] == token[ft_strlen(token) - 1]))
             join_next = 0;
     }
     if (is_quoted == 5 || is_quoted == 7)
