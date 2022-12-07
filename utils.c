@@ -149,9 +149,26 @@ char	**token_join(char **args, char *token) // add a string to the end of a char
 		tab[i] = ft_strdup(args[i]);
 	tab[i] = ft_strdup(token);
 	tab[i + 1] = NULL;
-	// free(args);
-	free(token); 
+	//free(args);
+	free(token);
 	return (tab);
+}
+
+char    *char_cat(char *str, char c)
+{
+    char    *new;
+    int len;
+    int i;
+
+    i = -1;
+    len = ft_strlen(str + 2);
+    new = malloc(len);
+    while (str[++i])
+        new[i] = str[i];
+    new[i] = c;
+    new[++i] = '\0';
+    free(str);
+    return (new);
 }
 
 //is_delim :
