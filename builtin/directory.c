@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/08 15:33:41 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/08 18:34:26 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,22 @@ char	*ft_pwd(void)
 	return (cwd);
 }
 
+void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list)
+{
+	if (strcmp(cmd->cmd, "export") == 0)
+		ft_print_env(exp_list);
+	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
+		ft_export(env_list, exp_list, cmd->args);
+	else if (ft_strncmp(cmd->cmd, "env", 3) == 0)
+		ft_print_env(&env_list);
+	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
+		ft_unset(env_list, exp_list, cmd->args);
+	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
+		ft_cd(exp_list, env_list, cmd->args);
+	else if (ft_strncmp(cmd->cmd, "pwd", 3) == 0)
+		ft_pwd();
+}
+
 // int	main(int argc, char **argv, char **env)
 // {
 // 	(void)argc;
@@ -89,22 +105,7 @@ char	*ft_pwd(void)
 // 	while (1)
 // 	{
 // 		line = readline("MiniShelly: ");
-// 		if (strcmp(line, "export") == 0)
-// 			ft_print_env(&exp_list);
-// 		else if (ft_strncmp(line, "export", 6) == 0)
-// 			ft_export(&env_list, &exp_list, ft_remove_cmd(line, "export "));
-// 		else if (ft_strncmp(line, "env", 3) == 0)
-// 			ft_print_env(&env_list);
-// 		else if (ft_strncmp(line, "unset", 5) == 0)
-// 			ft_unset(&env_list, &exp_list, ft_remove_cmd(line, "unset "));
-// 		else if (ft_strncmp(line, "cd", 2) == 0)
-// 		{
-// 			ft_cd(&exp_list, &env_list, line);
-// 		}
-// 		else if (ft_strncmp(line, "pwd", 3) == 0)
-// 		{
-// 			ft_pwd();
-// 		}
+// 		//ft_exec_cmd()
 // 	}
 // 	return (0);
 // }

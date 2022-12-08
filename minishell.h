@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/06 18:59:48 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/08 18:32:59 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ int		is_delim(char c);
 void	tab_list_init(char *line, char **lex_tab, t_cmd *parse_list);
 char	**lexing(char *line, t_cmd *parse_list);
 
+//static  char	*rem_quotes(char *str, int pos);
+void			tab_list_init(char *line, char **lex_tab, t_cmd *parse_list);
+
 /***********PARSING**********/
 int		token_type(char *token, int quoted);
 int		quotes_skip(char **tab, int *space_after);
@@ -81,9 +84,12 @@ char	*ft_strdup(char *str);
 char	*ft_strjoin(char *s1, char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
-/**********UTILS***********/
+/***********UTILS**********/
 char	**token_join(char **args, char *token);
 char	*ft_strdup_free(char *str);
+
+/***********EXEC***********/
+void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list);
 
 /***********ENV************/
 int		ft_varlen(char *str);
