@@ -52,7 +52,7 @@ static  char	**create_var(char **env_vars, char *cpy)
 			return (env_vars);
 		}
 	}
-	env_vars = token_join(env_vars, check_concat(cpy));
+	env_vars = token_join(env_vars, check_concat(ft_strdup(cpy)));
 	return (env_vars);
 }
 

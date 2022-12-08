@@ -31,11 +31,15 @@ char	**lexing(char *line, t_cmd *parse_list)
 
 void	lst_next_cmd(t_cmd *parse_list)
 {
-	t_cmd	next_cmd;
+	t_cmd	*next_cmd;
 	
-	next_cmd.next = NULL;
-	parse_list->next = &next_cmd;
-	parse_list = &next_cmd;
+	next_cmd = malloc(sizeof(t_cmd));
+	next_cmd->env_vars = parse_list->env_vars;
+	next_cmd->quoted = parse_list->quoted;
+	next_cmd->space_after = parse_list->space_after;
+	next_cmd->next = NULL;
+	parse_list->next = next_cmd;
+	parse_list = next_cmd;
 }
 
 int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
