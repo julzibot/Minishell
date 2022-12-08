@@ -19,7 +19,6 @@ static  char *check_concat(char *cpy)
             while (cpy[++i])
                 str[i - 1] = cpy[i];
             str[i - 1] = '\0';
-            free(cpy);
             return (str);
         }
         else
@@ -35,8 +34,8 @@ static  char	**create_var(char **env_vars, char *cpy)
 	int	namelen;
     int concat;
 
-	j = 0;
-	while (env_vars && env_vars[j])
+	j = -1;
+	while (env_vars && env_vars[++j])
 	{
         concat = 0;
 		namelen = 0;
@@ -47,15 +46,11 @@ static  char	**create_var(char **env_vars, char *cpy)
 		if (!ft_strncmp(env_vars[j], cpy, namelen) && cpy[namelen + concat] == '=')
 		{
             if (!concat)
-            {
-                free(env_vars[j]);
-			    env_vars[j] = ft_strdup(cpy);
-            }
+			    env_vars[j] = ft_strdup_free(cpy);
             else   
-                env_vars[j] = ft_strjoin(env_vars[j], ft_strdup(cpy + namelen + concat + 1));
+                env_vars[j] = ft_strjoin(env_vars[j], (cpy + namelen + concat + 1));
 			return (env_vars);
 		}
-		j++;
 	}
 	env_vars = token_join(env_vars, check_concat(cpy));
 	return (env_vars);

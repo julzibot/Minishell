@@ -65,7 +65,7 @@ int		quotes_skip(char **tab, int *space_after);
 char	*fuse_quotes(char *token, char **lex_tab, t_cmd *plist, int j);
 char	*get_env_vars(char *token, char **env_vars);
 char	**create_env_vars(char	*token, char **env_vars);
-t_cmd	*parsing(char **lex_tab, t_cmd *parse_list);
+t_cmd	*parsing(char **lex_tab, t_cmd *parse_list); //returns a t_cmd*, each element in the list being a segment of the pipeline.
 
 /***********BASIC**********/
 int		ft_isspace(char c);
@@ -83,6 +83,7 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 
 /**********UTILS***********/
 char	**token_join(char **args, char *token);
+char	*ft_strdup_free(char *str);
 
 /***********ENV************/
 int		ft_varlen(char *str);

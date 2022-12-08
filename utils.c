@@ -102,6 +102,22 @@ char	*ft_strdup(char *str)
 	return (dup);
 }
 
+char	*ft_strdup_free(char *str)
+{
+	char	*dup;
+	int	i;
+
+	if (!str)
+		return (NULL);
+	dup = malloc(ft_strlen(str) + 1);
+	i = -1;
+	while (str[++i])
+		dup[i] = str[i];
+	dup[i] = '\0';
+    free(str);
+	return (dup);
+}
+
 char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;
@@ -137,6 +153,8 @@ char	**token_join(char **args, char *token) // add a string to the end of a char
 	char	**tab;
 	int		i;
 
+    if (!token)
+        return (args);
 	i = -1;
 	tab = malloc(sizeof(char *) * (ft_tablen(args) + 2));
 	if (!args)
