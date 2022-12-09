@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/06 18:41:56 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:30:03 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,16 +70,26 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 	}
 }
 
-void	ft_export(t_env **env_list, t_env **exp_list, char *line)
+void	ft_export(t_env **env_list, t_env **exp_list, char **vars)
 {
-	if (ft_verify_double(*env_list, line) == 1 || ft_verify_equal(line) == 1)
+	int	i;
+
+	i = 0;
+	if (vars == NULL)
 		return ;
-	line = ft_verify_env_var(line);
-	line = ft_var_content(env_list, exp_list, line);
-	if (line == NULL)
-		return ;
-	ft_add_after(env_list, 17, line);
-	ft_add_after(exp_list, 17, ft_strjoin("declare -x ", ft_add_quotes(line)));
+	while (vars[i])
+	{
+		printf("VARIABLE %s\n", vars[i]);
+		if (ft_verify_double(*env_list, vars[i]) == 1 || ft_verify_equal(vars[i]) == 1)
+			return ;
+		vars[i] = ft_verify_env_var(vars[i]);
+		vars[i] = ft_var_content(env_list, exp_list, vars[i]);
+		if (vars[i] == NULL)
+			return ;
+		ft_add_after(env_list, 17, vars[i]);
+		ft_add_after(exp_list, 17, ft_strjoin("declare -x ", ft_add_quotes(vars[i])));
+		i++;
+	}
 }
 
 // int	main(int argc, char **argv, char **env)

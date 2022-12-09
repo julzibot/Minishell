@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/06 16:50:58 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/09 14:27:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	ft_add_queue(t_env **root, char *s) // Add line to ENV linked list
 		*root = node;
 		return ;
 	}
+
 	while (curr)
 	{
 		if (curr->next == NULL)

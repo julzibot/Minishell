@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/06 17:57:41 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:17:14 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ char	*ft_var_content(t_env **env_list, t_env **exp_list, char *line)
 		if (ft_strncmp(curr->line, line, ft_varlen(line)) == 0) // put ft_strcmp!
 		{
 			ft_unset(env_list, exp_list, line);
-			ft_export(env_list, exp_list, line);
+			ft_export(env_list, exp_list, &line);
 			printf("exported: %s\n", line);
 			return (NULL);
 		}

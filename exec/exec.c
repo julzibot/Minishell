@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/08 15:30:43 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:27:09 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,63 @@
 // int	ft_exec(char **env, char *cmd) // Execute a command
 // {
 // 	char	*path;
+// 	pid_t	pid;
 
-// 	path = ft_cmd_check(env, cmd);
+// 	pid = fork();
+// 	if (pid == -1)
+// 		return (1);
+// 	else if (pid > 0)
+// 		return (0);
+// 	else if (pid == 0)
+// 	{
+// 		path = ft_cmd_check(env, cmd);
+// 		ft_execve();
+// 	}
+
+// }
+
+void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list)
+{
+	//printf("COMMAND> %s\n", cmd->cmd);
+	// if (strcmp(cmd->args[0], "export") == 0)
+	// 	ft_print_env(exp_list);
+	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
+		ft_cd(exp_list, env_list, cmd->args[1]);
+	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
+		ft_print_env(env_list);
+	else if (ft_strncmp(cmd->args[0], "pwd", 3) == 0)
+		ft_pwd();
+	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
+		ft_unset(env_list, exp_list, cmd->args[1]);
+	else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
+	{
+		// if (strcmp("export", cmd->args[0]) == 0)
+		// 	ft_print_env(exp_list);
+		// else
+			ft_export(env_list, exp_list, cmd->env_vars);
+		//printf("AAAAAAAAAAAAAAAENV VAR: %s\n", cmd->env_vars[0]);
+	}
+	// else
+	// 	ft_exec();
+}
+
+// int	main(int argc, char **argv, char **env)
+// {
+// 	(void)argc;
+// 	(void)argv;
+// 	char	*line;
+// 	t_env 	*env_list;
+// 	t_env	*exp_list;
+	
+// 	env_list = NULL;
+// 	exp_list = NULL;
+// 	ft_get_env(&env_list, env); // For env command
+// 	ft_get_env(&exp_list, env); // For export command
+// 	ft_get_export(&exp_list);   // Declare -x PWD="somewhere/nice/and/cozy"
+// 	while (1)
+// 	{
+// 		line = readline("MiniShelly: ");
+// 		ft_exec_cmd()
+// 	}
+// 	return (0);
 // }

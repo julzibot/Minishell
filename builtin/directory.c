@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/08 18:34:26 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/09 16:52:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,43 +72,6 @@ char	*ft_pwd(void)
 	ft_printf(1, "%s\n", cwd);
 	return (cwd);
 }
-
-void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list)
-{
-	if (strcmp(cmd->cmd, "export") == 0)
-		ft_print_env(exp_list);
-	else if (ft_strncmp(cmd->cmd, "export", 6) == 0)
-		ft_export(env_list, exp_list, cmd->args);
-	else if (ft_strncmp(cmd->cmd, "env", 3) == 0)
-		ft_print_env(&env_list);
-	else if (ft_strncmp(cmd->cmd, "unset", 5) == 0)
-		ft_unset(env_list, exp_list, cmd->args);
-	else if (ft_strncmp(cmd->cmd, "cd", 2) == 0)
-		ft_cd(exp_list, env_list, cmd->args);
-	else if (ft_strncmp(cmd->cmd, "pwd", 3) == 0)
-		ft_pwd();
-}
-
-// int	main(int argc, char **argv, char **env)
-// {
-// 	(void)argc;
-// 	(void)argv;
-// 	char	*line;
-// 	t_env 	*env_list;
-// 	t_env	*exp_list;
-	
-// 	env_list = NULL;
-// 	exp_list = NULL;
-// 	ft_get_env(&env_list, env); // For env command
-// 	ft_get_env(&exp_list, env); // For export command
-// 	ft_get_export(&exp_list);   // Declare -x PWD="somewhere/nice/and/cozy"
-// 	while (1)
-// 	{
-// 		line = readline("MiniShelly: ");
-// 		//ft_exec_cmd()
-// 	}
-// 	return (0);
-// }
 
 // int	main(int argc, char **argv, char **env)
 // {
