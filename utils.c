@@ -179,7 +179,7 @@ char    *char_cat(char *str, char c)
     int i;
 
     i = -1;
-    len = ft_strlen(str + 2);
+    len = ft_strlen(str) + 2;
     new = malloc(len);
     while (str[++i])
         new[i] = str[i];
