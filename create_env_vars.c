@@ -46,9 +46,12 @@ static  char	**create_var(char **env_vars, char *cpy)
 		if (!ft_strncmp(env_vars[j], cpy, namelen) && cpy[namelen + concat] == '=')
 		{
             if (!concat)
-			    env_vars[j] = ft_strdup_free(cpy);
+            {
+                free(env_vars[j]);
+			    env_vars[j] = ft_strdup(cpy);
+            }
             else   
-                env_vars[j] = ft_strjoin(env_vars[j], (cpy + namelen + concat + 1));
+                env_vars[j] = ft_strjoin(env_vars[j], ft_strdup(cpy + namelen + concat + 1));
 			return (env_vars);
 		}
 	}

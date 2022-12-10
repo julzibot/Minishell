@@ -26,6 +26,7 @@ char	**lexing(char *line, t_cmd *parse_list)
 			j++;
 		}
 	}
+	lex_tab[j] = NULL;
 	return (lex_tab);
 }
 
