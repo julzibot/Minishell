@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/10 21:35:03 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/14 17:46:03 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ char	**token_join(char **args, char *token);
 char	*ft_strdup_free(char *str);
 
 /***********EXEC***********/
-void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list);
+void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list, char **env);
+int		ft_exec(t_cmd *cmd, char **env);
 
 /***********ENV************/
 int		ft_varlen(char *str);

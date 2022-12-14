@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/10 22:02:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/14 16:37:40 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		line = readline("Mini_chelou: ");
+		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
-		ft_exec_cmd(parse_list, &env_list, &exp_list); /*Milan 10/12*/
+		ft_exec_cmd(parse_list, &env_list, &exp_list, envp); /*Milan 10/12*/
 	}
 	return (0);
 }
