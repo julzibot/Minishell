@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/09 17:30:03 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/10 21:58:04 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,11 @@ void	ft_export(t_env **env_list, t_env **exp_list, char **vars)
 
 	i = 0;
 	if (vars == NULL)
+	{
+		printf("VARS IS NULL\n");
 		return ;
+	}
+	printf("vars %s\n", vars[i]);
 	while (vars[i])
 	{
 		printf("VARIABLE %s\n", vars[i]);
@@ -88,6 +92,8 @@ void	ft_export(t_env **env_list, t_env **exp_list, char **vars)
 			return ;
 		ft_add_after(env_list, 17, vars[i]);
 		ft_add_after(exp_list, 17, ft_strjoin("declare -x ", ft_add_quotes(vars[i])));
+		free(vars[i]);
+		vars[i] = NULL;
 		i++;
 	}
 }

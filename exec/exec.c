@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/09 17:27:09 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/10 22:01:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,24 +61,23 @@
 
 void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list)
 {
-	//printf("COMMAND> %s\n", cmd->cmd);
-	// if (strcmp(cmd->args[0], "export") == 0)
-	// 	ft_print_env(exp_list);
+	// int	err;
+
+	// err = 0;
 	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
-		ft_cd(exp_list, env_list, cmd->args[1]);
+		ft_cd(exp_list, env_list, cmd->args[1]); // fix ~
 	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
 		ft_print_env(env_list);
-	else if (ft_strncmp(cmd->args[0], "pwd", 3) == 0)
+	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
 		ft_pwd();
 	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
 		ft_unset(env_list, exp_list, cmd->args[1]);
 	else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
 	{
-		// if (strcmp("export", cmd->args[0]) == 0)
-		// 	ft_print_env(exp_list);
-		// else
+		if (cmd->env_vars[0] == NULL)
+			ft_print_env(exp_list);
+		else
 			ft_export(env_list, exp_list, cmd->env_vars);
-		//printf("AAAAAAAAAAAAAAAENV VAR: %s\n", cmd->env_vars[0]);
 	}
 	// else
 	// 	ft_exec();

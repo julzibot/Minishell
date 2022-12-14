@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/09 17:17:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/10 21:35:48 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,8 @@ int	ft_verify_double(t_env *env_list, char *line) // Checks if there is a duplic
 int	ft_verify_equal(char *s) // Checks if there is "="
 {
 	int	i;
-	int	equal;
 
 	i = 0;
-	equal = 0;
 	while (s[i])
 	{
 		if (s[i] == '=')

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/08 18:32:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/10 21:35:03 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int		ft_get_echo_line(char *s);			 // Gets the echo line
 int		ft_get_echo_n(char *s, int start);	 // Gets the echo -n line
 
 /***********EXPORT*********/
-void	ft_export(t_env **env_list, t_env **exp_list, char *line);
+void	ft_export(t_env **env_list, t_env **exp_list, char **vars);
 void	ft_get_export(t_env **exp_list);
 void	ft_add_after(t_env **env_list, int line_nb, char *s);
 char	*ft_add_quotes(char *var);

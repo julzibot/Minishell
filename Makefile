@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2022/12/08 16:08:18 by mstojilj         ###   ########.fr        #
+#    Updated: 2022/12/10 21:34:27 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,14 +21,14 @@ SRCS	= Minishell.c jules.c utils.c \
 			fuse_quotes.c \
 			get_env_vars.c \
 			lex_utils.c \
-			# builtin/env.c \
-			# builtin/echo.c \
-			# builtin/unset.c \
-			# builtin/export.c \
-			# builtin/directory.c \
-			# builtin/export_utils.c \
-			# builtin/builtin_utils.c \
-			# exec/exec.c \
+			builtin/env.c \
+			builtin/echo.c \
+			builtin/unset.c \
+			builtin/export.c \
+			builtin/directory.c \
+			builtin/export_utils.c \
+			builtin/builtin_utils.c \
+			exec/exec.c \
 
 OBJS	= ${SRCS:.c=.o}
 

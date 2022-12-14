@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/09 16:52:55 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/10 22:07:53 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 {
 	char	*s;
-	t_env	**curr;
+	// t_env	**curr;
 
-	curr = env_list;
+	// curr = env_list;
 	s = malloc(sizeof(char) * (PATH_MAX - 1));
 	if (!s)
 		exit(1);
@@ -38,7 +38,7 @@ void	ft_cd(t_env **exp_list, t_env **env_list, char *line)
 	ret = 0;
 	if (ft_update_pwd(exp_list, env_list, "OLDPWD=") == 1) // Update OLDPWD=
 		return ;
-	if (strcmp(line, "cd") == 0 || strcmp(line, "cd ~") == 0) // ft_strcmp
+	if (line == NULL || strcmp(line, "~") == 0) // ft_strcmp
 	{
 		s = malloc(sizeof(char) * (PATH_MAX - 1));
 		if (!s)
