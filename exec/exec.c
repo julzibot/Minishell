@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/15 17:14:25 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/15 17:21:16 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list, char **env)
 			ft_export(env_list, exp_list, cmd->env_vars);
 	}
 	else
-	  	ft_exec(cmd, env); // execve
+	 	ft_exec(cmd, env); // execve
 	return ;
 }
 
