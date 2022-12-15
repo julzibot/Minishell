@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/14 17:46:26 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/15 17:14:25 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 			return (paths[i]);
 		i++;
 	}
-	perror("Command not found");
+	perror("Command not found"); // Align with bash output
 	exit(127);
 }
 
@@ -54,7 +54,8 @@ int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 	else if (pid == 0)
 	{
 		path = ft_cmd_check(env, cmd->args[0]);
-		ft_execve(path, cmd->args[1], env);
+		ft_printf(1, "\n");
+		execve(path, cmd->args, env);
 	}
 	return (1);
 }
@@ -88,7 +89,7 @@ void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list, char **env)
 			ft_export(env_list, exp_list, cmd->env_vars);
 	}
 	else
-	  	ft_exec();
+	  	ft_exec(cmd, env); // execve
 	return ;
 }
 

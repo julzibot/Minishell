@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/14 17:46:03 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/15 17:11:53 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 typedef	struct	s_cmd
 {
 	char			*cmd;       // cd
-	char			**args;     // cd ../folder
+	char			**args;     // cd -> ../folder <-
 	char			**env_vars; // a=b (export)
 	int				infile;     // fd
 	int				outfile;    // fd
@@ -87,10 +87,16 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 /***********UTILS**********/
 char	**token_join(char **args, char *token);
 char	*ft_strdup_free(char *str);
+void				*ft_calloc(size_t count, size_t size);
+// static char			*strseg(const char *str, char c);
+// static unsigned int	size_count(const char *str, char c);
+char				**ft_split(char const *s, char c);
 
 /***********EXEC***********/
 void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list, char **env);
 int		ft_exec(t_cmd *cmd, char **env);
+char	*ft_substr(char *s, unsigned int start);
+char	*ft_strstr(char *haystack, char *needle);
 
 /***********ENV************/
 int		ft_varlen(char *str);
