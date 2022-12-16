@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/15 17:21:16 by mstojilj         ###   ########.fr       */
+/*   Updated: 2022/12/16 11:49:27 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 	if (pid == -1)
 		return (1);
 	else if (pid > 0)
+	{
+		waitpid(pid, NULL, 0);
 		return (0);
+	}
 	else if (pid == 0)
 	{
 		path = ft_cmd_check(env, cmd->args[0]);
