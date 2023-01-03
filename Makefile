@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2023/01/03 15:26:25 by mstojilj         ###   ########.fr        #
+#    Updated: 2023/01/03 18:51:42 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,8 @@ all:	${NAME}
 
 ${NAME}:	${OBJS}
 		make all -C ./ft_printf
-		${CC} -o ${NAME} ${OBJS}  -lreadline -lncurses libreadline.a ft_printf/libftprintf.a
+		${CC} -o ${NAME} ${OBJS} -lreadline -L /Users/mstojilj/.brew/opt/readline/lib -I /Users/mstojilj/.brew/opt/readline/include libreadline.a ft_printf/libftprintf.a
+#-lreadline -lncurses libreadline.a ft_printf/libftprintf.a
 
 clean:
 		${RM} ${SRCS:.c=.o}

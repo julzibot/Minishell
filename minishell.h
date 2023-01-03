@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2022/12/28 20:48:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/03 18:51:19 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_env
 /*********MILAN 2/12/2022*********/
 char	*ft_remove_cmd(char *line, char *remove);
 int		ft_get_to_str(char *line, char *remove, int *j);
+void 	rl_replace_line(const char *text, int clear_undo);
 
 /***********LEXING**********/
 int		arg_count(char *line);
