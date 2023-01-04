@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/10 21:35:48 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/04 17:04:38 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ char	*ft_add_quotes(char *var)
 	
 	i = 0;
 	j = 0;
+	if (var == NULL)
+		return (NULL);
 	env_var = malloc(sizeof(char) * (ft_strlen(var) + 3));
 	if (!env_var)
 		exit(1);

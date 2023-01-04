@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/16 11:49:27 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/04 18:40:43 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,19 @@ char	*ft_cmd_check(char **envp, char *cmd)
 	exit(127);
 }
 
+void	ft_handle_sig(int sig)
+{
+	if (sig == SIGQUIT)
+		printf("Quit: 3\n");
+}
+
 int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 {
 	char	*path;
 	pid_t	pid;
 
+	signal(SIGQUIT, ft_handle_sig);
+	signal(SIGINT, ft_handle_sig);
 	pid = fork();
 	if (pid == -1)
 		return (1);
@@ -69,6 +77,8 @@ void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list, char **env)
 	// int	err;
 
 	// err = 0;
+	if (cmd == NULL || cmd->args == NULL)
+		return ;
 	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
 		ft_cd(exp_list, env_list, cmd->args[1]);
 	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)

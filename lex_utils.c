@@ -95,6 +95,8 @@ void	tab_list_init(char *line, char **lex_tab, t_cmd *parse_list)
 	int	i;
 	
 	i = -1;
+	if (lex_tab == NULL || parse_list == NULL || line == NULL)
+		return ;
 	lex_tab = malloc(sizeof(char*) * (arg_count(line) + 1));
 	parse_list->quoted = malloc(sizeof(int) * arg_count(line) + 1);
 	parse_list->space_after = malloc(sizeof(int) * arg_count(line) + 1);

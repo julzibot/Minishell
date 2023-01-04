@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/03 18:51:19 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/04 18:15:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@
 
 # ifndef PATH_MAX
 # define PATH_MAX 1024
+# endif
+
+# ifndef PROMPT
+# define PROMPT "Mini_chelou: "
 # endif
 
 typedef	struct	s_cmd

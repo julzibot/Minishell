@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2023/01/03 18:51:42 by mstojilj         ###   ########.fr        #
+#    Updated: 2023/01/04 17:12:52 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ RM		= rm -f
 SRCS	= Minishell.c jules.c utils.c \
 			create_env_vars.c \
 			fuse_quotes.c \
-			get_env_vars.c \
 			lex_utils.c \
+			get_env_vars.c \
 			builtin/env.c \
 			builtin/echo.c \
 			builtin/unset.c \

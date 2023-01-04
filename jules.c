@@ -2,14 +2,16 @@
 
 char	**lexing(char *line, t_cmd *parse_list)
 {
-	int	i;
-	int j;
+	int		i;
+	int 	j;
 	char	**lex_tab;
 
 	i = -1;
 	j = 0;
 	lex_tab = malloc(sizeof(char*) * (arg_count(line) + 1));
 	tab_list_init(line, lex_tab, parse_list);
+	if (line == NULL)
+		return (NULL);
 	while (line[++i])
 	{
 		if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3/*is pipe or redir*/)
@@ -100,6 +102,8 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	char	*str;
 
 	i = -1;
+	if (lex_tab == NULL)
+		return (NULL);
 	while (lex_tab[++i])
 		printf("lex %d : %s\n", i, lex_tab[i]);
 	
