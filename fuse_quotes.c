@@ -58,7 +58,7 @@ char	*fuse_quotes(char *token, char **lex_tab, t_cmd *plist, int j)
     join_next = 0;
     is_quoted = token_type(token, plist->quoted[j]);
 	type = is_quoted;
-    if (is_delim(token[ft_strlen(token) - 1]) == 1 && lex_tab[j + 1] && lex_tab[j + 1][0] == token[ft_strlen(token) - 1])
+    if (token && is_delim(token[ft_strlen(token) - 1]) == 1 && lex_tab[j + 1] && lex_tab[j + 1][0] == token[ft_strlen(token) - 1])
         join_next = 1;
 	while (join_next && lex_tab[j + 1] && !plist->space_after[j])
 	{
