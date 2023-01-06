@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 11:48:42 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/01 21:25:54 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/06 17:20:00 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,108 +41,83 @@ int	ft_strnstr(const char *haystack, const char *needle, size_t len)
 	return (0);
 }
 
-int	ft_isspace(char c)
-{
-	if ((c >= 9 && c <= 13) || c == ' ')
-		return (1);
-	return (0);
-}
-
-int	ft_get_echo_line(char *s)
-{
-	char	*remove;
-	int		i;
-
-	i = 0;
-	remove = "echo";
-	while (ft_isspace(s[i])) // isspace
-		i++;
-	while (remove[i] && s[i] == remove[i])
-		i++;
-	while (ft_isspace(s[i])) // isspace
-		i++;
-	return (i);
-}
-
-int	ft_get_echo_n(char *s, int start)
-{
-	char	*remove;
-	int		i;
-	int		j;
-
-	i = start;
-	j = 0;
-	remove = "-n";
-	while (ft_isspace(s[i])) // isspace
-		i++;
-	while (remove[j] && s[i] == remove[j])
-	{
-		j++;
-		i++;
-	}
-	while (ft_isspace(s[i])) // isspace
-		i++;
-	return (i);
-}
-
-void	ft_do_echo(char *s)
+int	ft_is_echo_nl(char *s)
 {
 	int	i;
-	int	space;
 
-	i = ft_get_echo_line(s);
-	space = 0;
+	i = 0;
+	if (s[i] == '-')
+		i++;
+	else
+		return (0);
 	while (s[i])
 	{
-		while (ft_isspace(s[i]))
-		{
-			space = 1;
+		if (s[i] == 'n')
 			i++;
-		}
-		if (space == 1)
+		else
+			return (0);
+	}
+	return (1);
+}
+
+void	ft_do_echo(char **args)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	j = 0;
+	while (args[i])
+	{
+		while (args[i][j])
 		{
-			write(1, " ", 1);
-			space = 0;
+			write(1, &args[i][j], 1);
+			j++;
 		}
-		write(1, &s[i], 1);
+		if (args[i + 1] != NULL)
+			write(1, " ", 1);
+		j = 0;
 		i++;
 	}
 	write(1, "\n", 1);
 }
 
-void	ft_do_nl_echo(char *s)
+void	ft_do_nl_echo(char **args)
 {
 	int	i;
-	int	space;
+	int	j;
 
-	i = ft_get_echo_line(s);
-	i = ft_get_echo_n(s, i);
-	space = 0;
-	while (s[i])
+	i = 1;
+	j = 0;
+	while (args[i])
 	{
-		while (ft_isspace(s[i]))
-		{
-			space = 1;
+		if (ft_is_echo_nl(args[i]))
 			i++;
-		}
-		if (space == 1)
+		else
+			break ;
+	}
+	while (args[i])
+	{
+		while (args[i][j])
 		{
-			write(1, " ", 1);
-			space = 0;
+			write(1, &args[i][j], 1);
+			j++;
 		}
-		write(1, &s[i], 1);
+		if (args[i + 1] != NULL)
+			write(1, " ", 1);
+		j = 0;
 		i++;
 	}
 }
 
-void	ft_echo(char *s, int option)
+void	ft_echo(char **args)
 {
-	if (s == NULL)
+	if (args[1] == NULL)
 		write(1, "\n", 1);
-	else if (option == 1)
-		ft_do_nl_echo(s);
+	else if (ft_is_echo_nl(args[1]))
+		ft_do_nl_echo(args);
 	else
-		ft_do_echo(s);
+		ft_do_echo(args);
 }
 
 // int	main(int argc, char **argv, char **env)

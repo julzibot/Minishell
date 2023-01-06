@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/06 17:37:06 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/06 17:38:16 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,6 @@ int	main(int argc, char **argv, char **envp)
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
 		ft_exec_cmd(parse_list, envp);
-		// printf("enters\n");
-		// ft_print_env(parse_list->env_list);
 	}
 	return (0);
 }

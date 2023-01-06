@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:51:18 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/06 18:11:44 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/06 17:20:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,4 +102,11 @@ char	*ft_remove_cmd(char *line, char *remove)
 	}
 	s[i] = '\0';
 	return (s);
+}
+
+int	ft_isspace(char c)
+{
+	if ((c >= 9 && c <= 13) || c == ' ')
+		return (1);
+	return (0);
 }

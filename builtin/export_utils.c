@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/04 17:04:38 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/06 18:57:44 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,10 @@ int	ft_verify_equal(char *s) // Checks if there is "="
 	while (s[i])
 	{
 		if (s[i] == '=')
-			return (0);
+			return (1);
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 char	*ft_verify_env_var(char *s)
@@ -110,17 +110,17 @@ char	*ft_verify_env_var(char *s)
 	return (str);
 }
 
-char	*ft_var_content(t_env **env_list, t_env **exp_list, char *line)
+char	*ft_var_content(t_cmd *cmd, char *line)
 {
 	t_env	*curr;
 
-	curr = *env_list;
+	curr = cmd->env_list;
 	while (curr)
 	{
 		if (ft_strncmp(curr->line, line, ft_varlen(line)) == 0) // put ft_strcmp!
 		{
-			ft_unset(env_list, exp_list, line);
-			ft_export(env_list, exp_list, &line);
+			ft_unset(&cmd->env_list, &cmd->exp_list, line);
+			ft_export(cmd);
 			printf("exported: %s\n", line);
 			return (NULL);
 		}

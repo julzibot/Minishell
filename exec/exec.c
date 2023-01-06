@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/04 18:40:43 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/06 18:55:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,35 +71,28 @@ int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 	return (1);
 }
 
-void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list, char **env)
+void	ft_exec_cmd(t_cmd *cmd, char **env)
 {
 	(void)env;
-	// int	err;
 
-	// err = 0;
-	if (cmd == NULL || cmd->args == NULL)
+	if (cmd == NULL || cmd->args == NULL || ft_verify_equal(cmd->args[0]))
 		return ;
 	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
-		ft_cd(exp_list, env_list, cmd->args[1]);
+		ft_cd(&cmd->exp_list, &cmd->env_list, cmd->args[1]);
 	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
-		ft_print_env(env_list);
+		ft_print_env(cmd->env_list);
 	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
-	{
-		if (ft_strncmp(cmd->args[1], "-n", 2) == 0)
-			ft_echo(cmd->args[2], 1);
-		else
-			ft_echo(cmd->args[1], 0);
-	}
+		ft_echo(cmd->args);
 	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
 		ft_pwd();
 	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
-		ft_unset(env_list, exp_list, cmd->args[1]);
+		ft_unset(&cmd->env_list, &cmd->exp_list, cmd->args[1]);
 	else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
 	{
-		if (cmd->env_vars == NULL)
-			ft_print_env(exp_list);
+		if (cmd->args[1] == NULL)
+			ft_print_env(cmd->exp_list);
 		else
-			ft_export(env_list, exp_list, cmd->env_vars);
+			ft_export(cmd);
 	}
 	else
 	 	ft_exec(cmd, env); // execve
