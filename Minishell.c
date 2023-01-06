@@ -66,11 +66,17 @@ int	main(int argc, char **argv, char **envp)
 // 	char	**tokens;
 // 	t_cmd *parse_list;
 	
+// 	parse_list = malloc(sizeof(t_cmd));
+// 	if (!parse_list)
+// 		exit(1);
+// 	parse_list->env_vars = NULL;
+// 	parse_list->quoted = NULL;
+// 	parse_list->space_after = NULL;
 // 	while (1)
 // 	{
-// 		line = readline("Mini_chiale> ");
-// 		tokens = lexing(line);
-// 		parse_list = parsing(tokens);
+// 		line = readline(PROMPT);
+// 		tokens = lexing(line, parse_list);
+// 		parse_list = parsing(tokens, parse_list);
 // 	}
 // 	return (0);
 // }
