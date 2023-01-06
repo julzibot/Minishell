@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/09 14:27:55 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/06 17:38:04 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,12 @@ void	ft_get_env(t_env **env_list, char **env) // Copies env to env_list
 	env[i] = NULL;
 }
 
-void	ft_print_env(t_env **env_lst)
+void	ft_print_env(t_env *env_lst)
 {
 	int	i;
 
 	i = 0;
-	for (t_env *curr = *env_lst; curr; curr = curr->next)
+	for (t_env *curr = env_lst; curr; curr = curr->next)
 	{
 		if (curr == NULL)
 			break ;

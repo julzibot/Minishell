@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/04 18:15:08 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/06 18:55:45 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@
 # define PROMPT "Mini_chelou: "
 # endif
 
+typedef struct s_env
+{
+	char			*line;
+	struct s_env	*next;
+} t_env;
+
 typedef	struct	s_cmd
 {
 	char			*cmd;       // cd
@@ -41,14 +47,10 @@ typedef	struct	s_cmd
 	int				outfile;    // fd
 	int				*quoted;
 	int				*space_after;
+	t_env			*env_list;
+	t_env			*exp_list;
 	struct s_cmd	*next;
 }	t_cmd;
-
-typedef struct s_env
-{
-	char			*line;
-	struct s_env	*next;
-} t_env;
 
 /*********MILAN 2/12/2022*********/
 char	*ft_remove_cmd(char *line, char *remove);
@@ -98,7 +100,7 @@ void				*ft_calloc(size_t count, size_t size);
 char				**ft_split(char const *s, char c);
 
 /***********EXEC***********/
-void	ft_exec_cmd(t_cmd *cmd, t_env **env_list, t_env **exp_list, char **env);
+void	ft_exec_cmd(t_cmd *cmd, char **env);
 int		ft_exec(t_cmd *cmd, char **env);
 char	*ft_substr(char *s, unsigned int start);
 char	*ft_strstr(char *haystack, char *needle);
@@ -106,26 +108,24 @@ char	*ft_strstr(char *haystack, char *needle);
 /***********ENV************/
 int		ft_varlen(char *str);
 void	ft_get_env(t_env **env_list, char **env);
-void	ft_print_env(t_env **env_lst);
+void	ft_print_env(t_env *env_lst);
 char	*ft_get_env_var(char *line, char *remove);
 void	ft_add_queue(t_env **root, char *s);
 void	ft_update_env(t_env **env_list, t_env **exp_list, char *line);
 
 /***********ECHO***********/
-void	ft_echo(char *s, int option);        // Echo function
-void	ft_do_echo(char *s);				 // Echo (no options)
-void	ft_do_nl_echo(char *s);				 // Echo -n
-int		ft_get_echo_line(char *s);			 // Gets the echo line
-int		ft_get_echo_n(char *s, int start);	 // Gets the echo -n line
+void	ft_echo(char **args);	             // Echo function
+void	ft_do_echo(char **args);				 // Echo (no options)
+void	ft_do_nl_echo(char **args);				 // Echo -n
 
 /***********EXPORT*********/
-void	ft_export(t_env **env_list, t_env **exp_list, char **vars);
+void	ft_export(t_cmd *cmd);
 void	ft_get_export(t_env **exp_list);
 void	ft_add_after(t_env **env_list, int line_nb, char *s);
 char	*ft_add_quotes(char *var);
 int		ft_verify_double(t_env *env_list, char *line);
 char	*ft_verify_env_var(char *s);
-char	*ft_var_content(t_env **env_list, t_env **exp_list, char *line);
+char	*ft_var_content(t_cmd *cmd, char *line);
 int		ft_verify_equal(char *s);
 
 /***********DIRECTORY******/

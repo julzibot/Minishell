@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/10 21:58:04 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/06 19:00:36 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,32 +70,41 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 	}
 }
 
-void	ft_export(t_env **env_list, t_env **exp_list, char **vars)
+void	ft_export(t_cmd *cmd)
 {
 	int	i;
 
 	i = 0;
-	if (vars == NULL)
+	if (cmd->env_vars == NULL)
 	{
 		printf("VARS IS NULL\n");
 		return ;
 	}
-	printf("vars %s\n", vars[i]);
-	while (vars[i])
+
+	while (cmd->env_vars[i])
 	{
-		printf("VARIABLE %s\n", vars[i]);
-		if (ft_verify_double(*env_list, vars[i]) == 1 || ft_verify_equal(vars[i]) == 1)
-			return ;
-		vars[i] = ft_verify_env_var(vars[i]);
-		vars[i] = ft_var_content(env_list, exp_list, vars[i]);
-		if (vars[i] == NULL)
-			return ;
-		ft_add_after(env_list, 17, vars[i]);
-		ft_add_after(exp_list, 17, ft_strjoin("declare -x ", ft_add_quotes(vars[i])));
-		free(vars[i]);
-		vars[i] = NULL;
+		printf("%d\n", ft_strlen(cmd->args[1] - 1));
+		if (ft_strncmp(cmd->env_vars[i], cmd->args[1], ft_strlen(cmd->args[1])) == 0)
+			break ;
 		i++;
 	}
+	if (cmd->env_vars == NULL)
+		return ;
+
+	// while (cmd->env_vars[i])
+	// {
+	if (ft_verify_double(cmd->env_list, cmd->env_vars[i]) == 1 || ft_verify_equal(cmd->env_vars[i]) == 1)
+		return ;
+	cmd->env_vars[i] = ft_verify_env_var(cmd->env_vars[i]);
+	cmd->env_vars[i] = ft_var_content(cmd, cmd->env_vars[i]);
+	if (cmd->env_vars[i] == NULL)
+		return ;
+	ft_add_after(&cmd->env_list, 17, cmd->env_vars[i]);
+	ft_add_after(&cmd->exp_list, 17, ft_strjoin("declare -x ", ft_add_quotes(cmd->env_vars[i])));
+	free(cmd->env_vars[i]);
+	cmd->env_vars[i] = NULL;
+	i++;
+	// }
 }
 
 // int	main(int argc, char **argv, char **env)
