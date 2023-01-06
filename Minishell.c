@@ -12,6 +12,26 @@
 
 #include "minishell.h"
 
+void	parse_init(t_cmd *parse_list)
+{
+	if (!parse_list)
+		exit(1);
+	parse_list->env_vars = NULL;
+	parse_list->quoted = NULL;
+	parse_list->space_after = NULL;
+}
+
+void	check_line_exists(char *line)
+{
+	if (line == NULL) // CTRL-D
+		{
+			rl_redisplay();
+			ft_printf(1, "\x1b[A");
+			ft_printf(1, "exit\n");
+			exit(0);
+		}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -30,25 +50,14 @@ int	main(int argc, char **argv, char **envp)
 	ft_get_env(&exp_list, envp); // For export command
 	ft_get_export(&exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"
 	/*Milan 16/12*/
-
 	parse_list = malloc(sizeof(t_cmd));
-	if (!parse_list)
-		exit(1);
-	parse_list->env_vars = NULL;
-	parse_list->quoted = NULL;
-	parse_list->space_after = NULL;
+	parse_init(parse_list);
 	while (1)
 	{
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, SIG_IGN);
 		line = readline(PROMPT);
-		if (line == NULL) // CTRL-D
-		{
-			rl_redisplay();
-			ft_printf(1, "\x1b[A");
-			ft_printf(1, "exit\n");
-			exit(0);
-		}
+		check_line_exists(line);
 		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
