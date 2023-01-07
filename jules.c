@@ -98,17 +98,6 @@ int	token_type(char *token, int quoted)
 		return (6);
 }
 
-// void	split_var_quoted_args(t_cmd *temp)
-// {
-// 	int	i;
-
-// 	i = -1;
-// 	while(temp->args[++i])
-// 	{
-// 		if temp->quoted[]
-// 	}
-// }
-
 t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 {
 	t_cmd	*temp;
