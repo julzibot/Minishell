@@ -86,9 +86,11 @@ int	token_type(char *token, int quoted)
 		return (3);
 	else if (!ft_strncmp(token, "|", 1))
 		return (4);
-	else if (quoted && token[ft_strlen(token) - 1] == '\"' && (token[0] == '\"' || (token[0] == '\'' && token[1] == '\"')) && ft_strlen(token) > 1)
+	else if (quoted && token[ft_strlen(token) - 1] == '\"' \
+			&& (token[0] == '\"' || (token[0] == '\'' && token[1] == '\"')) && ft_strlen(token) > 1)
 		return (5);
-	else if (quoted && token[ft_strlen(token) - 1] == '\'' && (token[0] == '\'' || (token[0] == '\"' && token[1] == '\'')) && ft_strlen(token) > 1)
+	else if (quoted && token[ft_strlen(token) - 1] == '\'' \
+			&& (token[0] == '\'' || (token[0] == '\"' && token[1] == '\'')) && ft_strlen(token) > 1)
 		return (7);
 	else
 		return (6);

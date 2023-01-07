@@ -10,6 +10,8 @@ static  char *check_concat(char *cpy)
         ;
     if (cpy && cpy[i] && cpy[i] == '=')
     {
+        if (i == 0)
+            return (NULL); 
         if (cpy[i - 1] && cpy[i - 1] == '+')
         {
             i = -1;
@@ -23,7 +25,6 @@ static  char *check_concat(char *cpy)
         }
         else
             return (cpy);
-
     }
     return(NULL);
 }

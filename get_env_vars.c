@@ -23,7 +23,7 @@ static  char	*get_vars_init(char *token, char *str)
 	return (str);
 }
 
-static  char	*get_value(char *token, int namelen, char *env_vars, char *str)
+static  char	*get_value(char *token, int namelen, char *env_var, char *str)
 {
 	int	v_i;
 	int	v_len;
@@ -33,11 +33,22 @@ static  char	*get_value(char *token, int namelen, char *env_vars, char *str)
 	quoted = 0;
 	if ((token[0] == '\"' || token[1] == '\"') && token[namelen + 1] == '\"')
 		quoted = 1;
-	value = malloc(ft_strlen(env_vars) - namelen + quoted);
+	v_i = -1;
+	v_len = 0;
+	while (env_var[++v_i] && !quoted)
+	{
+		if (is_delim(env_var[v_i] == 1))
+			v_len++;
+	}
+	value = malloc(ft_strlen(env_var) - v_len - namelen + quoted);
 	v_i = -1;
 	v_len = namelen;
-	while (env_vars[++v_len])
-		value[++v_i] = env_vars[v_len];
+	while (env_var[++v_len])
+	{
+		while (is_delim(env_var[v_len]) == 1)
+			v_len++;
+		value[++v_i] = env_var[v_len];
+	}
 	value[++v_i] = '\"';
 	value[v_i + quoted] = '\0';
 	str = ft_strjoin(str, value);
@@ -86,7 +97,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 {
 	int	i;
 	char	*str;
-	// printf("GET_IN %s\n", token);
+	printf("GET_IN %s\n", token);
 
 	i = 0;
 	str = NULL;
@@ -107,6 +118,6 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 		str = ft_strjoin(str, ft_strdup("\""));
 	else if (token[i - 1] == '\'' &&  (!str || str[ft_strlen(str) - 1] != '\''))
 		str = ft_strjoin(str, ft_strdup("\'"));
-	// printf("GET_OUT %s\n", str);
+	printf("GET_OUT %s\n", str);
 	return (str);
 }
