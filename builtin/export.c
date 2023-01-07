@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/06 19:00:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/07 12:57:31 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,21 +81,23 @@ void	ft_export(t_cmd *cmd)
 		return ;
 	}
 
+	printf("%s\n", cmd->args[1]);
 	while (cmd->env_vars[i])
 	{
-		printf("%d\n", ft_strlen(cmd->args[1] - 1));
+		printf("%d\n", ft_strlen(cmd->args[1]));
 		if (ft_strncmp(cmd->env_vars[i], cmd->args[1], ft_strlen(cmd->args[1])) == 0)
 			break ;
 		i++;
 	}
-	if (cmd->env_vars == NULL)
-		return ;
 
 	// while (cmd->env_vars[i])
 	// {
-	if (ft_verify_double(cmd->env_list, cmd->env_vars[i]) == 1 || ft_verify_equal(cmd->env_vars[i]) == 1)
+	// if (ft_verify_double(cmd->env_list, cmd->env_vars[i]) == 1 || ft_verify_equal(cmd->env_vars[i]) == 1)
+	// 	return ;
+	if (ft_verify_double(cmd->env_list, cmd->env_vars[i]) == 1)
 		return ;
-	cmd->env_vars[i] = ft_verify_env_var(cmd->env_vars[i]);
+	printf("ENTERS\n");
+	cmd->env_vars[i] = ft_verify_env_var(cmd->env_vars[i]); // Verify the format
 	cmd->env_vars[i] = ft_var_content(cmd, cmd->env_vars[i]);
 	if (cmd->env_vars[i] == NULL)
 		return ;
