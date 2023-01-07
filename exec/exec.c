@@ -6,11 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/06 18:55:12 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/07 17:07:06 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern pid_t	g_pid;
 
 char	*ft_cmd_check(char **envp, char *cmd)
 {
@@ -41,7 +43,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 	exit(127);
 }
 
-void	ft_handle_sig(int sig)
+void	ft_handle_sigquit(int sig)
 {
 	if (sig == SIGQUIT)
 		printf("Quit: 3\n");
@@ -50,19 +52,19 @@ void	ft_handle_sig(int sig)
 int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 {
 	char	*path;
-	pid_t	pid;
+	//pid_t	pid;
 
-	signal(SIGQUIT, ft_handle_sig);
-	signal(SIGINT, ft_handle_sig);
-	pid = fork();
-	if (pid == -1)
+	signal(SIGQUIT, ft_handle_sigquit);
+	signal(SIGINT, ft_handle_sigint);
+	g_pid = fork();
+	if (g_pid == -1)
 		return (1);
-	else if (pid > 0)
+	else if (g_pid > 0)
 	{
-		waitpid(pid, NULL, 0);
+		waitpid(g_pid, NULL, 0);
 		return (0);
 	}
-	else if (pid == 0)
+	else if (g_pid == 0)
 	{
 		path = ft_cmd_check(env, cmd->args[0]);
 		ft_printf(1, "\n");

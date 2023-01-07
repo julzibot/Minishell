@@ -6,11 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/06 17:38:16 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/07 17:31:52 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+pid_t	g_pid;
 
 void	parse_init(t_cmd *parse_list, char **envp)
 {
@@ -35,6 +37,32 @@ void	check_line_exists(char *line)
 		}
 }
 
+void	ft_handle_sigint(int sig)
+{
+	(void)sig;
+
+	// struct termios    new_settings;
+
+    // if (tcgetattr(0, &new_settings))
+    //     perror("minishell: tcsetattr");
+    // new_settings.c_lflag &= ~ECHOCTL;
+    // if (tcsetattr(0, 0, &new_settings))
+    //     perror("minishell: tcsetattr");
+
+	if (g_pid != 0)
+	{
+		write(1, "\n", 1);
+		kill(g_pid, SIGCONT);
+	}
+	else
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -50,7 +78,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, SIG_IGN);
+		signal(SIGINT, ft_handle_sigint);
 		line = readline(PROMPT);
 		check_line_exists(line);
 		add_history(line);

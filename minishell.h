@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/06 18:55:45 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/07 17:31:29 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <termios.h>
 # include "./ft_printf/ft_printf.h"
 
 # ifndef PATH_MAX
@@ -136,5 +137,9 @@ char	*ft_pwd(void);
 /***********UNSET**********/
 void	ft_unset(t_env **env_list, t_env **exp_list, char *s);
 void	ft_remove_line(t_env **env_list, t_env *node);
+
+/**********SIGNALS*********/
+void	ft_handle_sigint(int sig);
+void	ft_handle_sigquit(int sig);
 
 #endif
