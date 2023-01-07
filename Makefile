@@ -40,7 +40,7 @@ all:	${NAME}
 
 ${NAME}:	${OBJS}
 		make all -C ./ft_printf
-		${CC} -o ${NAME} ${OBJS} -lreadline -L /Users/mstojilj/.brew/opt/readline/lib -I /Users/mstojilj/.brew/opt/readline/include libreadline.a ft_printf/libftprintf.a
+		${CC} -o ${NAME} ${OBJS} -lreadline -lncurses libreadline.a ft_printf/libftprintf.a
 #-lreadline -lncurses libreadline.a ft_printf/libftprintf.a
 
 clean:

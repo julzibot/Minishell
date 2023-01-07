@@ -21,7 +21,7 @@ int	seg_size(char *line, int i)
 	var_q_type = i;
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 		count++;
-	while (line[++i] && ((quoted && line[i] != q_type) 
+	while (line[++i] && ((quoted && line[i] != q_type) \
 		|| (!quoted && !is_delim(line[i])) \
 		|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))))
 	{
@@ -49,20 +49,17 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 	int var_q_type;
 	int	is_var;
 	int	var_quoted;
-	int	fuckoff;
 
 	is_var = 0;
 	var_quoted = 0;
 	s_i = 0;
 	q_type = i;
 	var_q_type = i;
-	fuckoff = seg_size(line, i);
-	seg = malloc(fuckoff);
-	printf("maloc size: %d\n", fuckoff);
+	seg = malloc(seg_size(line, i));
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 		seg[s_i++] = line[i - 1];
 	seg[s_i++] = line[i];
-	while (line[++i] && ((quoted && line[i] != line[q_type]) 
+	while (line[++i] && ((quoted && line[i] != line[q_type]) \
 		|| (!quoted && !is_delim(line[i])) \
 		|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))))
 	{

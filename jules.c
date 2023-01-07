@@ -32,17 +32,19 @@ char	**lexing(char *line, t_cmd *parse_list)
 	return (lex_tab);
 }
 
-void	lst_next_cmd(t_cmd *parse_list)
+t_cmd	*lst_next_cmd(t_cmd *temp)
 {
 	t_cmd	*next_cmd;
 	
 	next_cmd = malloc(sizeof(t_cmd));
-	next_cmd->env_vars = parse_list->env_vars;
-	next_cmd->quoted = parse_list->quoted;
-	next_cmd->space_after = parse_list->space_after;
+	next_cmd->env_vars = temp->env_vars;
+	next_cmd->quoted = temp->quoted;
+	next_cmd->space_after = temp->space_after;
 	next_cmd->next = NULL;
-	parse_list->next = next_cmd;
-	parse_list = next_cmd;
+	next_cmd->args = NULL;
+	temp->next = next_cmd;
+
+	return (next_cmd);
 }
 
 int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
@@ -96,6 +98,17 @@ int	token_type(char *token, int quoted)
 		return (6);
 }
 
+// void	split_var_quoted_args(t_cmd *temp)
+// {
+// 	int	i;
+
+// 	i = -1;
+// 	while(temp->args[++i])
+// 	{
+// 		if temp->quoted[]
+// 	}
+// }
+
 t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 {
 	t_cmd	*temp;
@@ -103,11 +116,11 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	int		type;
 	char	*str;
 
-	i = -1;
-	if (lex_tab == NULL)
-		return (NULL);
-	while (lex_tab[++i])
-		printf("lex %d : %s\n", i, lex_tab[i]);
+	// i = -1;
+	// if (lex_tab == NULL)
+	// 	return (NULL);
+	// while (lex_tab[++i])
+	// 	printf("lex %d : %s\n", i, lex_tab[i]);
 	
 	// INIT
 	i = -1;
@@ -123,7 +136,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 		if (type < 4)
 			i += redir(parse_list, lex_tab + i, type);
 		else if (type == 4)
-			lst_next_cmd(temp); // handle pipes here
+			temp = lst_next_cmd(temp); // handle pipes here
 		else
 		{
 			if (type == 6)
@@ -138,9 +151,20 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	}
 
 	// TEST PRINTS
+	temp = parse_list;
+	while (temp->next != NULL)
+	{
+		printf("%p\n", temp);
+		i = -1;
+		while (temp->args && temp->args[++i])
+			printf("%s\n", temp->args[i]);
+		temp = temp->next;
+	}
+	printf("%p\n", temp);
 	i = -1;
 	while (temp->args && temp->args[++i])
 		printf("%s\n", temp->args[i]);
+	
 	i = -1;
 	while (parse_list->env_vars && parse_list->env_vars[++i])
 		printf("env_var %d : %s\n", i, parse_list->env_vars[i]);

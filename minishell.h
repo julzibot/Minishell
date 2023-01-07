@@ -41,6 +41,7 @@ typedef struct s_env
 
 typedef	struct	s_cmd
 {
+	pid_t			shell_pid;
 	char			*cmd;       // cd
 	char			**args;     // cd -> ../folder <-
 	char			**env_vars; // a=b (export)

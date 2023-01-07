@@ -35,19 +35,14 @@ void	check_line_exists(char *line)
 			ft_printf(1, "exit\n");
 			exit(0);
 		}
+	else
+		add_history(line);
 }
 
 void	ft_handle_sigint(int sig)
 {
 	(void)sig;
 
-	// struct termios    new_settings;
-
-    // if (tcgetattr(0, &new_settings))
-    //     perror("minishell: tcsetattr");
-    // new_settings.c_lflag &= ~ECHOCTL;
-    // if (tcsetattr(0, 0, &new_settings))
-    //     perror("minishell: tcsetattr");
 
 	if (g_pid != 0)
 	{
@@ -81,7 +76,6 @@ int	main(int argc, char **argv, char **envp)
 		signal(SIGINT, ft_handle_sigint);
 		line = readline(PROMPT);
 		check_line_exists(line);
-		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
 		ft_exec_cmd(parse_list, envp);

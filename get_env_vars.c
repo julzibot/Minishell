@@ -97,7 +97,7 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 {
 	int	i;
 	char	*str;
-	printf("GET_IN %s\n", token);
+	// printf("GET_IN %s\n", token);
 
 	i = 0;
 	str = NULL;
@@ -118,6 +118,6 @@ char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their v
 		str = ft_strjoin(str, ft_strdup("\""));
 	else if (token[i - 1] == '\'' &&  (!str || str[ft_strlen(str) - 1] != '\''))
 		str = ft_strjoin(str, ft_strdup("\'"));
-	printf("GET_OUT %s\n", str);
+	// printf("GET_OUT %s\n", str);
 	return (str);
 }

@@ -56,48 +56,42 @@ int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 
 	signal(SIGQUIT, ft_handle_sigquit);
 	signal(SIGINT, ft_handle_sigint);
-	g_pid = fork();
-	if (g_pid == -1)
-		return (1);
-	else if (g_pid > 0)
-	{
-		waitpid(g_pid, NULL, 0);
-		return (0);
-	}
-	else if (g_pid == 0)
-	{
-		path = ft_cmd_check(env, cmd->args[0]);
-		ft_printf(1, "\n");
-		execve(path, cmd->args, env);
-	}
+	path = ft_cmd_check(env, cmd->args[0]);
+	ft_printf(1, "\n");
+	execve(path, cmd->args, env);
 	return (1);
 }
 
 void	ft_exec_cmd(t_cmd *cmd, char **env)
 {
 	(void)env;
-
 	if (cmd == NULL || cmd->args == NULL || ft_verify_equal(cmd->args[0]))
 		return ;
-	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
-		ft_cd(&cmd->exp_list, &cmd->env_list, cmd->args[1]);
-	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
-		ft_print_env(cmd->env_list);
-	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
-		ft_echo(cmd->args);
-	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
-		ft_pwd();
-	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
-		ft_unset(&cmd->env_list, &cmd->exp_list, cmd->args[1]);
-	else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
+	cmd->shell_pid = fork();
+	if (cmd->shell_pid == 0)
 	{
-		if (cmd->args[1] == NULL)
-			ft_print_env(cmd->exp_list);
+		if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
+			ft_cd(&cmd->exp_list, &cmd->env_list, cmd->args[1]);
+		else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
+			ft_print_env(cmd->env_list);
+		else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
+			ft_echo(cmd->args);
+		else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
+			ft_pwd();
+		else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
+			ft_unset(&cmd->env_list, &cmd->exp_list, cmd->args[1]);
+		else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
+		{
+			if (cmd->args[1] == NULL)
+				ft_print_env(cmd->exp_list);
+			else
+				ft_export(cmd);
+		}
 		else
-			ft_export(cmd);
+			ft_exec(cmd, env); // execve
 	}
 	else
-	 	ft_exec(cmd, env); // execve
+		waitpid(cmd->shell_pid, NULL, 0);
 	return ;
 }
 
