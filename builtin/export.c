@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/07 12:57:31 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/07 13:12:26 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,6 @@ void	ft_export(t_cmd *cmd)
 		return ;
 	ft_add_after(&cmd->env_list, 17, cmd->env_vars[i]);
 	ft_add_after(&cmd->exp_list, 17, ft_strjoin("declare -x ", ft_add_quotes(cmd->env_vars[i])));
-	free(cmd->env_vars[i]);
-	cmd->env_vars[i] = NULL;
 	i++;
 	// }
 }
