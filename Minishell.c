@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/07 17:31:52 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/10 18:18:25 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ void	check_line_exists(char *line)
 void	ft_handle_sigint(int sig)
 {
 	(void)sig;
-
-
 	if (g_pid != 0)
 	{
 		write(1, "\n", 1);
@@ -56,6 +54,14 @@ void	ft_handle_sigint(int sig)
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
+}
+
+void	ft_termios(int option)
+{
+	struct termios	term;
+
+	tcgetattr(0, &term);
+	
 }
 
 int	main(int argc, char **argv, char **envp)
