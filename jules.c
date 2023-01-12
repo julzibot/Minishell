@@ -37,17 +37,16 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	t_cmd	*next_cmd;
 
 	temp->piped = 1;
-	if (temp->outfile == STDOUT_FILENO && pipe(temp->out_pipe) == -1)
+	// printf("fd here : %d\n", temp->outfile);
+	if (pipe(temp->out_pipe) == -1)
 		return NULL;
 	next_cmd = malloc(sizeof(t_cmd));
-	if (temp->outfile == STDOUT_FILENO)
-	{
-		next_cmd->infile = dup(temp->out_pipe[0]);
-		close (temp->out_pipe[0]);
-	}
-	else
-		next_cmd->infile = STDIN_FILENO;
+	next_cmd->infile = dup(temp->out_pipe[0]);
+	close (temp->out_pipe[0]);
+	// else
+	// 	next_cmd->infile = STDIN_FILENO;
 	next_cmd->outfile = STDOUT_FILENO;
+	next_cmd->redir = 0;
 	next_cmd->env_vars = temp->env_vars;
 	next_cmd->quoted = temp->quoted;
 	next_cmd->space_after = temp->space_after;
@@ -63,6 +62,7 @@ int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 	char	*filename_delim;
 	char	*line;
 
+	parse_cmd->redir = 1;
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)
 		return (0); // error handling here

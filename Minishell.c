@@ -25,6 +25,7 @@ void	parse_init(t_cmd *parse_list, char **envp)
 	parse_list->outfile = STDOUT_FILENO;
 	parse_list->next = NULL;
 	parse_list->piped = 0;
+	parse_list->redir = 0;
 	// parse_list->out_pipe = NULL;
 	ft_get_env(&parse_list->env_list, envp); // For env command
 	ft_get_env(&parse_list->exp_list, envp); // For export command
@@ -69,6 +70,28 @@ void	ft_handle_sigint(int sig)
 	
 // }
 
+void	exec_pipeline(t_cmd *parse_list, char **envp)
+{
+	t_cmd	*temp;
+
+	while (parse_list->next != NULL)
+	{
+		ft_exec_cmd(parse_list, envp);
+		if (parse_list->infile != STDIN_FILENO)
+			close (parse_list->infile);
+		close (parse_list->out_pipe[1]);
+		if (parse_list->redir)
+			close(parse_list->outfile);
+		temp = parse_list;
+		parse_list = temp->next;
+		free(temp);
+	}
+	ft_exec_cmd(parse_list, envp);
+	if (parse_list->infile != STDIN_FILENO)
+		close (parse_list->infile);
+	free (parse_list);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -76,7 +99,6 @@ int	main(int argc, char **argv, char **envp)
 	char				*line;
 	char				**tokens;
 	t_cmd 				*parse_list;
-	t_cmd				*temp;
 
 	while (1)
 	{
@@ -90,21 +112,9 @@ int	main(int argc, char **argv, char **envp)
 		check_line_exists(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
-		while (parse_list->next != NULL)
-		{
-			ft_exec_cmd(parse_list, envp);
-			if (parse_list->infile != STDIN_FILENO)
-				close (parse_list->infile);
-			close (parse_list->out_pipe[1]);
-			temp = parse_list;
-			parse_list = temp->next;
-			free(temp);
-		}
-		ft_exec_cmd(parse_list, envp);
-		if (parse_list->infile != STDIN_FILENO)
-			close (parse_list->infile);
-		free (parse_list);
-
+		exec_pipeline(parse_list, envp);
+		
+		//check fd's after execution
 		for (int i = 0; i < 50; i++) {
 			int flags = fcntl(i, F_GETFD);
 			if (flags != -1) {

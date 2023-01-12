@@ -49,6 +49,7 @@ typedef	struct	s_cmd
 	int				outfile;    // fd
 	// int				in_pipe[2];
 	int				piped;
+	int				redir;
 	int				out_pipe[2];
 	int				*quoted;
 	int				*space_after;

@@ -52,9 +52,11 @@ void	ft_handle_sigquit(int sig)
 int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 {
 	char	*path;
-	//pid_t	pid;
-
-	dup2(cmd->infile, STDIN_FILENO);
+	if (cmd->infile != STDIN_FILENO)
+	{
+		dup2(cmd->infile, STDIN_FILENO);
+		close(cmd->infile);
+	}
 	if (cmd->outfile == STDOUT_FILENO && cmd->next)
 	{
 		dup2(cmd->out_pipe[1], STDOUT_FILENO);
@@ -65,8 +67,6 @@ int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 		dup2(cmd->outfile, STDOUT_FILENO);
 		close(cmd->outfile);
 	}
-	// close(cmd->out_pipe[0]);
-	// close(cmd->infile);
 	signal(SIGQUIT, ft_handle_sigquit);
 	signal(SIGINT, ft_handle_sigint);
 	path = ft_cmd_check(env, cmd->args[0]);
