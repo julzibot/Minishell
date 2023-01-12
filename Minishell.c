@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/10 18:18:25 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/12 18:24:23 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	parse_init(t_cmd *parse_list, char **envp)
 	parse_list->redir = 0;
 	parse_list->out_pipe[0] = -1;
 	parse_list->out_pipe[1] = -1;
+	parse_list->term = NULL;
 	// parse_list->out_pipe = NULL;
 	ft_get_env(&parse_list->env_list, envp); // For env command
 	ft_get_env(&parse_list->exp_list, envp); // For export command
@@ -38,13 +39,11 @@ void	check_line_exists(char *line)
 {
 	if (line == NULL) // CTRL-D
 		{
-			rl_redisplay();
-			ft_printf(1, "\x1b[A");
-			ft_printf(1, "exit\n");
+			ft_printf(2, "\e[1A\e[%dCexit\n", 13);
 			exit(0);
 		}
 	else
-		add_history(line);
+		return ;
 }
 
 void	ft_handle_sigint(int sig)
@@ -63,14 +62,6 @@ void	ft_handle_sigint(int sig)
 		rl_redisplay();
 	}
 }
-
-// void	ft_termios(int option)
-// {
-// 	struct termios	term;
-
-// 	tcgetattr(0, &term);
-	
-// }
 
 void	exec_pipeline(t_cmd *parse_list, char **envp)
 {
@@ -100,24 +91,36 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	free (parse_list);
 }
 
+void	ft_init_termios(struct termios *term)
+{
+	term = malloc(sizeof(struct termios));
+	if (!term)
+		exit(1);
+	tcgetattr(STDOUT_FILENO, term);
+	term->c_lflag = term->c_lflag ^ ECHOCTL;
+	tcsetattr(STDOUT_FILENO, TCSAFLUSH, term);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
 	(void)argv;
-	char				*line;
-	char				**tokens;
-	t_cmd 				*parse_list;
-
-	while (1)
-	{
-		parse_list = malloc(sizeof(t_cmd));
+	char			*line;
+	char			**tokens;
+	t_cmd 			*parse_list;
+	
+	parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
-		parse_init(parse_list, envp);
+	parse_init(parse_list, envp);
+	ft_init_termios(parse_list->term);
+	while (1)
+	{
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, ft_handle_sigint);
 		line = readline(PROMPT);
 		check_line_exists(line);
+		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
 		exec_pipeline(parse_list, envp);

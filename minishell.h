@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/07 17:31:29 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/12 17:22:23 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <termios.h>
+# include <termcap.h>
 # include "./ft_printf/ft_printf.h"
 
 # ifndef PATH_MAX
@@ -55,6 +56,7 @@ typedef	struct	s_cmd
 	int				*space_after;
 	t_env			*env_list;
 	t_env			*exp_list;
+	struct termios	*term;
 	struct s_cmd	*next;
 }	t_cmd;
 
