@@ -52,6 +52,8 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	next_cmd->space_after = temp->space_after;
 	next_cmd->next = NULL;
 	next_cmd->args = NULL;
+	next_cmd->out_pipe[0] = -1;
+	next_cmd->out_pipe[1] = -1;
 	temp->next = next_cmd;
 
 	return (next_cmd);
@@ -62,7 +64,11 @@ int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 	char	*filename_delim;
 	char	*line;
 
-	parse_cmd->redir = 1;
+	if (type % 2 == 0 && parse_cmd->infile != STDIN_FILENO && parse_cmd->redir % 2 == 1)
+		close (parse_cmd->infile);
+	else if (type % 2 == 1 && parse_cmd->outfile != STDOUT_FILENO)
+		close (parse_cmd->outfile);
+	parse_cmd->redir = type % 2 + 1;
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)
 		return (0); // error handling here
@@ -79,11 +85,14 @@ int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
 		}
 	}
 	else if (type == 2)
-		parse_cmd->infile = open(filename_delim, O_CREAT | O_RDWR, 0644);
+	{
+		parse_cmd->infile = open(filename_delim, O_CREAT | O_RDONLY, 0644);
+		printf("it works ! %d\n", parse_cmd->infile);
+	}
 	else if (type == 1)
 		parse_cmd->outfile = open(filename_delim, O_CREAT | O_RDWR| O_APPEND, 0644);
 	else if (type == 3)
-		parse_cmd->outfile = open(filename_delim, O_CREAT | O_RDWR, 0644);
+		parse_cmd->outfile = open(filename_delim, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	return (1);
 }
 

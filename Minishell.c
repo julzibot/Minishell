@@ -26,6 +26,8 @@ void	parse_init(t_cmd *parse_list, char **envp)
 	parse_list->next = NULL;
 	parse_list->piped = 0;
 	parse_list->redir = 0;
+	parse_list->out_pipe[0] = -1;
+	parse_list->out_pipe[1] = -1;
 	// parse_list->out_pipe = NULL;
 	ft_get_env(&parse_list->env_list, envp); // For env command
 	ft_get_env(&parse_list->exp_list, envp); // For export command
@@ -80,7 +82,9 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 		if (parse_list->infile != STDIN_FILENO)
 			close (parse_list->infile);
 		close (parse_list->out_pipe[1]);
-		if (parse_list->redir)
+		// if (parse_list->redir == 1)
+		// 	close(parse_list->infile);
+		if (parse_list->redir == 2)
 			close(parse_list->outfile);
 		temp = parse_list;
 		parse_list = temp->next;
@@ -89,6 +93,10 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	ft_exec_cmd(parse_list, envp);
 	if (parse_list->infile != STDIN_FILENO)
 		close (parse_list->infile);
+	// if (parse_list->redir == 1)
+	// 		close(parse_list->infile);
+	if (parse_list->redir == 2)
+		close(parse_list->outfile);
 	free (parse_list);
 }
 
