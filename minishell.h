@@ -47,6 +47,9 @@ typedef	struct	s_cmd
 	char			**env_vars; // a=b (export)
 	int				infile;     // fd
 	int				outfile;    // fd
+	// int				in_pipe[2];
+	int				piped;
+	int				out_pipe[2];
 	int				*quoted;
 	int				*space_after;
 	t_env			*env_list;

@@ -35,8 +35,19 @@ char	**lexing(char *line, t_cmd *parse_list)
 t_cmd	*lst_next_cmd(t_cmd *temp)
 {
 	t_cmd	*next_cmd;
-	
+
+	temp->piped = 1;
+	if (temp->outfile == STDOUT_FILENO && pipe(temp->out_pipe) == -1)
+		return NULL;
 	next_cmd = malloc(sizeof(t_cmd));
+	if (temp->outfile == STDOUT_FILENO)
+	{
+		next_cmd->infile = dup(temp->out_pipe[0]);
+		close (temp->out_pipe[0]);
+	}
+	else
+		next_cmd->infile = STDIN_FILENO;
+	next_cmd->outfile = STDOUT_FILENO;
 	next_cmd->env_vars = temp->env_vars;
 	next_cmd->quoted = temp->quoted;
 	next_cmd->space_after = temp->space_after;
@@ -141,21 +152,23 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 
 	// TEST PRINTS
 	temp = parse_list;
-	while (temp->next != NULL)
-	{
-		printf("%p\n", temp);
-		i = -1;
-		while (temp->args && temp->args[++i])
-			printf("%s\n", temp->args[i]);
-		temp = temp->next;
-	}
-	printf("%p\n", temp);
-	i = -1;
-	while (temp->args && temp->args[++i])
-		printf("%s\n", temp->args[i]);
+	// while (temp->next != NULL)
+	// {
+	// 	printf("%p\n", temp);
+	// 	i = -1;
+	// 	while (temp->args && temp->args[++i])
+	// 		printf("%s\n", temp->args[i]);
+	// 	temp = temp->next;
+	// }
+	// printf("%p\n", temp);
+	// i = -1;
+	// while (temp->args && temp->args[++i])
+	// 	printf("%s\n", temp->args[i]);
+	printf("%d %d %d\n", parse_list->infile, parse_list->out_pipe[1], parse_list->out_pipe[0]);
+	printf("\n\n");
 	
-	i = -1;
-	while (parse_list->env_vars && parse_list->env_vars[++i])
-		printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
+	// i = -1;
+	// while (parse_list->env_vars && parse_list->env_vars[++i])
+	// 	printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
 	return(parse_list);	
 }

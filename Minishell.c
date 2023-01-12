@@ -21,6 +21,11 @@ void	parse_init(t_cmd *parse_list, char **envp)
 	parse_list->space_after = NULL;
 	parse_list->env_list = NULL;
 	parse_list->exp_list = NULL;
+	parse_list->infile = STDIN_FILENO;
+	parse_list->outfile = STDOUT_FILENO;
+	parse_list->next = NULL;
+	parse_list->piped = 0;
+	// parse_list->out_pipe = NULL;
 	ft_get_env(&parse_list->env_list, envp); // For env command
 	ft_get_env(&parse_list->exp_list, envp); // For export command
 	ft_get_export(&parse_list->exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"
@@ -56,13 +61,13 @@ void	ft_handle_sigint(int sig)
 	}
 }
 
-void	ft_termios(int option)
-{
-	struct termios	term;
+// void	ft_termios(int option)
+// {
+// 	struct termios	term;
 
-	tcgetattr(0, &term);
+// 	tcgetattr(0, &term);
 	
-}
+// }
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -71,20 +76,41 @@ int	main(int argc, char **argv, char **envp)
 	char				*line;
 	char				**tokens;
 	t_cmd 				*parse_list;
+	t_cmd				*temp;
 
-	parse_list = malloc(sizeof(t_cmd));
-	if (!parse_list)
-		exit(1);
-	parse_init(parse_list, envp);
 	while (1)
 	{
+		parse_list = malloc(sizeof(t_cmd));
+		if (!parse_list)
+			exit(1);
+		parse_init(parse_list, envp);
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, ft_handle_sigint);
 		line = readline(PROMPT);
 		check_line_exists(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
+		while (parse_list->next != NULL)
+		{
+			ft_exec_cmd(parse_list, envp);
+			if (parse_list->infile != STDIN_FILENO)
+				close (parse_list->infile);
+			close (parse_list->out_pipe[1]);
+			temp = parse_list;
+			parse_list = temp->next;
+			free(temp);
+		}
 		ft_exec_cmd(parse_list, envp);
+		if (parse_list->infile != STDIN_FILENO)
+			close (parse_list->infile);
+		free (parse_list);
+
+		for (int i = 0; i < 50; i++) {
+			int flags = fcntl(i, F_GETFD);
+			if (flags != -1) {
+				printf("fd %d is open\n", i);
+			}
+		}
 	}
 	return (0);
 }

@@ -54,10 +54,23 @@ int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 	char	*path;
 	//pid_t	pid;
 
+	dup2(cmd->infile, STDIN_FILENO);
+	if (cmd->outfile == STDOUT_FILENO && cmd->next)
+	{
+		dup2(cmd->out_pipe[1], STDOUT_FILENO);
+		close(cmd->out_pipe[1]);
+	}
+	else if (cmd->outfile != STDOUT_FILENO)
+	{
+		dup2(cmd->outfile, STDOUT_FILENO);
+		close(cmd->outfile);
+	}
+	// close(cmd->out_pipe[0]);
+	// close(cmd->infile);
 	signal(SIGQUIT, ft_handle_sigquit);
 	signal(SIGINT, ft_handle_sigint);
 	path = ft_cmd_check(env, cmd->args[0]);
-	ft_printf(1, "\n");
+	// ft_printf(1, "\n");
 	execve(path, cmd->args, env);
 	return (1);
 }
@@ -89,8 +102,8 @@ int	is_builtin(t_cmd *cmd)
 		return (1);
 	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
 		return (2);
-	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
-		return (3);
+	// else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
+	// 	return (3);
 	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
 		return (4);
 	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
