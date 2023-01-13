@@ -28,6 +28,9 @@ void	parse_init(t_cmd *parse_list, char **envp)
 	parse_list->redir = 0;
 	parse_list->out_pipe[0] = -1;
 	parse_list->out_pipe[1] = -1;
+	parse_list->in_pipe[0] = -1;
+	parse_list->in_pipe[1] = -1;
+	parse_list->redir_in = -1;
 	parse_list->term = NULL;
 	// parse_list->out_pipe = NULL;
 	ft_get_env(&parse_list->env_list, envp); // For env command
@@ -63,32 +66,40 @@ void	ft_handle_sigint(int sig)
 	}
 }
 
+int	lstsize(t_cmd *list)
+{
+	int	len;
+
+	if (!list)
+		return (0);
+	len = 1;
+	while (list->next)
+	{
+		list = list->next;
+		len++;
+	}
+	return (len);
+}
+
 void	exec_pipeline(t_cmd *parse_list, char **envp)
 {
 	t_cmd	*temp;
+	int	len;
 
-	while (parse_list->next != NULL)
+	len = lstsize(parse_list);
+	while (len-- > 0)
 	{
 		ft_exec_cmd(parse_list, envp);
 		if (parse_list->infile != STDIN_FILENO)
 			close (parse_list->infile);
 		close (parse_list->out_pipe[1]);
-		// if (parse_list->redir == 1)
-		// 	close(parse_list->infile);
 		if (parse_list->redir == 2)
 			close(parse_list->outfile);
 		temp = parse_list;
-		parse_list = temp->next;
+		if (temp->next)
+			parse_list = temp->next;
 		free(temp);
 	}
-	ft_exec_cmd(parse_list, envp);
-	if (parse_list->infile != STDIN_FILENO)
-		close (parse_list->infile);
-	// if (parse_list->redir == 1)
-	// 		close(parse_list->infile);
-	if (parse_list->redir == 2)
-		close(parse_list->outfile);
-	free (parse_list);
 }
 
 void	ft_init_termios(struct termios *term)
