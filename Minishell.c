@@ -108,14 +108,16 @@ int	main(int argc, char **argv, char **envp)
 	char			*line;
 	char			**tokens;
 	t_cmd 			*parse_list;
-	
-	parse_list = malloc(sizeof(t_cmd));
-		if (!parse_list)
-			exit(1);
-	parse_init(parse_list, envp);
-	ft_init_termios(parse_list->term);
+	struct termios			*term;
+
+	term = NULL;
+	ft_init_termios(term);
 	while (1)
 	{
+		parse_list = malloc(sizeof(t_cmd));
+		if (!parse_list)
+			exit(1);
+		parse_init(parse_list, envp);
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, ft_handle_sigint);
 		line = readline(PROMPT);
