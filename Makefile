@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2023/01/04 17:12:52 by mstojilj         ###   ########.fr        #
+#    Updated: 2023/01/13 12:47:30 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,18 @@ SRCS	= Minishell.c jules.c utils.c \
 
 OBJS	= ${SRCS:.c=.o}
 
-all:	${NAME}
+READLINE_PATH = vendor/readline/ 
+  
+COMPILEFLAGS = -L$(READLINE_PATH)/lib -lreadline 
+
+all: libs ${NAME}
+  
+libs: readline
+
+readline: $(READLINE_PATH) 
+  
+$(READLINE_PATH):
+					sh ./install_readline.sh
 
 %.o:	%.c
 		${CC} -c $< -o $@
