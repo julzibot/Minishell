@@ -52,10 +52,15 @@ void	ft_handle_sigquit(int sig)
 int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 {
 	char	*path;
-	if (cmd->infile != STDIN_FILENO)
+	if (!cmd->redir && cmd->infile != STDIN_FILENO)
 	{
 		dup2(cmd->infile, STDIN_FILENO);
 		close(cmd->infile);
+	}
+	else if (cmd->redir != 0 && cmd->redir_in != STDIN_FILENO)
+	{
+		dup2(cmd->redir_in, STDIN_FILENO);
+		close(cmd->redir_in);
 	}
 	if (cmd->outfile == STDOUT_FILENO && cmd->next)
 	{
@@ -67,6 +72,7 @@ int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 		dup2(cmd->outfile, STDOUT_FILENO);
 		close(cmd->outfile);
 	}
+	close (cmd->in_pipe);
 	signal(SIGQUIT, ft_handle_sigquit);
 	signal(SIGINT, ft_handle_sigint);
 	path = ft_cmd_check(env, cmd->args[0]);

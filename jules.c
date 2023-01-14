@@ -43,8 +43,6 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	next_cmd = malloc(sizeof(t_cmd));
 	next_cmd->infile = dup(temp->out_pipe[0]);
 	close (temp->out_pipe[0]);
-	// else
-	// 	next_cmd->infile = STDIN_FILENO;
 	next_cmd->outfile = STDOUT_FILENO;
 	next_cmd->redir = 0;
 	next_cmd->env_vars = temp->env_vars;
@@ -54,45 +52,53 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	next_cmd->args = NULL;
 	next_cmd->out_pipe[0] = -1;
 	next_cmd->out_pipe[1] = -1;
+	next_cmd->in_pipe = temp->out_pipe[0];
+	next_cmd->redir_in = -1;
 	temp->next = next_cmd;
 
 	return (next_cmd);
 }
 
-int	redir(t_cmd *parse_cmd, char **redir_ptr, int type)
+int	redir(t_cmd *cmd, char **redir_ptr, int type)
 {
 	char	*filename_delim;
 	char	*line;
 
-	if (type % 2 == 0 && parse_cmd->infile != STDIN_FILENO && parse_cmd->redir % 2 == 1)
-		close (parse_cmd->infile);
-	else if (type % 2 == 1 && parse_cmd->outfile != STDOUT_FILENO)
-		close (parse_cmd->outfile);
-	parse_cmd->redir = type % 2 + 1;
+	// if (type % 2 == 0 && parse_cmd->infile != STDIN_FILENO && parse_cmd->redir % 2 == 1)
+	// 	close (parse_cmd->infile);
+	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
+		close (cmd->outfile);
+	// else if (type % 2 == 0 && cmd->infile != STDIN_FILENO)
+	// 	close (cmd->infile);
+	cmd->redir = type % 2 + 1;
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)
 		return (0); // error handling here
 	line = NULL;
+	
+
 	if (!type)
 	{
-		parse_cmd->infile = open(".here_doc", O_CREAT | O_RDWR, 0644);
+		cmd->infile = open(".here_doc", O_CREAT | O_RDWR, 0644);
 		line = readline("> ");
 		while (!(ft_strlen(filename_delim) == ft_strlen(line) \
 			&& !ft_strncmp(line, filename_delim, ft_strlen(filename_delim))))
 		{
-			ft_printf(parse_cmd->infile, "%s\n", line);
+			ft_printf(cmd->infile, "%s\n", line);
 			line = readline("> ");
 		}
 	}
 	else if (type == 2)
 	{
-		parse_cmd->infile = open(filename_delim, O_CREAT | O_RDONLY, 0644);
-		printf("it works ! %d\n", parse_cmd->infile);
+		if (cmd->redir_in != -1)
+			close(cmd->redir_in);
+		cmd->redir_in = open(filename_delim, O_RDONLY, 0644);
+		printf("it works %d %d!\n", cmd->infile, cmd->redir_in);
 	}
 	else if (type == 1)
-		parse_cmd->outfile = open(filename_delim, O_CREAT | O_RDWR| O_APPEND, 0644);
+		cmd->outfile = open(filename_delim, O_CREAT | O_RDWR| O_APPEND, 0644);
 	else if (type == 3)
-		parse_cmd->outfile = open(filename_delim, O_CREAT | O_RDWR | O_TRUNC, 0644);
+		cmd->outfile = open(filename_delim, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	return (1);
 }
 
@@ -143,9 +149,12 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	{
 		type = token_type(lex_tab[i], parse_list->quoted[i]);
 		if (type < 4)
-			i += redir(parse_list, lex_tab + i, type);
+			i += redir(temp, lex_tab + i, type);
 		else if (type == 4)
+		{
 			temp = lst_next_cmd(temp); // handle pipes here
+			// printf("start : %d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
+		}
 		else
 		{
 			if (type == 6)
@@ -159,21 +168,25 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 		}
 	}
 
+	
+	
+	
 	// TEST PRINTS
 	temp = parse_list;
-	// while (temp->next != NULL)
-	// {
-	// 	printf("%p\n", temp);
-	// 	i = -1;
-	// 	while (temp->args && temp->args[++i])
-	// 		printf("%s\n", temp->args[i]);
-	// 	temp = temp->next;
-	// }
+	while (temp->next != NULL)
+	{
+		// printf("%p\n", temp);
+		// i = -1;
+		// while (temp->args && temp->args[++i])
+		// printf("redir a: %d\n", temp->redir);
+		printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
+		temp = temp->next;
+	}
 	// printf("%p\n", temp);
 	// i = -1;
 	// while (temp->args && temp->args[++i])
-	// 	printf("%s\n", temp->args[i]);
-	printf("%d %d %d\n", parse_list->infile, parse_list->out_pipe[1], parse_list->out_pipe[0]);
+	// printf("redir b: %d\n", temp->redir);
+	printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
 	printf("\n\n");
 	
 	// i = -1;

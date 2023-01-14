@@ -28,11 +28,9 @@ void	parse_init(t_cmd *parse_list, char **envp)
 	parse_list->redir = 0;
 	parse_list->out_pipe[0] = -1;
 	parse_list->out_pipe[1] = -1;
-	parse_list->in_pipe[0] = -1;
-	parse_list->in_pipe[1] = -1;
+	parse_list->in_pipe = -2;
 	parse_list->redir_in = -1;
 	parse_list->term = NULL;
-	// parse_list->out_pipe = NULL;
 	ft_get_env(&parse_list->env_list, envp); // For env command
 	ft_get_env(&parse_list->exp_list, envp); // For export command
 	ft_get_export(&parse_list->exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"
@@ -85,13 +83,18 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 {
 	t_cmd	*temp;
 	int	len;
+	char *test;
 
 	len = lstsize(parse_list);
+	test = NULL;
 	while (len-- > 0)
 	{
+		// close (parse_list->out_pipe[0]);
 		ft_exec_cmd(parse_list, envp);
 		if (parse_list->infile != STDIN_FILENO)
 			close (parse_list->infile);
+		if (parse_list->redir == 1)
+			close (parse_list->redir_in);
 		close (parse_list->out_pipe[1]);
 		if (parse_list->redir == 2)
 			close(parse_list->outfile);
@@ -99,6 +102,14 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 		if (temp->next)
 			parse_list = temp->next;
 		free(temp);
+		for (int i = 0; i < 20; i++) {
+			int flags = fcntl(i, F_GETFD);
+			if (flags != -1) {
+				printf("fd %d is open\n", i);
+				// if (read(i, test, 20) != -1 && test != NULL)
+				// 	printf("in this fd: %s\n", test);
+			}
+		}
 	}
 }
 
@@ -137,14 +148,6 @@ int	main(int argc, char **argv, char **envp)
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
 		exec_pipeline(parse_list, envp);
-		
-		//check fd's after execution
-		for (int i = 0; i < 50; i++) {
-			int flags = fcntl(i, F_GETFD);
-			if (flags != -1) {
-				printf("fd %d is open\n", i);
-			}
-		}
 	}
 	return (0);
 }

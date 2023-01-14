@@ -47,10 +47,12 @@ typedef	struct	s_cmd
 	char			**args;     // cd -> ../folder <-
 	char			**env_vars; // a=b (export)
 	int				infile;     // fd
+	int				redir_in;
 	int				outfile;    // fd
 	// int				in_pipe[2];
 	int				piped;
 	int				redir;
+	int				in_pipe;
 	int				out_pipe[2];
 	int				*quoted;
 	int				*space_after;
