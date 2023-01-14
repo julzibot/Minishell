@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 11:48:42 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/14 15:12:56 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 18:18:25 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,21 +83,22 @@ void	ft_do_echo(t_cmd *cmd)
 	{
 		while (cmd->args[i][j])
 		{
-			write(cmd->outfile, &cmd->args[i][j], 1);
+			write(1, &cmd->args[i][j], 1);
 			j++;
 		}
 		if (cmd->args[i + 1] != NULL)
-			write(cmd->outfile, " ", 1);
+			write(1, " ", 1);
 		j = 0;
 		i++;
 	}
 	if (nl == 0)
-		write(cmd->outfile, "\n", 1);
+		write(1, "\n", 1);
 }
 
 void	ft_echo(t_cmd *cmd)
 {
+	printf("etneres\n");
 	if (cmd->args[1] == NULL)
-		write(cmd->outfile, "\n", 1);
+		write(1, "\n", 1);
 	ft_do_echo(cmd);
 }

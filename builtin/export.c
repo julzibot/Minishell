@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/14 17:30:08 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 18:42:51 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ void	ft_line_to_var(t_cmd *cmd)
 	int	i;
 
 	i = 1;
+	if (cmd->env_vars == NULL)
+		return ;
 	while (cmd->env_vars[i])
 	{
 		cmd->env_vars = create_env_vars(cmd->args[i], cmd->env_vars);
@@ -81,20 +83,36 @@ void	ft_line_to_var(t_cmd *cmd)
 	}
 }
 
+// 4 EXPORT CASES:
+// -----------------------------
+// 1) "export a=b" -> "unset a"
+// Export a variable, then unset it
+// -----------------------------
+// 2) "export a=b" -> "export a=c"
+// Export a variable, then change it's value
+// -----------------------------
+// 3) "a=b c=d" -> "export a"
+// Declare a variable, then export it
+// -----------------------------
+// 3) "a=b c=d" -> "export a c"
+// Declare variables, then export them
+
 void	ft_export(t_cmd *cmd)
 {
 	int	i;
 
 	i = 0;
+	for (int j = 0; cmd->env_vars[j]; j++)
+		printf("env var: %s\n", cmd->env_vars[j]);
 	ft_line_to_var(cmd);
 	if (cmd->env_vars == NULL)
 		return ;
-	if (ft_var_content(cmd, cmd->args[1]))
-	{
-		ft_update_var(&env.env_list, cmd->args[1]);
-		ft_update_var(&env.exp_list, ft_strjoin("declare -x ", ft_add_quotes(cmd->args[1])));
-		return ;
-	}
+	// if (ft_var_content(cmd, cmd->args[1]))
+	// {
+	// 	ft_update_var(&env.env_list, cmd->args[1]);
+	// 	ft_update_var(&env.exp_list, ft_strjoin("declare -x ", ft_add_quotes(cmd->args[1])));
+	// 	return ;
+	// }
 	while (cmd->env_vars[i])
 	{
 		if (ft_strncmp(cmd->env_vars[i], cmd->args[1],
@@ -102,55 +120,11 @@ void	ft_export(t_cmd *cmd)
 			break ;
 		i++;
 	}
-	// if (ft_verify_double(cmd->env_list, cmd->env_vars[i]) == 1 || ft_verify_equal(cmd->env_vars[i]) == 1)
-	// 	return ;
 	if (ft_verify_double(env.env_list, cmd->env_vars[i]) == 1)
 		return ;
 	cmd->env_vars[i] = ft_verify_env_var(cmd->env_vars[i]); // Verify format
-	// if (cmd->env_vars[i] == NULL)
-	// 	return ;
 	ft_add_after(&env.env_list, 17, cmd->env_vars[i]);
 	ft_add_after(&env.exp_list, 17, ft_strjoin("declare -x ",
 			ft_add_quotes(cmd->env_vars[i])));
 	i++;
 }
-
-// int	main(int argc, char **argv, char **env)
-// {
-// 	(void)argc;
-// 	(void)argv;
-// 	t_env	*env_lst;
-// 	char	*line;
-
-// 	env_lst = NULL;
-// 	ft_get_env(&env_lst, env); // Copy original ENV to env_list
-
-// 	int i = 0;
-// 	for (t_env *curr = env_lst; curr; curr = curr->next) // Prints the ENV
-// 	{
-// 		if (curr == NULL)
-// 					break ;
-// 		printf("%d - %s\n", i, curr->line);
-// 		i++;
-// 	}
-// 	ft_add_after(&env_lst, 18, "hello=milan"); // Add new ENV variable
-// 	ft_add_after(&env_lst, 18, "JULES=VERNE");
-// 	while (1)
-// 	{
-// 		line = readline("Minichelou: ");
-// 		if (strcmp(line, "export") == 0)       // If command is export
-// 		{
-// 			i = 0;
-// 			for (t_env *curr = env_lst; curr; curr = curr->next) // Prints the ENV
-// 			{
-// 				if (curr == NULL)
-// 					break ;
-// 				printf("%d - %s\n", i, curr->line);
-// 				i++;
-// 			}
-// 		}
-// 		else if (strcmp(line, "unset hello") == 0) // If command is "unset hello"
-// 			ft_unset(&env_lst, "hello");           // Unsets the variable
-// 	}
-// 	return (0);
-// }
