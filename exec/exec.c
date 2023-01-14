@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/14 17:46:29 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 18:28:00 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,19 +114,23 @@ void	exec_builtin(t_cmd *cmd, int builtin)
 
 int	is_builtin(t_cmd *cmd)
 {
-	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
+	if (ft_strncmp(cmd->args[0], "cd", 2) == 0 &&
+			ft_strlen(cmd->args[0]) == 2)
 		return (1);
 	// else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
 	// 	return (2);
-	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
+	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0 &&
+			ft_strlen(cmd->args[0]) == 4)
 		return (3);
-	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
+	else if (ft_strncmp(cmd->args[0], "pwd", 3) == 0 &&
+			ft_strlen(cmd->args[0]) == 3) // FT_STRCMP!
 		return (4);
 	// else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
 	// 	return (5);
 	// else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
 	// 	return (6);
-	else if (ft_strncmp(cmd->args[0], "exit", 4) == 0)
+	else if (ft_strncmp(cmd->args[0], "exit", 4) == 0 &&
+			ft_strlen(cmd->args[0]) == 4)
 		return (7);
 	else
 		return (0);
@@ -137,7 +141,8 @@ void	ft_exec_cmd(t_cmd *cmd, char **env)
 	(void)env;
 	int	builtin;
 
-	if (cmd == NULL || cmd->args == NULL || ft_verify_equal(cmd->args[0]))
+	builtin = 0;
+	if (cmd == NULL || cmd->args == NULL)
 		return ;
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)

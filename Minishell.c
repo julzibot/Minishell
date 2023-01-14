@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/14 17:47:50 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 18:28:22 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,19 +86,23 @@ int	lstsize(t_cmd *list)
 
 int	ft_exec_parent(t_cmd *cmd)
 {
-	if (ft_strncmp(cmd->args[0], "exit", 4) == 0)
+	if (ft_strncmp(cmd->args[0], "exit", 4) == 0 &&
+			ft_strlen(cmd->args[0]) == 4)
 		ft_exit(cmd);
-	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
+	else if (ft_strncmp(cmd->args[0], "env", 3) == 0 &&
+			ft_strlen(cmd->args[0]) == 3)
 	{
 		ft_print_env(env.env_list);
 		return (1);
 	}
-	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
+	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0 &&
+			ft_strlen(cmd->args[0]) == 5)
 	{
 		ft_unset(&env.env_list, &env.exp_list, cmd->args[1]);
 		return (1);
 	}
-	else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
+	else if (ft_strncmp(cmd->args[0], "export", 6) == 0 &&
+			ft_strlen(cmd->args[0]) == 6)
 	{
 		if (cmd->args[1] == NULL)
 			ft_print_env(env.exp_list);
