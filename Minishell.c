@@ -113,10 +113,8 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 {
 	t_cmd	*temp;
 	int	len;
-	char *test;
 
 	len = lstsize(parse_list);
-	test = NULL;
 	while (len-- > 0)
 	{
 		// close (parse_list->out_pipe[0]);
@@ -127,7 +125,9 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 			close (parse_list->infile);
 		if (parse_list->redir == 1)
 			close (parse_list->redir_in);
+		close (parse_list->in_pipe);
 		close (parse_list->out_pipe[1]);
+		// close (parse_list->out_pipe[0]);
 		if (parse_list->redir == 2)
 			close(parse_list->outfile);
 		temp = parse_list;
@@ -138,8 +138,6 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 			int flags = fcntl(i, F_GETFD);
 			if (flags != -1) {
 				printf("fd %d is open\n", i);
-				// if (read(i, test, 20) != -1 && test != NULL)
-				// 	printf("in this fd: %s\n", test);
 			}
 		}
 	}

@@ -68,6 +68,8 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 	// 	close (parse_cmd->infile);
 	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
 		close (cmd->outfile);
+	// close (cmd->out_pipe[1]);
+	// close (cmd->out_pipe[0]);
 	// else if (type % 2 == 0 && cmd->infile != STDIN_FILENO)
 	// 	close (cmd->infile);
 	cmd->redir = type % 2 + 1;

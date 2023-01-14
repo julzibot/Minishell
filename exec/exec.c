@@ -52,6 +52,8 @@ void	ft_handle_sigquit(int sig)
 int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 {
 	char	*path;
+	(void)builtin;
+
 	if (!cmd->redir && cmd->infile != STDIN_FILENO)
 	{
 		dup2(cmd->infile, STDIN_FILENO);
@@ -71,21 +73,23 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	{
 		dup2(cmd->outfile, STDOUT_FILENO);
 		close(cmd->outfile);
+		close(cmd->out_pipe[1]);
+		close(cmd->out_pipe[0]);
 	}
 	close (cmd->in_pipe);
 	signal(SIGQUIT, ft_handle_sigquit);
 	signal(SIGINT, ft_handle_sigint);
-	if (builtin)
-	{
-		exec_builtin(cmd, builtin);
-		exit(0);
-	}
-	else
-	{
-		path = ft_cmd_check(env, cmd->args[0]);
-		// ft_printf(1, "\n");
-		execve(path, cmd->args, env);
-	}
+	// if (builtin)
+	// {
+	// 	exec_builtin(cmd, builtin);
+	// 	exit(0);
+	// }
+	// else
+	// {
+	path = ft_cmd_check(env, cmd->args[0]);
+	// ft_printf(1, "\n");
+	execve(path, cmd->args, env);
+	// }
 	return (1);
 }
 
@@ -118,8 +122,8 @@ int	is_builtin(t_cmd *cmd)
 		return (1);
 	// else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
 	// 	return (2);
-	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
-		return (3);
+	// else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
+	// 	return (3);
 	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
 		return (4);
 	// else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)

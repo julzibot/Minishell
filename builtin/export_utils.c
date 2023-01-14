@@ -77,10 +77,10 @@ int	ft_verify_equal(char *s) // Checks if there is "="
 	while (s[i])
 	{
 		if (s[i] == '=')
-			return (0);
+			return (1);
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 char	*ft_verify_env_var(char *s)
