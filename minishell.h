@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/12 17:22:23 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 17:49:20 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,12 @@ typedef struct s_env
 	char			*line;
 	struct s_env	*next;
 } t_env;
+
+typedef struct s_gl_env
+{
+	t_env	*env_list;
+	t_env	*exp_list;
+} t_gl_env;
 
 typedef	struct	s_cmd
 {
@@ -111,9 +117,10 @@ char				**ft_split(char const *s, char c);
 
 /***********EXEC***********/
 void	ft_exec_cmd(t_cmd *cmd, char **env);
-int		ft_exec(t_cmd *cmd, char **env);
+int		ft_exec(t_cmd *cmd, char **env, int builtin);
 char	*ft_substr(char *s, unsigned int start);
 char	*ft_strstr(char *haystack, char *needle);
+void	exec_builtin(t_cmd *cmd, int builtin);
 
 /***********ENV************/
 int		ft_varlen(char *str);
@@ -124,9 +131,9 @@ void	ft_add_queue(t_env **root, char *s);
 void	ft_update_env(t_env **env_list, t_env **exp_list, char *line);
 
 /***********ECHO***********/
-void	ft_echo(char **args);	             // Echo function
-void	ft_do_echo(char **args);				 // Echo (no options)
-void	ft_do_nl_echo(char **args);				 // Echo -n
+void	ft_echo(t_cmd *cmd);	             // Echo function
+void	ft_do_echo(t_cmd *cmd);				 // Echo (no options)
+int		ft_is_echo_nl(char *s);
 
 /***********EXPORT*********/
 void	ft_export(t_cmd *cmd);
@@ -141,11 +148,16 @@ int		ft_verify_equal(char *s);
 /***********DIRECTORY******/
 void	ft_cd(t_env **exp_list, t_env **env_list, char *line);
 int		ft_update_pwd(t_env **exp_list, t_env **env_list, char *var);
-char	*ft_pwd(void);
+char	*ft_pwd(t_cmd *cmd);
 
 /***********UNSET**********/
 void	ft_unset(t_env **env_list, t_env **exp_list, char *s);
 void	ft_remove_line(t_env **env_list, t_env *node);
+
+/***********EXIT***********/
+void	ft_exit(t_cmd *cmd);
+void	ft_free_env(t_cmd *cmd);
+void	ft_free_list(t_env **list);
 
 /**********SIGNALS*********/
 void	ft_handle_sigint(int sig);

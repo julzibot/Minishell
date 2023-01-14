@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:51:18 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/06 17:20:12 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 15:38:02 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,26 @@ void	ft_add_after(t_env **env_list, int line_nb, char *s)
 {
 	t_env	*curr;
 	t_env	*new;
-	t_env	*tmp;
+	//t_env	*tmp;
 	int		i;
 
 	curr = *env_list;
 	i = 0;
 	new = malloc(sizeof(t_env));
-	if (!new)
-		exit(1);
 	new->next = NULL;
 	new->line = malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!new->line)
-		exit(1);
 	ft_strcpy(new->line, s);
+	if (curr == NULL)
+		return ;
 	while (curr->next)
 	{
+		if (line_nb < i)
+			return ;
 		if (i == line_nb)
 		{
-			tmp = curr->next;
+			new->next = curr->next;
 			curr->next = new;
-			new->next = tmp;
+			printf("curr->next = %s\n", curr->next->line);
 			return ;
 		}
 		i++;
@@ -81,7 +81,6 @@ char	*ft_remove_cmd(char *line, char *remove)
 
 	i = 0;
 	j = 0;
-	
 	if (line == NULL)
 		return (NULL);
 	if (remove == NULL)
@@ -91,8 +90,6 @@ char	*ft_remove_cmd(char *line, char *remove)
 		return (line);
 	i -= j;
 	s = malloc(sizeof(char) * (i + 1));
-	if (!s)
-		return (NULL);
 	i = 0;
 	while (line[j])
 	{

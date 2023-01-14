@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2022/12/10 22:07:53 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 12:34:10 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,7 @@
 int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 {
 	char	*s;
-	// t_env	**curr;
 
-	// curr = env_list;
 	s = malloc(sizeof(char) * (PATH_MAX - 1));
 	if (!s)
 		exit(1);
@@ -58,7 +56,7 @@ void	ft_cd(t_env **exp_list, t_env **env_list, char *line)
 		return ;
 }
 
-char	*ft_pwd(void)
+char	*ft_pwd(t_cmd *cmd)
 {
 	char	*cwd; // cwd = Current Working Directory
 
@@ -69,7 +67,7 @@ char	*ft_pwd(void)
 	cwd[PATH_MAX - 1] = '\0';
 	if (cwd == NULL)
 		return (NULL);
-	ft_printf(1, "%s\n", cwd);
+	ft_printf(cmd->outfile, "%s\n", cwd);
 	return (cwd);
 }
 

@@ -6,13 +6,15 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/07 14:46:45 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 17:30:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_update_var(t_env **env_list, char *s)
+extern t_gl_env	env;
+
+int	ft_update_var(t_env **env_list, char *s)
 {
 	t_env	*curr;
 	t_env	*new;
@@ -22,12 +24,8 @@ void	ft_update_var(t_env **env_list, char *s)
 	curr = *env_list;
 	i = 0;
 	new = malloc(sizeof(t_env));
-	if (!new)
-		exit(1);
 	new->next = NULL;
 	new->line = malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!new->line)
-		exit(1);
 	ft_strcpy(new->line, s);
 	while (curr->next)
 	{
@@ -36,12 +34,13 @@ void	ft_update_var(t_env **env_list, char *s)
 			new->next = curr->next;
 			prev->next = new;
 			free(curr);
-			return ;
+			return (1);
 		}
 		i++;
 		prev = curr;
 		curr = curr->next;
 	}
+	return (0);
 }
 
 void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
@@ -52,7 +51,7 @@ void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
 	//line = ft_var_content(env_list, exp_list, line);
 	if (line == NULL)
 		return ;
-	printf("line: %s\n", line);
+	printf("update var\n");
 	ft_update_var(env_list, line);
 	ft_update_var(exp_list, ft_strjoin("declare -x ", ft_add_quotes(line)));
 }
@@ -70,30 +69,49 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 	}
 }
 
+void	ft_line_to_var(t_cmd *cmd)
+{
+	int	i;
+
+	i = 1;
+	while (cmd->env_vars[i])
+	{
+		cmd->env_vars = create_env_vars(cmd->args[i], cmd->env_vars);
+		i++;
+	}
+}
+
 void	ft_export(t_cmd *cmd)
 {
 	int	i;
 
 	i = 0;
+	ft_line_to_var(cmd);
 	if (cmd->env_vars == NULL)
 		return ;
+	if (ft_var_content(cmd, cmd->args[1]))
+	{
+		ft_update_var(&env.env_list, cmd->args[1]);
+		ft_update_var(&env.exp_list, ft_strjoin("declare -x ", ft_add_quotes(cmd->args[1])));
+		return ;
+	}
 	while (cmd->env_vars[i])
 	{
-		if (ft_strncmp(cmd->env_vars[i], cmd->args[1], ft_strlen(cmd->args[1])) == 0)
+		if (ft_strncmp(cmd->env_vars[i], cmd->args[1],
+				ft_strlen(cmd->args[1])) == 0)
 			break ;
 		i++;
 	}
-
 	// if (ft_verify_double(cmd->env_list, cmd->env_vars[i]) == 1 || ft_verify_equal(cmd->env_vars[i]) == 1)
 	// 	return ;
-	if (ft_verify_double(cmd->env_list, cmd->env_vars[i]) == 1)
+	if (ft_verify_double(env.env_list, cmd->env_vars[i]) == 1)
 		return ;
-	cmd->env_vars[i] = ft_verify_env_var(cmd->env_vars[i]); // Verify the format
-	cmd->env_vars[i] = ft_var_content(cmd, cmd->env_vars[i]);
-	if (cmd->env_vars[i] == NULL)
-		return ;
-	ft_add_after(&cmd->env_list, 17, cmd->env_vars[i]);
-	ft_add_after(&cmd->exp_list, 17, ft_strjoin("declare -x ", ft_add_quotes(cmd->env_vars[i])));
+	cmd->env_vars[i] = ft_verify_env_var(cmd->env_vars[i]); // Verify format
+	// if (cmd->env_vars[i] == NULL)
+	// 	return ;
+	ft_add_after(&env.env_list, 17, cmd->env_vars[i]);
+	ft_add_after(&env.exp_list, 17, ft_strjoin("declare -x ",
+			ft_add_quotes(cmd->env_vars[i])));
 	i++;
 }
 
@@ -103,7 +121,7 @@ void	ft_export(t_cmd *cmd)
 // 	(void)argv;
 // 	t_env	*env_lst;
 // 	char	*line;
-	
+
 // 	env_lst = NULL;
 // 	ft_get_env(&env_lst, env); // Copy original ENV to env_list
 

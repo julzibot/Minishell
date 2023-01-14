@@ -6,18 +6,20 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/07 14:42:23 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 17:30:31 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern t_gl_env	env;
 
 char	*ft_add_quotes(char *var)
 {
 	int		i;
 	int		j;
 	char	*env_var;
-	
+
 	i = 0;
 	j = 0;
 	if (var == NULL)
@@ -53,7 +55,7 @@ char	*ft_add_quotes(char *var)
 	return (env_var);
 }
 
-int	ft_verify_double(t_env *env_list, char *line) // Checks if there is a duplicate
+int	ft_verify_double(t_env *env_list, char *line) // Checks duplicate
 {
 	t_env	*curr;
 
@@ -75,10 +77,10 @@ int	ft_verify_equal(char *s) // Checks if there is "="
 	while (s[i])
 	{
 		if (s[i] == '=')
-			return (1);
+			return (0);
 		i++;
 	}
-	return (0);
+	return (1);
 }
 
 char	*ft_verify_env_var(char *s)
@@ -106,8 +108,6 @@ char	*ft_verify_env_var(char *s)
 	len = i + 1;
 	i = 0;
 	str = malloc(sizeof(char) * len);
-	if (!str)
-		exit(1);
 	while (i < len)
 	{
 		str[i] = s[i];
@@ -117,21 +117,33 @@ char	*ft_verify_env_var(char *s)
 	return (str);
 }
 
+// void	ft_update_var(t_cmd *cmd, char *line)
+// {
+	
+// }
+
 char	*ft_var_content(t_cmd *cmd, char *line)
 {
+	(void)cmd;
 	t_env	*curr;
 
-	curr = cmd->env_list;
+	curr = env.env_list;
 	while (curr)
 	{
-		if (ft_strncmp(curr->line, line, ft_varlen(line)) == 0) // put ft_strcmp!
+		if (ft_strncmp(curr->line, line, ft_varlen(line)) == 0) // ft_strcmp!
 		{
-			ft_unset(&cmd->env_list, &cmd->exp_list, line);
-			ft_export(cmd);
-			printf("exported: %s\n", line);
-			return (NULL);
+			// printf("GETS TO CONTENT\n");
+			// printf("LINE: %s\n", line);
+			// ft_update_var(&env.env_list, line);
+			// ft_update_var(&env.exp_list, ft_strjoin("declare -x ", ft_add_quotes(line)));
+			//ft_update_env(&env.env_list, &env.exp_list, line);
+			//ft_update_var(line);
+			//ft_unset(&env.env_list, &env.exp_list, line);
+			//ft_export(cmd);
+			return (line);
+			//return (NULL);
 		}
 		curr = curr->next;
 	}
-	return (line);
+	return (NULL);
 }

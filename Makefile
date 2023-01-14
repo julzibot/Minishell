@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2023/01/13 12:47:30 by mstojilj         ###   ########.fr        #
+#    Updated: 2023/01/14 17:49:36 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ SRCS	= Minishell.c jules.c utils.c \
 			get_env_vars.c \
 			builtin/env.c \
 			builtin/echo.c \
+			builtin/exit.c \
 			builtin/unset.c \
 			builtin/export.c \
 			builtin/directory.c \

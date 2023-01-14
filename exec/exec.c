@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/07 17:07:06 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 17:46:29 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern pid_t	g_pid;
+t_gl_env	env;
 
 char	*ft_cmd_check(char **envp, char *cmd)
 {
@@ -49,7 +49,7 @@ void	ft_handle_sigquit(int sig)
 		printf("Quit: 3\n");
 }
 
-int		ft_exec(t_cmd *cmd, char **env) // Execute a command
+int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 {
 	char	*path;
 	if (!cmd->redir && cmd->infile != STDIN_FILENO)
@@ -75,47 +75,59 @@ int		ft_exec(t_cmd *cmd, char **env) // Execute a command
 	close (cmd->in_pipe);
 	signal(SIGQUIT, ft_handle_sigquit);
 	signal(SIGINT, ft_handle_sigint);
-	path = ft_cmd_check(env, cmd->args[0]);
-	// ft_printf(1, "\n");
-	execve(path, cmd->args, env);
+	if (builtin)
+	{
+		exec_builtin(cmd, builtin);
+		exit(0);
+	}
+	else
+	{
+		path = ft_cmd_check(env, cmd->args[0]);
+		// ft_printf(1, "\n");
+		execve(path, cmd->args, env);
+	}
 	return (1);
 }
 
 void	exec_builtin(t_cmd *cmd, int builtin)
 {
 	if (builtin == 1)
-		ft_cd(&cmd->exp_list, &cmd->env_list, cmd->args[1]);
-	else if (builtin == 2)
-		ft_print_env(cmd->env_list);
+		ft_cd(&env.exp_list, &env.env_list, cmd->args[1]);
+	// else if (builtin == 2)
+	// 	ft_print_env(env.env_list);
 	else if (builtin == 3)
-		ft_echo(cmd->args);
-	else if (builtin == 4) // FT_STRCMP!
-		ft_pwd();
-	else if (builtin == 5)
-		ft_unset(&cmd->env_list, &cmd->exp_list, cmd->args[1]);
-	else if (builtin == 6)
-	{
-		if (cmd->args[1] == NULL)
-			ft_print_env(cmd->exp_list);
-		else
-			ft_export(cmd);
-	}
+		ft_echo(cmd);
+	else if (builtin == 4)
+		ft_pwd(cmd);
+	// else if (builtin == 5)
+	// 	ft_unset(&cmd->env_list, &cmd->exp_list, cmd->args[1]);
+	// else if (builtin == 6)
+	// {
+	// 	if (cmd->args[1] == NULL)
+	// 		ft_print_env(cmd->exp_list);
+	// 	else
+	// 		ft_export(cmd);
+	// }
+	else if (builtin == 7)
+		ft_exit(cmd);
 }
 
 int	is_builtin(t_cmd *cmd)
 {
 	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
 		return (1);
-	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
-		return (2);
-	// else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
-	// 	return (3);
+	// else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
+	// 	return (2);
+	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
+		return (3);
 	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
 		return (4);
-	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
-		return (5);
-	else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
-		return (6);
+	// else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
+	// 	return (5);
+	// else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
+	// 	return (6);
+	else if (ft_strncmp(cmd->args[0], "exit", 4) == 0)
+		return (7);
 	else
 		return (0);
 }
@@ -130,11 +142,20 @@ void	ft_exec_cmd(t_cmd *cmd, char **env)
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
 	{
+		struct termios original_termios;
+    	struct termios modified_termios;
+
+    	tcgetattr(STDIN_FILENO, &original_termios);
+		modified_termios = original_termios;
+
+    	modified_termios.c_cc[VEOF] = -1;
+		modified_termios.c_lflag &= ~ICANON; // Disable canonical mode
+		tcsetattr(STDIN_FILENO, TCSANOW, &modified_termios);
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		builtin = is_builtin(cmd);
-		if (builtin)
-			exec_builtin(cmd, builtin);
-		else
-			ft_exec(cmd, env); // execve
+		ft_exec(cmd, env, builtin); // execve
+		tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
 	}
 	else
 		waitpid(cmd->shell_pid, NULL, 0);

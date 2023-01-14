@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 11:48:42 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/07 15:57:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 15:12:56 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,43 +60,7 @@ int	ft_is_echo_nl(char *s)
 	return (1);
 }
 
-// char	*ft_get_echo_var(char *line, int start)
-// {
-// 	char	*var;
-// 	int		i;
-// 	int		len;
-
-// 	i = start;
-// 	len = 0;
-// 	while (line[i])
-// 		i++;
-// 	len = i - start;
-// 	var = malloc(sizeof(char) * len + 1);
-// 	if (!var)
-// 		exit(1);
-// 	i = 0;
-// 	while (line[start])
-// 	{
-// 		var[i] = line[start];
-// 		i++;
-// 		start++;
-// 	}
-// 	var[i] = '\0';
-// 	return (var);
-// }
-
-// void	ft_echo_var(char *line, int start)
-// {
-// 	char	*find;
-
-// 	printf("ENTER\n");
-// 	find = ft_get_echo_var(line, start);
-// 	if (!find)
-// 		return ;
-// 	printf("TO FIND %s\n", find);
-// }
-
-void	ft_do_echo(char **args)
+void	ft_do_echo(t_cmd *cmd)
 {
 	int	i;
 	int	j;
@@ -105,9 +69,9 @@ void	ft_do_echo(char **args)
 	i = 1;
 	j = 0;
 	nl = 0;
-	while (args[i])
+	while (cmd->args[i])
 	{
-		if (ft_is_echo_nl(args[i]))
+		if (ft_is_echo_nl(cmd->args[i]))
 		{
 			nl = 1;
 			i++;
@@ -115,25 +79,25 @@ void	ft_do_echo(char **args)
 		else
 			break ;
 	}
-	while (args[i])
+	while (cmd->args[i])
 	{
-		while (args[i][j])
+		while (cmd->args[i][j])
 		{
-			write(1, &args[i][j], 1);
+			write(cmd->outfile, &cmd->args[i][j], 1);
 			j++;
 		}
-		if (args[i + 1] != NULL)
-			write(1, " ", 1);
+		if (cmd->args[i + 1] != NULL)
+			write(cmd->outfile, " ", 1);
 		j = 0;
 		i++;
 	}
 	if (nl == 0)
-		write(1, "\n", 1);
+		write(cmd->outfile, "\n", 1);
 }
 
-void	ft_echo(char **args)
+void	ft_echo(t_cmd *cmd)
 {
-	if (args[1] == NULL)
-		write(1, "\n", 1);
-	ft_do_echo(args);
+	if (cmd->args[1] == NULL)
+		write(cmd->outfile, "\n", 1);
+	ft_do_echo(cmd);
 }
