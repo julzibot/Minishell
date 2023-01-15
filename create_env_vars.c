@@ -51,7 +51,7 @@ static  char	**create_var(char **env_vars, char *cpy)
                 free(env_vars[j]);
 			    env_vars[j] = ft_strdup(cpy);
             }
-            else   
+            else
                 env_vars[j] = ft_strjoin(env_vars[j], ft_strdup(cpy + namelen + concat + 1));
 			return (env_vars);
 		}
@@ -60,13 +60,13 @@ static  char	**create_var(char **env_vars, char *cpy)
 	return (env_vars);
 }
 
-char	**create_env_vars(char	*token, char **env_vars) //search for NAME=VALUE in unquoted tokens, store in env_vars
+char	**create_env_vars(char	*token, char **env_vars, t_env *env_list) //search for NAME=VALUE in unquoted tokens, store in env_vars
 {
 	int i;
 	char	*cpy;
 
 	i = 0;
-	cpy = get_env_vars(token, env_vars);
+	cpy = get_env_vars(token, env_vars, env_list);
 	while (cpy && cpy[i] && cpy[i] != '=')
 		i++;
 	if (cpy && cpy[i] && cpy[i] == '=')

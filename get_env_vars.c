@@ -93,13 +93,14 @@ static  char	*check_var_name(char *token, char **env_vars, char *str)
 	return (str);
 }
 
-char	*get_env_vars(char *token, char **env_vars) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
+char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
 {
 	int	i;
 	char	*str;
 	// printf("GET_IN %s\n", token);
 
 	i = 0;
+	(void)env_list;
 	str = NULL;
 	if (!token)
 		return (NULL);

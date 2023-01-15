@@ -152,16 +152,13 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 		if (type < 4)
 			i += redir(temp, lex_tab + i, type);
 		else if (type == 4)
-		{
-			temp = lst_next_cmd(temp); // handle pipes here
-			// printf("start : %d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
-		}
+			temp = lst_next_cmd(temp);
 		else
 		{
 			if (type == 6)
-				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars);
+				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars, parse_list->env_list);
 			if (type < 7)
-				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars), lex_tab, parse_list, i);
+				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars, parse_list->env_list), lex_tab, parse_list, i);
 			else
 				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab, parse_list, i);
 			temp->args = token_join(temp->args, str);

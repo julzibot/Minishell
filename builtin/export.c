@@ -67,6 +67,20 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 	}
 }
 
+// void	ft_line_to_var(t_cmd *cmd)
+// {
+// 	int	i;
+
+// 	i = 1;
+// 	if (cmd->env_vars == NULL)
+// 		return ;
+// 	while (cmd->env_vars[i])
+// 	{
+// 		cmd->env_vars = create_env_vars(cmd->args[i], cmd->env_vars);
+// 		i++;
+// 	}
+// }
+
 int	ft_strcmp(const char *s1, const char *s2)
 {
 	int	i;
