@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/15 17:27:33 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:34:02 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,9 @@ int	ft_strcmp(const char *s1, const char *s2)
 // -----------------------------
 // 8) "export a="$HOME""
 // Export variable assigned with another variable's value and double quotes
+// -----------------------------
+// 9) "export a='$HOME'"
+// Export variable assigned with another variable name and single quotes
 
 // CHECK UNSET:
 // -----------------------------
