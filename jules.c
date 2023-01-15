@@ -51,6 +51,8 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	next_cmd->args = NULL;
 	next_cmd->out_pipe[0] = -1;
 	next_cmd->out_pipe[1] = -1;
+	next_cmd->heredoc[0] = -1;
+	next_cmd->heredoc[1] = -1;
 	next_cmd->in_pipe = temp->out_pipe[0];
 	next_cmd->redir_in = -1;
 	temp->next = next_cmd;
@@ -74,21 +76,23 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 
 	if (!type)
 	{
-		cmd->infile = open(".here_doc", O_CREAT | O_RDWR, 0644);
+		if (pipe(cmd->heredoc) == -1)
+			return (0);
+		cmd->redir_in = dup(cmd->heredoc[0]);
+		close(cmd->heredoc[0]);
 		line = readline("> ");
-		while (!(ft_strlen(filename_delim) == ft_strlen(line) \
-			&& !ft_strncmp(line, filename_delim, ft_strlen(filename_delim))))
+		while (ft_strcmp(line, filename_delim))
 		{
-			ft_printf(cmd->infile, "%s\n", line);
+			ft_printf(cmd->heredoc[1], "%s\n", line);
 			line = readline("> ");
 		}
+		close(cmd->heredoc[1]);
 	}
 	else if (type == 2)
 	{
 		if (cmd->redir_in != -1)
 			close(cmd->redir_in);
 		cmd->redir_in = open(filename_delim, O_RDONLY, 0644);
-		printf("it works %d %d!\n", cmd->infile, cmd->redir_in);
 	}
 	else if (type == 1)
 		cmd->outfile = open(filename_delim, O_CREAT | O_RDWR| O_APPEND, 0644);
@@ -167,20 +171,20 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	
 	
 	// TEST PRINTS
-	temp = parse_list;
-	while (temp->next != NULL)
-	{
-		printf("%p\n", temp);
-		i = -1;
-		while (temp->args && temp->args[++i])
-			printf("%s\n", temp->args[i]);
+	// temp = parse_list;
+	// while (temp->next != NULL)
+	// {
+	// 	printf("%p\n", temp);
+	// 	i = -1;
+	// 	while (temp->args && temp->args[++i])
+	// 		printf("%s\n", temp->args[i]);
 		// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
-		// temp = temp->next;
-	}
-	printf("%p\n", temp);
-	i = -1;
-	while (temp->args && temp->args[++i])
-		printf("%s\n", temp->args[i]);
+	// 	temp = temp->next;
+	// }
+	// printf("%p\n", temp);
+	// i = -1;
+	// while (temp->args && temp->args[++i])
+	// 	printf("%s\n", temp->args[i]);
 	// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
 	// printf("\n\n");
 	

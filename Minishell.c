@@ -29,6 +29,8 @@ void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 	parse_list->redir = 0;
 	parse_list->out_pipe[0] = -1;
 	parse_list->out_pipe[1] = -1;
+	parse_list->heredoc[0] = -1;
+	parse_list->heredoc[1] = -1;
 	parse_list->in_pipe = -2;
 	parse_list->redir_in = -1;
 	parse_list->term = NULL;
