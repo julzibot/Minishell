@@ -102,7 +102,7 @@ int	ft_exec_parent(t_cmd *cmd)
 	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0 &&
 			ft_strlen(cmd->args[0]) == 5)
 	{
-		ft_unset(&env.env_list, &env.exp_list, cmd->args[1]);
+		ft_unset(cmd);
 		return (1);
 	}
 	else if (ft_strncmp(cmd->args[0], "export", 6) == 0 &&
