@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/14 17:49:20 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:16:10 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ int		ft_update_pwd(t_env **exp_list, t_env **env_list, char *var);
 char	*ft_pwd(t_cmd *cmd);
 
 /***********UNSET**********/
-void	ft_unset(t_env **env_list, t_env **exp_list, char *s);
+void	ft_unset(t_cmd *cmd);
 void	ft_remove_line(t_env **env_list, t_env *node);
 
 /***********EXIT***********/
