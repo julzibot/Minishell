@@ -76,6 +76,8 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 
 	if (!type)
 	{
+		if (cmd->redir_in != -1)
+			close(cmd->redir_in);
 		if (pipe(cmd->heredoc) == -1)
 			return (0);
 		cmd->redir_in = dup(cmd->heredoc[0]);
