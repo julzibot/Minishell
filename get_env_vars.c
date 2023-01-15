@@ -65,11 +65,12 @@ static  int	reset_namelen(char *token)
 	return (namelen);
 }
 
-static  char	*check_var_name(char *token, char **env_vars, char *str)
+static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env_list)
 {
 	int	j;
 	int	namelen;
 	int match;
+	t_env	*temp;
 
 	j = -1;
 	match = 0;
@@ -86,6 +87,23 @@ static  char	*check_var_name(char *token, char **env_vars, char *str)
 			match = 1;
 		}
 	}
+	temp = env_list;
+	j = env_lstsize(env_list);
+	while (j-- > 0 && !match)
+	{
+		// printf("envline : %s\n", temp->line);
+		namelen = 0;
+		while (temp->line && temp->line[namelen] != '=')
+			namelen++;
+		if (!ft_strncmp(temp->line, token + 1, namelen) \
+				&& (!token[namelen + 1] || token[namelen + 1] == '$' \
+				|| is_delim(token[namelen + 1]) == 1 || is_delim(token[namelen + 1]) == 4))
+		{
+			str = get_value(token, namelen, temp->line, str);
+			match = 1;
+		}
+		temp = temp->next;
+	}
 	if (!match)
 		namelen = reset_namelen(token);
 	while (token[++namelen] && token[namelen] != '$')
@@ -100,7 +118,6 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 	// printf("GET_IN %s\n", token);
 
 	i = 0;
-	(void)env_list;
 	str = NULL;
 	if (!token)
 		return (NULL);
@@ -111,7 +128,7 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 		i++;
 	while (token[i])
 	{
-		str = check_var_name(token + i, env_vars, str);
+		str = check_var_name(token + i, env_vars, str, env_list);
 		while (token[++i] && token[i] != '$')
 			;
 	}

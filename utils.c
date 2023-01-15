@@ -172,6 +172,36 @@ char	**token_join(char **args, char *token) // add a string to the end of a char
 	return (tab);
 }
 
+int	env_lstsize(t_env*list)
+{
+	int	len;
+
+	if (!list)
+		return (0);
+	len = 1;
+	while (list->next)
+	{
+		list = list->next;
+		len++;
+	}
+	return (len);
+}
+
+int	cmd_lstsize(t_cmd *list)
+{
+	int	len;
+
+	if (!list)
+		return (0);
+	len = 1;
+	while (list->next)
+	{
+		list = list->next;
+		len++;
+	}
+	return (len);
+}
+
 char    *char_cat(char *str, char c)
 {
     char    *new;

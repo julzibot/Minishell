@@ -20,7 +20,7 @@ void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 	parse_list->env_vars = env_vars;
 	parse_list->quoted = NULL;
 	parse_list->space_after = NULL;
-	parse_list->env_list = NULL;
+	parse_list->env_list = env.env_list;
 	parse_list->exp_list = NULL;
 	parse_list->infile = STDIN_FILENO;
 	parse_list->outfile = STDOUT_FILENO;
@@ -71,21 +71,6 @@ void	ft_handle_sigint(int sig)
 	// }
 }
 
-int	lstsize(t_cmd *list)
-{
-	int	len;
-
-	if (!list)
-		return (0);
-	len = 1;
-	while (list->next)
-	{
-		list = list->next;
-		len++;
-	}
-	return (len);
-}
-
 int	ft_exec_parent(t_cmd *cmd)
 {
 	if (!cmd->args)
@@ -122,7 +107,7 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	t_cmd	*temp;
 	int	len;
 
-	len = lstsize(parse_list);
+	len = cmd_lstsize(parse_list);
 	while (len-- > 0)
 	{
 		if (ft_exec_parent(parse_list))
@@ -140,12 +125,12 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 		if (temp->next)
 			parse_list = temp->next;
 		free(temp);
-		for (int i = 0; i < 20; i++) {
-			int flags = fcntl(i, F_GETFD);
-			if (flags != -1) {
-				printf("fd %d is open\n", i);
-			}
-		}
+		// for (int i = 0; i < 20; i++) {
+		// 	int flags = fcntl(i, F_GETFD);
+		// 	if (flags != -1) {
+		// 		printf("fd %d is open\n", i);
+		// 	}
+		// }
 	}
 }
 

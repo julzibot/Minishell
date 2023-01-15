@@ -113,6 +113,8 @@ int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	**token_join(char **args, char *token);
 char	*ft_strdup_free(char *str);
 void				*ft_calloc(size_t count, size_t size);
+int	cmd_lstsize(t_cmd *list);
+int	env_lstsize(t_env *list);
 // static char			*strseg(const char *str, char c);
 // static unsigned int	size_count(const char *str, char c);
 char				**ft_split(char const *s, char c);
