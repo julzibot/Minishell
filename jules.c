@@ -42,7 +42,6 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 		return NULL;
 	next_cmd = malloc(sizeof(t_cmd));
 	next_cmd->infile = dup(temp->out_pipe[0]);
-	close (temp->out_pipe[0]);
 	next_cmd->outfile = STDOUT_FILENO;
 	next_cmd->redir = 0;
 	next_cmd->env_vars = temp->env_vars;
@@ -64,14 +63,8 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 	char	*filename_delim;
 	char	*line;
 
-	// if (type % 2 == 0 && parse_cmd->infile != STDIN_FILENO && parse_cmd->redir % 2 == 1)
-	// 	close (parse_cmd->infile);
 	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
 		close (cmd->outfile);
-	// close (cmd->out_pipe[1]);
-	// close (cmd->out_pipe[0]);
-	// else if (type % 2 == 0 && cmd->infile != STDIN_FILENO)
-	// 	close (cmd->infile);
 	cmd->redir = type % 2 + 1;
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)

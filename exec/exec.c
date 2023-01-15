@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/14 18:28:00 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/14 17:46:29 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	char	*path;
 	(void)builtin;
 
-	if (!cmd->redir && cmd->infile != STDIN_FILENO)
+	if (cmd->redir_in == -1 && cmd->infile != STDIN_FILENO)
 	{
 		dup2(cmd->infile, STDIN_FILENO);
 		close(cmd->infile);
 	}
-	else if (cmd->redir != 0 && cmd->redir_in != STDIN_FILENO)
+	else if (cmd->redir_in != -1 && cmd->redir_in != STDIN_FILENO)
 	{
 		dup2(cmd->redir_in, STDIN_FILENO);
 		close(cmd->redir_in);
@@ -73,23 +73,20 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	{
 		dup2(cmd->outfile, STDOUT_FILENO);
 		close(cmd->outfile);
-		close(cmd->out_pipe[1]);
-		close(cmd->out_pipe[0]);
 	}
 	close (cmd->in_pipe);
 	signal(SIGQUIT, ft_handle_sigquit);
 	signal(SIGINT, ft_handle_sigint);
-	// if (builtin)
-	// {
-	// 	exec_builtin(cmd, builtin);
-	// 	exit(0);
-	// }
-	// else
-	// {
-	path = ft_cmd_check(env, cmd->args[0]);
-	// ft_printf(1, "\n");
-	execve(path, cmd->args, env);
-	// }
+	if (builtin)
+	{
+		exec_builtin(cmd, builtin);
+		exit(0);
+	}
+	else
+	{
+		path = ft_cmd_check(env, cmd->args[0]);
+		execve(path, cmd->args, env);
+	}
 	return (1);
 }
 
@@ -118,29 +115,19 @@ void	exec_builtin(t_cmd *cmd, int builtin)
 
 int	is_builtin(t_cmd *cmd)
 {
-	if (ft_strncmp(cmd->args[0], "cd", 2) == 0 &&
-			ft_strlen(cmd->args[0]) == 2)
+	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
 		return (1);
 	// else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
 	// 	return (2);
-<<<<<<< HEAD
 	// else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
 	// 	return (3);
 	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
-=======
-	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0 &&
-			ft_strlen(cmd->args[0]) == 4)
-		return (3);
-	else if (ft_strncmp(cmd->args[0], "pwd", 3) == 0 &&
-			ft_strlen(cmd->args[0]) == 3) // FT_STRCMP!
->>>>>>> 4207f63158cdabf159452751dda1e9b09d6984a7
 		return (4);
 	// else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)
 	// 	return (5);
 	// else if (ft_strncmp(cmd->args[0], "export", 6) == 0)
 	// 	return (6);
-	else if (ft_strncmp(cmd->args[0], "exit", 4) == 0 &&
-			ft_strlen(cmd->args[0]) == 4)
+	else if (ft_strncmp(cmd->args[0], "exit", 4) == 0)
 		return (7);
 	else
 		return (0);
@@ -151,8 +138,7 @@ void	ft_exec_cmd(t_cmd *cmd, char **env)
 	(void)env;
 	int	builtin;
 
-	builtin = 0;
-	if (cmd == NULL || cmd->args == NULL)
+	if (cmd == NULL || cmd->args == NULL || ft_verify_equal(cmd->args[0]))
 		return ;
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
