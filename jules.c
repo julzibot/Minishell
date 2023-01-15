@@ -126,11 +126,11 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	int		type;
 	char	*str;
 
-	// i = -1;
-	// if (lex_tab == NULL)
-	// 	return (NULL);
-	// while (lex_tab[++i])
-	// 	printf("lex %d : %s\n", i, lex_tab[i]);
+	i = -1;
+	if (lex_tab == NULL)
+		return (NULL);
+	while (lex_tab[++i])
+		printf("lex %d : %s\n", i, lex_tab[i]);
 	
 	// INIT
 	i = -1;
@@ -170,22 +170,22 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	temp = parse_list;
 	while (temp->next != NULL)
 	{
-		// printf("%p\n", temp);
-		// i = -1;
-		// while (temp->args && temp->args[++i])
-		// printf("redir a: %d\n", temp->redir);
-		printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
-		temp = temp->next;
+		printf("%p\n", temp);
+		i = -1;
+		while (temp->args && temp->args[++i])
+			printf("%s\n", temp->args[i]);
+		// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
+		// temp = temp->next;
 	}
-	// printf("%p\n", temp);
-	// i = -1;
-	// while (temp->args && temp->args[++i])
-	// printf("redir b: %d\n", temp->redir);
-	printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
-	printf("\n\n");
+	printf("%p\n", temp);
+	i = -1;
+	while (temp->args && temp->args[++i])
+		printf("%s\n", temp->args[i]);
+	// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
+	// printf("\n\n");
 	
-	// i = -1;
-	// while (parse_list->env_vars && parse_list->env_vars[++i])
-	// 	printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
+	i = -1;
+	while (parse_list->env_vars && parse_list->env_vars[++i])
+		printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
 	return(parse_list);	
 }

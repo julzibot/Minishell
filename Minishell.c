@@ -14,10 +14,10 @@
 
 t_gl_env	env;
 
-void	parse_init(t_cmd *parse_list, char **envp)
+void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 {
 	(void)envp;
-	parse_list->env_vars = NULL;
+	parse_list->env_vars = env_vars;
 	parse_list->quoted = NULL;
 	parse_list->space_after = NULL;
 	parse_list->env_list = NULL;
@@ -86,6 +86,8 @@ int	lstsize(t_cmd *list)
 
 int	ft_exec_parent(t_cmd *cmd)
 {
+	if (!cmd->args)
+		return (0);
 	if (ft_strncmp(cmd->args[0], "exit", 4) == 0 &&
 			ft_strlen(cmd->args[0]) == 4)
 		ft_exit(cmd);
@@ -121,7 +123,6 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	len = lstsize(parse_list);
 	while (len-- > 0)
 	{
-		// close (parse_list->out_pipe[0]);
 		if (ft_exec_parent(parse_list))
 			return ;
 		ft_exec_cmd(parse_list, envp);
@@ -131,7 +132,6 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 			close (parse_list->redir_in);
 		close (parse_list->in_pipe);
 		close (parse_list->out_pipe[1]);
-		// close (parse_list->out_pipe[0]);
 		if (parse_list->redir == 2)
 			close(parse_list->outfile);
 		temp = parse_list;
@@ -163,10 +163,12 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	char			*line;
 	char			**tokens;
+	char			**env_vars;
 	t_cmd 			*parse_list;
 	struct termios			*term;
 
 	term = NULL;
+	env_vars = NULL;
 	ft_init_termios(term);
 	ft_init_env(envp);
 	while (1)
@@ -174,7 +176,7 @@ int	main(int argc, char **argv, char **envp)
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
-		parse_init(parse_list, envp);
+		parse_init(parse_list, envp, env_vars);
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGINT, ft_handle_sigint);
 		line = readline(PROMPT);
@@ -182,6 +184,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
+		env_vars = parse_list->env_vars;
 		exec_pipeline(parse_list, envp);
 	}
 	return (0);

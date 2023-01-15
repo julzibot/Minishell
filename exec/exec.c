@@ -117,10 +117,10 @@ int	is_builtin(t_cmd *cmd)
 {
 	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
 		return (1);
-	// else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
-	// 	return (2);
-	// else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
-	// 	return (3);
+	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
+		return (2);
+	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
+		return (3);
 	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
 		return (4);
 	// else if (ft_strncmp(cmd->args[0], "unset", 5) == 0)

@@ -97,7 +97,6 @@ void	ft_do_echo(t_cmd *cmd)
 
 void	ft_echo(t_cmd *cmd)
 {
-	printf("etneres\n");
 	if (cmd->args[1] == NULL)
 		write(1, "\n", 1);
 	ft_do_echo(cmd);
