@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/15 14:07:57 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/15 14:49:49 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 
 // 4 EXPORT CASES:
 // -----------------------------
-// 1) "export a=b" -> "unset a"
+// 1) "export a=b" -> "unset a" ✅
 // Export a variable, then unset it
 // -----------------------------
 // 2) "export a=b" -> "export a=c"
@@ -109,6 +109,9 @@ int	ft_strcmp(const char *s1, const char *s2)
 // -----------------------------
 // 5) "a=b" -> "export a c=d"
 // Declare variables, then export them
+// -----------------------------
+// 5) "export a=b c=d" -> "export a c=d" ✅
+// Export more than one variable at once
 
 int	ft_check_double_var(t_cmd *cmd, char *line) // Check if there is a duplicate
 {
@@ -138,8 +141,12 @@ int	ft_change_var_content(t_cmd *cmd, char *line) // Check if there is an existi
 	{
 		if (ft_strncmp(cmd->env_vars[i], line, ft_varlen(line)) == 0) // Same VAR found
 		{
+			printf("env var %s line %s\n", cmd->env_vars[i], line);
 			if (ft_strcmp(cmd->env_vars[i], line) != 0) // Check if VAR is the same
+			{
+				printf("Change content!\n");
 				return (1);
+			}
 		}
 		i++;
 	}
@@ -172,7 +179,6 @@ void	ft_loop_assign_vars(char **env_vars, char *line)
 
 void	ft_equal_var(t_cmd *cmd, char *line)
 {
-	printf("EQUAL\n");
 	// if (ft_check_double_var(cmd, line) == 1) // Check double
 	// 	return ;
 	// printf("Double passed\n");
@@ -193,6 +199,24 @@ void	ft_equal_var(t_cmd *cmd, char *line)
 	return ;
 }
 
+void	ft_not_equal_var(t_cmd *cmd, char *line)
+{
+	int	i;
+
+	i = 0;
+	while (cmd->env_vars[i])
+	{
+		if (ft_strncmp(cmd->env_vars[i], line, ft_strlen(line)) == 0)
+		{
+			ft_add_after(&env.env_list, 17, line);
+			ft_add_after(&env.exp_list, 17, ft_strjoin("declare -x ",
+					ft_add_quotes(line)));
+			return ;
+		}
+		i++;
+	}
+}
+
 void	ft_export(t_cmd *cmd)
 {
 	int	i;
@@ -202,22 +226,21 @@ void	ft_export(t_cmd *cmd)
 	j = 0;
 	if (cmd->args[1] == NULL)
 		return ;
-	while (cmd->env_vars[j])
+	while (cmd->args[i])
 	{
-		while (cmd->args[i])
+		while (cmd->env_vars[j])
 		{
 			if (ft_strcmp(cmd->args[i], cmd->env_vars[j]) == 0)
 			{
-				printf("IS EQUAL\n");
 				if (ft_verify_equal(cmd->args[i])) // Equal sign found
 					ft_equal_var(cmd, cmd->args[i]);
 				else
-					return ;
+					ft_not_equal_var(cmd, cmd->args[i]);
 			}
-			j = 0;
-			i++;
+			j++;
 		}
-		j++;
+		j = 0;
+		i++;
 	}
 }
 
