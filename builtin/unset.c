@@ -6,11 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/13 17:03:54 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/15 16:48:42 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern t_gl_env	env;
 
 void	ft_remove_line(t_env **env_list, t_env *node)
 {
@@ -40,6 +42,11 @@ int	ft_unset_variable(t_env **list, char *s)
 	curr = *list;
 	while (curr)
 	{
+		if (curr == NULL)
+		{
+			ft_printf(2, "%s: not a valid identifier\n", s);
+			return (1);
+		}
 		if (ft_strncmp(curr->line, s, n) == 0)
 		{
 			ft_remove_line(list, curr);
@@ -47,19 +54,21 @@ int	ft_unset_variable(t_env **list, char *s)
 		}
 		curr = curr->next;
 	}
-	if (curr == NULL)
-	{
-		ft_printf(2, "%s: not a valid identifier\n", s);
-		return (1);
-	}
 	return (0);
 }
 
 // Unsets ENV variable
-void	ft_unset(t_env **env_list, t_env **exp_list, char *s)
+void	ft_unset(t_cmd *cmd)
 {
-	if (ft_unset_variable(env_list, s) == 1)
-		return ;
-	if (ft_unset_variable(exp_list, ft_strjoin("declare -x ", s)) == 1)
-		return ;
+	int	i;
+
+	i = 1;
+	while (cmd->args[i])
+	{
+			if (ft_unset_variable(&env.env_list, cmd->args[i]) == 1)
+				return ;
+			if (ft_unset_variable(&env.exp_list, ft_strjoin("declare -x ", cmd->args[i])) == 1)
+				return ;
+		i++;
+	}
 }

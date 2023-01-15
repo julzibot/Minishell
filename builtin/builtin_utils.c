@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:51:18 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/14 15:38:02 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/15 16:45:30 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,14 @@ void	ft_add_after(t_env **env_list, int line_nb, char *s)
 		return ;
 	while (curr->next)
 	{
-		if (line_nb < i)
-			return ;
 		if (i == line_nb)
 		{
 			new->next = curr->next;
 			curr->next = new;
-			printf("curr->next = %s\n", curr->next->line);
 			return ;
 		}
+		if (line_nb < i)
+			return ;
 		i++;
 		curr = curr->next;
 	}

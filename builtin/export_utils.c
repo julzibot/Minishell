@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/15 14:09:48 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/15 17:10:20 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,13 @@ int	ft_verify_double(t_env *env_list, char *line) // Checks duplicate
 	while (curr)
 	{
 		if (strcmp(curr->line, line) == 0) // put ft_strcmp!
+			return (1);
+		curr = curr->next;
+	}
+	curr = env_list;
+	while (curr)
+	{
+		if (ft_strncmp(curr->line, line, ft_varlen(curr->line)) == 0)
 			return (1);
 		curr = curr->next;
 	}
