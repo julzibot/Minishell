@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/14 18:28:22 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/16 17:41:42 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,34 +41,6 @@ void	ft_init_env(char **envp)
 	ft_get_env(&env.env_list, envp); // For env command
 	ft_get_env(&env.exp_list, envp); // For export command
 	ft_get_export(&env.exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"
-}
-
-void	check_line_exists(char *line)
-{
-	if (line == NULL) // CTRL-D
-		{
-			ft_printf(2, "\e[1A\e[%dCexit\n", 13);
-			exit(0);
-		}
-	else
-		return ;
-}
-
-void	ft_handle_sigint(int sig)
-{
-	(void)sig;
-	// if (g_pid != 0)
-	// {
-	// 	write(1, "\n", 1);
-	// 	kill(g_pid, SIGCONT);
-	// }
-	// else
-	// {
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	// }
 }
 
 int	ft_exec_parent(t_cmd *cmd)

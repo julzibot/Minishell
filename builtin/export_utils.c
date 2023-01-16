@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/15 17:10:20 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/16 16:43:27 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,11 +123,6 @@ char	*ft_verify_env_var(char *s)
 	str[i] = '\0';
 	return (str);
 }
-
-// void	ft_update_var(t_cmd *cmd, char *line)
-// {
-	
-// }
 
 char	*ft_var_content(t_cmd *cmd, char *line)
 {
