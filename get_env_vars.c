@@ -91,7 +91,6 @@ static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env
 	j = env_lstsize(env_list);
 	while (j-- > 0 && !match)
 	{
-		// printf("envline : %s\n", temp->line);
 		namelen = 0;
 		while (temp->line && temp->line[namelen] != '=')
 			namelen++;

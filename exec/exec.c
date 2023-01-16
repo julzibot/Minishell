@@ -51,26 +51,32 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	ft_child_sig();
 	if (cmd->redir_in == -1 && cmd->infile != STDIN_FILENO)
 	{
+		write(2, "a\n", 2);
 		dup2(cmd->infile, STDIN_FILENO);
 		close(cmd->infile);
 	}
 	else if (cmd->redir_in != -1 && cmd->redir_in != STDIN_FILENO)
 	{
+		write(2, "b\n", 2);
 		dup2(cmd->redir_in, STDIN_FILENO);
 		close(cmd->redir_in);
 	}
 	if (cmd->outfile == STDOUT_FILENO && cmd->next)
 	{
+		write(2, "c\n", 2);
 		dup2(cmd->out_pipe[1], STDOUT_FILENO);
 		close(cmd->out_pipe[1]);
 	}
 	else if (cmd->outfile != STDOUT_FILENO)
 	{
+		write(2, "d\n", 2);
 		dup2(cmd->outfile, STDOUT_FILENO);
 		close(cmd->outfile);
 	}
-	close (cmd->in_pipe[0]);
-	// close (cmd->in_pipe[1]);
+	if (cmd->in_pipe > 0)
+		close (cmd->in_pipe);
+	signal(SIGQUIT, ft_handle_sigquit);
+	signal(SIGINT, ft_handle_sigint);
 	if (builtin)
 	{
 		exec_builtin(cmd, builtin);

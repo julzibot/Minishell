@@ -167,9 +167,6 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			i += quotes_skip(lex_tab + i, parse_list->space_after + i);
 		}
 	}
-
-	
-	
 	
 	// TEST PRINTS
 	// temp = parse_list;
