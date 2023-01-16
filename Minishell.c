@@ -31,7 +31,8 @@ void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 	parse_list->out_pipe[1] = -1;
 	parse_list->heredoc[0] = -1;
 	parse_list->heredoc[1] = -1;
-	parse_list->in_pipe = -2;
+	parse_list->in_pipe[0] = -1;
+	parse_list->in_pipe[1] = -1;
 	parse_list->redir_in = -1;
 	parse_list->term = NULL;
 }
@@ -78,9 +79,11 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 {
 	t_cmd	*temp;
 	int	len;
+	int	i;
 
 	len = cmd_lstsize(parse_list);
-	while (len-- > 0)
+	i = 0;
+	while (i++ < len)
 	{
 		if (ft_exec_parent(parse_list))
 			return ;
@@ -89,20 +92,28 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 			close (parse_list->infile);
 		if (parse_list->redir == 1)
 			close (parse_list->redir_in);
-		close (parse_list->in_pipe);
+		close (parse_list->in_pipe[0]);
+		close (parse_list->in_pipe[1]);
 		close (parse_list->out_pipe[1]);
+		// close (parse_list->out_pipe[0]);
 		if (parse_list->redir == 2)
 			close(parse_list->outfile);
 		temp = parse_list;
 		if (temp->next)
 			parse_list = temp->next;
 		free(temp);
-		// for (int i = 0; i < 20; i++) {
-		// 	int flags = fcntl(i, F_GETFD);
-		// 	if (flags != -1) {
-		// 		printf("fd %d is open\n", i);
-		// 	}
-		// }
+		for (int i = 0; i < 20; i++) {
+			int flags = fcntl(i, F_GETFD);
+			if (flags != -1) {
+				printf("fd %d is open\n", i);
+			}
+		}
+		printf ("---\n");
+	}
+	i = 0;
+	while (i++ < len)
+	{
+		waitpid(-1, NULL, 0);
 	}
 }
 

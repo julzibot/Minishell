@@ -69,7 +69,8 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 		dup2(cmd->outfile, STDOUT_FILENO);
 		close(cmd->outfile);
 	}
-	close (cmd->in_pipe);
+	close (cmd->in_pipe[0]);
+	// close (cmd->in_pipe[1]);
 	if (builtin)
 	{
 		exec_builtin(cmd, builtin);
@@ -79,6 +80,12 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	{
 		path = ft_cmd_check(env, cmd->args[0]);
 		ft_child_sig();
+		// for (int i = 0; i < 20; i++) {
+		// 	int flags = fcntl(i, F_GETFD);
+		// 	if (flags != -1) {
+		// 		printf("fd %d is open\n", i);
+		// 	}
+		// }
 		execve(path, cmd->args, env);
 	}
 	return (1);
@@ -127,8 +134,6 @@ int	is_builtin(t_cmd *cmd)
 		return (0);
 }
 
-
-
 void	ft_exec_cmd(t_cmd *cmd, char **envp)
 {
 	(void)env;
@@ -152,11 +157,11 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 		ft_exec(cmd, envp, builtin); // execve
 		tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
 	}
-	else
-	{
-		env.gl = cmd->shell_pid;
-		waitpid(cmd->shell_pid, NULL, 0);
-	}
+	// else
+	// {
+	// 	env.gl = cmd->shell_pid;
+	// 	waitpid(-1, NULL, 0);
+	// }
 	return ;
 }
 

@@ -41,7 +41,8 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	if (pipe(temp->out_pipe) == -1)
 		return NULL;
 	next_cmd = malloc(sizeof(t_cmd));
-	next_cmd->infile = dup(temp->out_pipe[0]);
+	// next_cmd->infile = dup(temp->out_pipe[0]);
+	next_cmd->infile = temp->out_pipe[0];
 	next_cmd->outfile = STDOUT_FILENO;
 	next_cmd->redir = 0;
 	next_cmd->env_vars = temp->env_vars;
@@ -53,7 +54,8 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	next_cmd->out_pipe[1] = -1;
 	next_cmd->heredoc[0] = -1;
 	next_cmd->heredoc[1] = -1;
-	next_cmd->in_pipe = temp->out_pipe[0];
+	next_cmd->in_pipe[0] = temp->out_pipe[0];
+	next_cmd->in_pipe[1] = temp->out_pipe[1];
 	next_cmd->redir_in = -1;
 	temp->next = next_cmd;
 
@@ -132,11 +134,11 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	int		type;
 	char	*str;
 
-	i = -1;
-	if (lex_tab == NULL)
-		return (NULL);
-	while (lex_tab[++i])
-		printf("lex %d : %s\n", i, lex_tab[i]);
+	// i = -1;
+	// if (lex_tab == NULL)
+	// 	return (NULL);
+	// while (lex_tab[++i])
+	// 	printf("lex %d : %s\n", i, lex_tab[i]);
 	
 	// INIT
 	i = -1;

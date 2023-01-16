@@ -59,11 +59,12 @@ typedef	struct	s_cmd
 	// int				in_pipe[2];
 	int				piped;
 	int				redir;
-	int				in_pipe;
+	int				in_pipe[2];
 	int				out_pipe[2];
 	int				heredoc[2];
 	int				*quoted;
 	int				*space_after;
+	int				wait_value;
 	t_env			*env_list;
 	t_env			*exp_list;
 	struct termios	*term;
