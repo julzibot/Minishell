@@ -29,12 +29,15 @@ static  char *check_concat(char *cpy)
     return(NULL);
 }
 
-static  char	**create_var(char **env_vars, char *cpy)
+static  char	**create_var(char **env_vars, char *cpy, t_env *env_list)
 {
 	int	j;
 	int	namelen;
     int concat;
+    int must_ret;
+    t_env   *temp;
 
+    must_ret = 0;
 	j = -1;
 	while (env_vars && env_vars[++j])
 	{
@@ -53,10 +56,37 @@ static  char	**create_var(char **env_vars, char *cpy)
             }
             else
                 env_vars[j] = ft_strjoin(env_vars[j], ft_strdup(cpy + namelen + concat + 1));
-			return (env_vars);
+			must_ret = 1;
 		}
 	}
-	env_vars = token_join(env_vars, check_concat(ft_strdup(cpy)));
+
+    temp = env_list;
+    j = env_lstsize(env_list);
+    while (j-- > 0)
+	{
+        concat = 0;
+		namelen = 0;
+		while (temp->line[namelen] != '=')
+			namelen++;
+        if (cpy && cpy[namelen] && cpy[namelen] == '+' && cpy[namelen + 1] == '=')
+            concat = 1;
+		if (!ft_strncmp(temp->line, cpy, namelen) && cpy[namelen + concat] == '=')
+		{
+            if (!concat)
+            {
+                free(temp->line);
+			    temp->line = ft_strdup(cpy);
+            }
+            else
+                temp->line = ft_strjoin(temp->line, ft_strdup(cpy + namelen + concat + 1));
+			while (j > 0)
+                j--;
+		}
+        temp = temp->next;
+	}
+
+    if (!must_ret)
+	    env_vars = token_join(env_vars, check_concat(ft_strdup(cpy)));
 	return (env_vars);
 }
 
@@ -70,7 +100,7 @@ char	**create_env_vars(char	*token, char **env_vars, t_env *env_list) //search f
 	while (cpy && cpy[i] && cpy[i] != '=')
 		i++;
 	if (cpy && cpy[i] && cpy[i] == '=')
-		env_vars = create_var(env_vars, cpy);
+		env_vars = create_var(env_vars, cpy, env_list);
 	free(token);
 	free(cpy);
 	return (env_vars);
