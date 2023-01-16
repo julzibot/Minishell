@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:51:18 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/15 16:45:30 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/16 17:53:46 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	ft_add_after(t_env **env_list, int line_nb, char *s)
 {
 	t_env	*curr;
 	t_env	*new;
-	//t_env	*tmp;
 	int		i;
 
 	curr = *env_list;
