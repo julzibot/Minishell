@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 11:48:42 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/14 18:18:25 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/16 18:26:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,24 @@ int	ft_is_echo_nl(char *s)
 	return (1);
 }
 
+int	ft_loop_echo_nl(char **args, int i, int *nl)
+{
+	int	j;
+
+	j = i;
+	while (args[j])
+	{
+		if (ft_is_echo_nl(args[j]))
+		{
+			*nl = 1;
+			j++;
+		}
+		else
+			return (j);
+	}
+	return (1);
+}
+
 void	ft_do_echo(t_cmd *cmd)
 {
 	int	i;
@@ -69,16 +87,7 @@ void	ft_do_echo(t_cmd *cmd)
 	i = 1;
 	j = 0;
 	nl = 0;
-	while (cmd->args[i])
-	{
-		if (ft_is_echo_nl(cmd->args[i]))
-		{
-			nl = 1;
-			i++;
-		}
-		else
-			break ;
-	}
+	i = ft_loop_echo_nl(cmd->args, i, &nl);
 	while (cmd->args[i])
 	{
 		while (cmd->args[i][j])
