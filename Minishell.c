@@ -26,7 +26,8 @@ void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 	parse_list->outfile = STDOUT_FILENO;
 	parse_list->next = NULL;
 	parse_list->piped = 0;
-	parse_list->redir = 0;
+	parse_list->redir[0] = 0;
+	parse_list->redir[1] = 0;
 	parse_list->out_pipe[0] = -1;
 	parse_list->out_pipe[1] = -1;
 	parse_list->heredoc[0] = -1;
@@ -34,6 +35,7 @@ void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 	parse_list->in_pipe[0] = -1;
 	parse_list->in_pipe[1] = -1;
 	parse_list->redir_in = -1;
+	parse_list->cmd_done = 0;
 	parse_list->term = NULL;
 }
 
@@ -85,19 +87,21 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	i = 0;
 	while (i++ < len)
 	{
+		// close (parse_list->out_pipe[0]);
 		if (ft_exec_parent(parse_list))
 			return ;
 		ft_exec_cmd(parse_list, envp);
 		if (parse_list->infile != STDIN_FILENO)
 			close (parse_list->infile);
-		if (parse_list->redir == 1)
+		if (parse_list->redir[0] == 1)
 			close (parse_list->redir_in);
+		if (parse_list->redir[1] == 1)
+			close(parse_list->outfile);
 		close (parse_list->in_pipe[0]);
 		close (parse_list->in_pipe[1]);
 		close (parse_list->out_pipe[1]);
 		// close (parse_list->out_pipe[0]);
-		if (parse_list->redir == 2)
-			close(parse_list->outfile);
+		parse_list->cmd_done = 1;
 		temp = parse_list;
 		if (temp->next)
 			parse_list = temp->next;

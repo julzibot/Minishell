@@ -58,13 +58,14 @@ typedef	struct	s_cmd
 	int				outfile;    // fd
 	// int				in_pipe[2];
 	int				piped;
-	int				redir;
+	int				redir[2];
 	int				in_pipe[2];
 	int				out_pipe[2];
 	int				heredoc[2];
 	int				*quoted;
 	int				*space_after;
 	int				wait_value;
+	int				cmd_done;
 	t_env			*env_list;
 	t_env			*exp_list;
 	struct termios	*term;
