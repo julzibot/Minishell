@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/16 17:43:08 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/17 18:34:58 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,8 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	char	*path;
 	(void)builtin;
 
-	ft_child_sig();
-	// close(cmd->in_pipe[1]);
 	close(cmd->out_pipe[0]);
+	close(cmd->in_pipe[1]);
 	if (cmd->redir_in == -1 && cmd->infile != STDIN_FILENO)
 	{
 		dup2(cmd->infile, STDIN_FILENO);
@@ -68,10 +67,10 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 		dup2(cmd->outfile, STDOUT_FILENO);
 		close(cmd->outfile);
 	}
-	close (cmd->in_pipe[0]);
-	close (cmd->out_pipe[1]);
-	signal(SIGQUIT, ft_handle_sigquit);
-	signal(SIGINT, ft_handle_sigint);
+	close(cmd->out_pipe[1]);
+	close(cmd->in_pipe[0]);
+	// signal(SIGQUIT, ft_handle_sigquit);
+	// signal(SIGINT, ft_handle_sigint);
 	if (builtin)
 	{
 		exec_builtin(cmd, builtin);
@@ -80,8 +79,14 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	else
 	{
 		path = ft_cmd_check(env, cmd->args[0]);
-		ft_child_sig();
+		// for (int i = 0; i < 20; i++) {
+		// 	int flags = fcntl(i, F_GETFD);
+		// 	if (flags != -1) {
+		// 		printf("fd %d is open\n", i);
+		// 	}
+		// }
 		execve(path, cmd->args, env);
+		// exit(0);
 	}
 	return (1);
 }
@@ -131,18 +136,17 @@ int	is_builtin(t_cmd *cmd)
 
 void	ft_exec_cmd(t_cmd *cmd, char **envp)
 {
-	(void)env;
 	int	builtin;
 
 	if (cmd == NULL || cmd->args == NULL || ft_verify_equal(cmd->args[0]))
 		return ;
 	cmd->shell_pid = fork();
-	ft_child_sig();
 	if (cmd->shell_pid == 0)
 	{
 		struct termios original_termios;
     	struct termios modified_termios;
 
+		ft_child_sig();
     	tcgetattr(STDIN_FILENO, &original_termios);
 		modified_termios = original_termios;
     	modified_termios.c_cc[VEOF] = -1;
@@ -151,11 +155,12 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 		builtin = is_builtin(cmd);
 		ft_exec(cmd, envp, builtin); // execve
 		tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
+		// exit(0);
 	}
 	// else
 	// {
-	// 	close(cmd->in_pipe[0]);
-	// 	close(cmd->out_pipe[1]);
+	// 	env.gl = cmd->shell_pid;
+	// 	waitpid(-1, NULL, 0);
 	// }
 	return ;
 }

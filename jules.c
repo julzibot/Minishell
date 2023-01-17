@@ -44,7 +44,8 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	// next_cmd->infile = dup(temp->out_pipe[0]);
 	next_cmd->infile = temp->out_pipe[0];
 	next_cmd->outfile = STDOUT_FILENO;
-	next_cmd->redir = 0;
+	next_cmd->redir[0] = 0;
+	next_cmd->redir[1] = 0;
 	next_cmd->env_vars = temp->env_vars;
 	next_cmd->quoted = temp->quoted;
 	next_cmd->space_after = temp->space_after;
@@ -57,6 +58,7 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	next_cmd->in_pipe[0] = temp->out_pipe[0];
 	next_cmd->in_pipe[1] = temp->out_pipe[1];
 	next_cmd->redir_in = -1;
+	next_cmd->cmd_done = 0;
 	temp->next = next_cmd;
 
 	return (next_cmd);
@@ -69,7 +71,7 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 
 	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
 		close (cmd->outfile);
-	cmd->redir = type % 2 + 1;
+	cmd->redir[type % 2] = 1;
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)
 		return (0); // error handling here

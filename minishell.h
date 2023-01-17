@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/16 17:43:45 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/17 18:36:57 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <sys/signal.h>
 # include <termios.h>
 # include <termcap.h>
 # include "./ft_printf/ft_printf.h"
@@ -43,6 +44,7 @@ typedef struct s_env
 typedef struct s_gl_env
 {
 	pid_t	gl;
+	int		error_code;
 	t_env	*env_list;
 	t_env	*exp_list;
 } t_gl_env;
@@ -169,6 +171,7 @@ void	ft_free_list(t_env **list);
 /**********SIGNALS*********/
 void	ft_handle_sigint(int sig);
 void	ft_handle_sigquit(int sig);
+void	ft_child_sigint(int sig);
 void	ft_child_sig(void);
 void	check_line_exists(char *line);
 

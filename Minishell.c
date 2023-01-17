@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/16 17:41:42 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/17 18:34:13 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_gl_env	env;
 void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 {
 	(void)envp;
+	env.gl = 0;
 	parse_list->env_vars = env_vars;
 	parse_list->quoted = NULL;
 	parse_list->space_after = NULL;
@@ -85,31 +86,30 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 
 	len = cmd_lstsize(parse_list);
 	i = 0;
+	temp = parse_list;
 	while (i++ < len)
 	{
-		// close (parse_list->out_pipe[0]);
-		if (ft_exec_parent(parse_list))
+		close (parse_list->out_pipe[0]);
+		if (ft_exec_parent(temp))
 			return ;
-		ft_exec_cmd(parse_list, envp);
-		if (parse_list->infile != STDIN_FILENO)
-			close (parse_list->infile);
-		if (parse_list->redir[0] == 1)
-			close (parse_list->redir_in);
-		if (parse_list->redir[1] == 1)
-			close(parse_list->outfile);
-		close (parse_list->in_pipe[0]);
-		close (parse_list->in_pipe[1]);
-		close (parse_list->out_pipe[1]);
+		ft_exec_cmd(temp, envp);
+		if (temp->infile != STDIN_FILENO)
+			close (temp->infile);
+		if (temp->redir[0] == 1)
+			close (temp->redir_in);
+		if (temp->redir[1] == 1)
+			close(temp->outfile);
+		close (temp->in_pipe[0]);
+		close (temp->in_pipe[1]);
+		close (temp->out_pipe[1]);
 		// close (parse_list->out_pipe[0]);
-		parse_list->cmd_done = 1;
-		temp = parse_list;
+		// parse_list->cmd_done = 1;
 		if (temp->next)
-			parse_list = temp->next;
-		free(temp);
-		for (int i = 0; i < 20; i++) {
-			int flags = fcntl(i, F_GETFD);
+			temp = temp->next;
+		for (int fd = 0; fd < 30; fd++) {
+			int flags = fcntl(fd, F_GETFD);
 			if (flags != -1) {
-				printf("fd %d is open\n", i);
+				printf("fd %d is open\n", fd);
 			}
 		}
 		printf ("---\n");
@@ -118,6 +118,10 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	while (i++ < len)
 	{
 		waitpid(-1, NULL, 0);
+		temp = parse_list;
+		if (temp->next)
+			parse_list = temp->next;
+		free(temp);
 	}
 }
 
@@ -147,12 +151,12 @@ int	main(int argc, char **argv, char **envp)
 	ft_init_env(envp);
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, ft_handle_sigint);
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
 		parse_init(parse_list, envp, env_vars);
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, ft_handle_sigint);
 		line = readline(PROMPT);
 		check_line_exists(line);
 		add_history(line);
