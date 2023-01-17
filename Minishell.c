@@ -90,27 +90,26 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	temp = parse_list;
 	while (i++ < len)
 	{
-		close (parse_list->out_pipe[0]);
+		close (temp->in_pipe[1]);
 		if (ft_exec_parent(temp))
 			return ;
 		ft_exec_cmd(temp, envp);
-		if (temp->infile != STDIN_FILENO)
-			close (temp->infile);
-		if (temp->redir[0] == 1)
-			close (temp->redir_in);
-		if (temp->redir[1] == 1)
-			close(temp->outfile);
-		close (temp->in_pipe[0]);
-		close (temp->in_pipe[1]);
-		close (temp->out_pipe[1]);
-		// close (parse_list->out_pipe[0]);
+		// if (temp->infile != STDIN_FILENO)
+		// 	close (temp->infile);
+		// if (temp->redir[0] == 1)
+		// 	close (temp->redir_in);
+		// if (temp->redir[1] == 1)
+		// 	close(temp->outfile);
+		// close (temp->in_pipe[0]);
+		// // close (temp->in_pipe[1]);
+		// close (temp->out_pipe[1]);
 		// parse_list->cmd_done = 1;
 		if (temp->next)
 			temp = temp->next;
 		for (int fd = 0; fd < 30; fd++) {
 			int flags = fcntl(fd, F_GETFD);
 			if (flags != -1) {
-				printf("fd %d is open\n", fd);
+				printf("after closes : fd %d is open\n", fd);
 			}
 		}
 		printf ("---\n");

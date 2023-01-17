@@ -50,12 +50,12 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 
 	close(cmd->out_pipe[0]);
 	close(cmd->in_pipe[1]);
-	if (cmd->redir_in == -1 && cmd->infile != STDIN_FILENO)
+	if (!cmd->redir[0] && cmd->infile != STDIN_FILENO)
 	{
 		dup2(cmd->infile, STDIN_FILENO);
 		close(cmd->infile);
 	}
-	else if (cmd->redir_in != -1 && cmd->redir_in != STDIN_FILENO)
+	else if (cmd->redir[0] && cmd->redir_in != STDIN_FILENO)
 	{
 		dup2(cmd->redir_in, STDIN_FILENO);
 		close(cmd->redir_in);
@@ -79,12 +79,6 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	else
 	{
 		path = ft_cmd_check(env, cmd->args[0]);
-		// for (int i = 0; i < 20; i++) {
-		// 	int flags = fcntl(i, F_GETFD);
-		// 	if (flags != -1) {
-		// 		printf("fd %d is open\n", i);
-		// 	}
-		// }
 		execve(path, cmd->args, env);
 		// exit(0);
 	}
@@ -157,11 +151,16 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 		tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
 		// exit(0);
 	}
-	// else
-	// {
-	// 	env.gl = cmd->shell_pid;
-	// 	waitpid(-1, NULL, 0);
-	// }
+	else
+	{
+		if (cmd->redir[0] == 1)
+			close (cmd->redir_in);
+		if (cmd->redir[1] == 1)
+			close(cmd->outfile);
+		close (cmd->in_pipe[0]);
+		// close (cmd->in_pipe[1]);
+		close (cmd->out_pipe[1]);
+	}
 	return ;
 }
 
