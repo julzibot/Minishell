@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/17 17:51:22 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/17 18:36:57 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_env
 typedef struct s_gl_env
 {
 	pid_t	gl;
+	int		error_code;
 	t_env	*env_list;
 	t_env	*exp_list;
 } t_gl_env;
