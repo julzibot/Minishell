@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/17 18:32:12 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/17 21:05:24 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	check_line_exists(char *line) // CTRL-D
 	if (line == NULL)
 	{
 		ft_printf(2, "\e[1A\e[%dCexit\n", 13);
-		exit(0);
+		//exit(0);
 	}
 	else
 		return ;
