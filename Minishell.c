@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/16 17:41:42 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/17 18:34:13 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_gl_env	env;
 void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 {
 	(void)envp;
+	env.gl = 0;
 	parse_list->env_vars = env_vars;
 	parse_list->quoted = NULL;
 	parse_list->space_after = NULL;
@@ -143,12 +144,12 @@ int	main(int argc, char **argv, char **envp)
 	ft_init_env(envp);
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, ft_handle_sigint);
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
 		parse_init(parse_list, envp, env_vars);
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, ft_handle_sigint);
 		line = readline(PROMPT);
 		check_line_exists(line);
 		add_history(line);

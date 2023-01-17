@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/16 17:43:03 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/17 18:32:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 extern t_gl_env	env;
 
-void	check_line_exists(char *line)
+void	check_line_exists(char *line) // CTRL-D
 {
-	if (line == NULL) // CTRL-D
-		{
-			ft_printf(2, "\e[1A\e[%dCexit\n", 13);
-			exit(0);
-		}
+	if (line == NULL)
+	{
+		ft_printf(2, "\e[1A\e[%dCexit\n", 13);
+		exit(0);
+	}
 	else
 		return ;
 }
@@ -37,6 +37,7 @@ void	ft_handle_sigint(int sig)
 void	ft_child_sigint(int sig)
 {
 	(void)sig;
+	printf("killed gl\n");
 	kill(env.gl, SIGTERM);
 	write(1, "\n", 1);
 }
