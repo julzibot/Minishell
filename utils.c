@@ -136,20 +136,13 @@ char	*ft_strjoin(char *s1, char *s2, int must_free)
 		return (s2);
 	else if (!s2)
 		return (s1);
-	i = 0;
-	j = 0;
+	i = -1;
+	j = -1;
 	str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	while (s1[i])
-	{
+	while (s1[++i])
 		str[i] = s1[i];
-		i++;
-	}
-	while (s2[j])
-	{
-		str[i] = s2[j];
-		i++;
-		j++;
-	}
+	while (s2[++j])
+		str[i++] = s2[j];
 	str[i] = '\0';
 	if (must_free > 0)
 		free(s1);
