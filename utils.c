@@ -51,6 +51,14 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	return (*s1 - *s2);
 }
 
+int	ft_is_alnum(char c)
+{
+	if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') \
+		|| ('0' <= c && c <= '9'))
+		return (1);
+	return (0);
+}
+
 int	ft_strlen(char *str)
 {
 	int	i;
