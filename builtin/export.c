@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 14:33:06 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 16:07:51 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ int	ft_update_var(t_env **env_list, char *s)
 		{
 			new->next = curr->next;
 			prev->next = new;
-			free(curr->line);
-			free(curr);
+			// free(curr->line);
+			// free(curr);
 			return (1);
 		}
 		i++;

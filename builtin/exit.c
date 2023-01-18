@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 14:49:12 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 16:07:07 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,9 +160,9 @@ void	ft_exit(t_cmd *cmd)
 		code = ft_atoi(cmd->args[1]);
 		code %= 256;
 	}
-	ft_free_env(env.env_list);
-	ft_free_env(env.exp_list);
-	ft_free_cmd(cmd);
+	// ft_free_env(env.env_list);
+	// ft_free_env(env.exp_list);
+	// ft_free_cmd(cmd);
 	//system("leaks minishell");
 	exit(code);
 }

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/15 16:48:42 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 16:08:22 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	ft_remove_line(t_env **env_list, t_env *node)
 		if (strcmp(curr->line, node->line) == 0) // Add FT_STRCMP
 		{
 			prev->next = curr->next;
-			free(curr);
+			//free(curr);
 			return ;
 		}
 		prev = curr;

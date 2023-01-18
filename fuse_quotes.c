@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 13:50:14 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 13:50:52 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 16:08:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static  char	*rem_quotes(char *str, int pos)
 			ret[i] = str[i];
 		ret[i] = '\0';
 	}
-	free(str);
+	//free(str);
 	return (ret);
 }
 
