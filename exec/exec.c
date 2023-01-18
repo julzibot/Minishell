@@ -137,7 +137,13 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 	int	builtin;
 
 	if (cmd == NULL || cmd->args == NULL || ft_verify_equal(cmd->args[0]))
+	{
+		if (cmd->redir[0] == 1)
+			close (cmd->redir_in);
+		if (cmd->redir[1] == 1)
+			close(cmd->outfile);
 		return ;
+	}
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
 	{
@@ -162,7 +168,6 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 		if (cmd->redir[1] == 1)
 			close(cmd->outfile);
 		close (cmd->in_pipe[0]);
-		// close (cmd->in_pipe[1]);
 		close (cmd->out_pipe[1]);
 
 	}
