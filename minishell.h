@@ -58,7 +58,6 @@ typedef	struct	s_cmd
 	int				infile;     // fd
 	int				redir_in;
 	int				outfile;    // fd
-	// int				in_pipe[2];
 	int				piped;
 	int				redir[2];
 	int				in_pipe[2];
@@ -114,6 +113,7 @@ char    *char_cat(char *str, char c);
 /***********LIBFT**********/
 int		ft_strnstr(const char *haystack, const char *needle, size_t len);
 int		ft_strlen(char *s);
+int		ft_is_alnum(char c);
 char	*ft_strdup(char *str);
 char	*ft_strjoin(char *s1, char *s2);
 int		ft_strcmp(const char *s1, const char *s2);

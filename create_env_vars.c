@@ -97,6 +97,8 @@ char	**create_env_vars(char	*token, char **env_vars, t_env *env_list) //search f
 
 	i = 0;
 	cpy = get_env_vars(token, env_vars, env_list);
+    if (!ft_verify_equal(cpy))
+        i = ft_strlen(cpy);
 	while (cpy && cpy[i] && cpy[i] != '=')
 		i++;
 	if (cpy && cpy[i] && cpy[i] == '=')
