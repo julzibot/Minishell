@@ -58,7 +58,7 @@ static  char	*join_tokens(char *token, char **lex_tab, t_cmd *plist, int j)
 		str = rem_quotes(str, 0);
 	str = rem_quotes(str, 0);
 	token = rem_quotes(token, 1);
-	token = ft_strjoin(token, str);
+	token = ft_strjoin(token, str, 2);
 	return (token);
 }
 

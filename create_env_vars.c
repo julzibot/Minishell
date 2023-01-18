@@ -55,7 +55,7 @@ static  char	**create_var(char **env_vars, char *cpy, t_env *env_list)
 			    env_vars[j] = ft_strdup(cpy);
             }
             else
-                env_vars[j] = ft_strjoin(env_vars[j], ft_strdup(cpy + namelen + concat + 1));
+                env_vars[j] = ft_strjoin(env_vars[j], ft_strdup(cpy + namelen + concat + 1), 2);
 			must_ret = 1;
 		}
 	}
@@ -78,7 +78,7 @@ static  char	**create_var(char **env_vars, char *cpy, t_env *env_list)
 			    temp->line = ft_strdup(cpy);
             }
             else
-                temp->line = ft_strjoin(temp->line, ft_strdup(cpy + namelen + concat + 1));
+                temp->line = ft_strjoin(temp->line, ft_strdup(cpy + namelen + concat + 1), 2);
 			while (j > 0)
                 j--;
 		}

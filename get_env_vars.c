@@ -51,7 +51,7 @@ static  char	*get_value(char *token, int namelen, char *env_var, char *str)
 	}
 	value[++v_i] = '\"';
 	value[v_i + quoted] = '\0';
-	str = ft_strjoin(str, value);
+	str = ft_strjoin(str, value, 2);
 	return (str);
 }
 
@@ -132,9 +132,9 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 			;
 	}
 	if (token[i - 1] == '\"' &&  (!str || str[ft_strlen(str) - 1] != '\"'))
-		str = ft_strjoin(str, ft_strdup("\""));
+		str = ft_strjoin(str, ft_strdup("\""), 2);
 	else if (token[i - 1] == '\'' &&  (!str || str[ft_strlen(str) - 1] != '\''))
-		str = ft_strjoin(str, ft_strdup("\'"));
+		str = ft_strjoin(str, ft_strdup("\'"), 2);
 	// printf("GET_OUT %s\n", str);
 	return (str);
 }

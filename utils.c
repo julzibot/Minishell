@@ -126,7 +126,7 @@ char	*ft_strdup_free(char *str)
 	return (dup);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin(char *s1, char *s2, int must_free)
 {
 	char	*str;
 	int		i;
@@ -151,8 +151,10 @@ char	*ft_strjoin(char *s1, char *s2)
 		j++;
 	}
 	str[i] = '\0';
-	// free(s1);
-	// free(s2);
+	if (must_free > 0)
+		free(s1);
+	if (must_free == 2)
+		free(s2);
 	return (str);
 }
 
