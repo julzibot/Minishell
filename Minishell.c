@@ -60,7 +60,14 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	temp = parse_list;
 	while (i++ < len)
 	{
-		close (temp->in_pipe[1]);
+		// close (temp->in_pipe[0]);
+		if (temp->piped && pipe(temp->out_pipe) == -1)
+			return ;
+		if (temp->piped && temp->next)
+		{
+			temp->next->in_pipe[0] = temp->out_pipe[0];
+			temp->next->in_pipe[1] = temp->out_pipe[1];
+		}
 		if (ft_exec_parent(temp))
 			return ;
 		ft_exec_cmd(temp, envp);

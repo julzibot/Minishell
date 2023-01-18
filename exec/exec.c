@@ -49,7 +49,7 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	(void)builtin;
 
 	close(cmd->out_pipe[0]);
-	close(cmd->in_pipe[1]);
+	// close(cmd->in_pipe[1]);
 	if (!cmd->redir[0] && cmd->in_pipe[0] != -1)
 		dup2(cmd->in_pipe[0], STDIN_FILENO);
 	else if (cmd->redir[0] && cmd->redir_in != STDIN_FILENO)
@@ -164,6 +164,7 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 		close (cmd->in_pipe[0]);
 		// close (cmd->in_pipe[1]);
 		close (cmd->out_pipe[1]);
+
 	}
 	return ;
 }

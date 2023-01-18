@@ -38,10 +38,11 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 
 	temp->piped = 1;
 	// printf("fd here : %d\n", temp->outfile);
-	if (pipe(temp->out_pipe) == -1)
-		return NULL;
+	// if (pipe(temp->out_pipe) == -1)
+	// 	return NULL;
 	next_cmd = malloc(sizeof(t_cmd));
 	// next_cmd->infile = dup(temp->out_pipe[0]);
+	next_cmd->piped = 0;
 	next_cmd->infile = temp->out_pipe[0];
 	next_cmd->outfile = STDOUT_FILENO;
 	next_cmd->redir[0] = 0;
