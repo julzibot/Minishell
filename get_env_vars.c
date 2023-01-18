@@ -65,29 +65,15 @@ static  int	reset_namelen(char *token)
 	return (namelen);
 }
 
-static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env_list)
+int	env_check_name(char *token, char *str, t_env *env_list)
 {
-	int	j;
-	int	namelen;
-	int match;
 	t_env	*temp;
+	int	j;
+	int	match;
+	int	namelen;
 
-	j = -1;
-	match = 0;
-	while (env_vars && env_vars[++j] && !match)
-	{
-		namelen = 0;
-		while (env_vars && env_vars[j][namelen] != '=')
-			namelen++;
-		if (!ft_strncmp(env_vars[j], token + 1, namelen) \
-				&& (!token[namelen + 1] || token[namelen + 1] == '$' \
-				|| is_delim(token[namelen + 1]) == 1 || is_delim(token[namelen + 1]) == 4))
-		{
-			str = get_value(token, namelen, env_vars[j], str);
-			match = 1;
-		}
-	}
 	temp = env_list;
+	match = 0;
 	j = env_lstsize(env_list);
 	while (j-- > 0 && !match)
 	{
@@ -102,6 +88,31 @@ static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env
 			match = 1;
 		}
 		temp = temp->next;
+	}
+	return (match);
+}
+
+static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env_list)
+{
+	int	j;
+	int	namelen;
+	int match;
+
+	j = -1;
+	match = 0;
+	match = env_check_name(token, str, env_list);
+	while (env_vars && env_vars[++j] && !match)
+	{
+		namelen = 0;
+		while (env_vars && env_vars[j][namelen] != '=')
+			namelen++;
+		if (!ft_strncmp(env_vars[j], token + 1, namelen) \
+				&& (!token[namelen + 1] || token[namelen + 1] == '$' \
+				|| is_delim(token[namelen + 1]) == 1 || is_delim(token[namelen + 1]) == 4))
+		{
+			str = get_value(token, namelen, env_vars[j], str);
+			match = 1;
+		}
 	}
 	if (!match)
 		namelen = reset_namelen(token);
