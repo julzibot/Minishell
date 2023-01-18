@@ -23,7 +23,7 @@ int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 		exit(1);
 	if (getcwd(s, PATH_MAX - 1) == NULL) // If NULL no path found
 		return (1);
-	ft_update_env(env_list, exp_list, ft_strjoin(env, s));
+	ft_update_env(env_list, exp_list, ft_strjoin(env, s, 0));
 	return (0);
 }
 

@@ -52,7 +52,7 @@ void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
 	if (line == NULL)
 		return ;
 	ft_update_var(env_list, line);
-	ft_update_var(exp_list, ft_strjoin("declare -x ", ft_add_quotes(line)));
+	ft_update_var(exp_list, ft_strjoin("declare -x ", ft_add_quotes(line), 0));
 }
 
 void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
@@ -63,7 +63,7 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 	while (curr)
 	{
 		curr->line = ft_add_quotes(curr->line);
-		curr->line = ft_strjoin("declare -x ", curr->line);
+		curr->line = ft_strjoin("declare -x ", curr->line, 0);
 		curr = curr->next;
 	}
 }
@@ -168,7 +168,7 @@ void	ft_loop_assign_vars(char **env_vars, char *line)
 		{
 			ft_add_after(&env.env_list, 15, line);
 			ft_add_after(&env.exp_list, 15, ft_strjoin("declare -x ",
-					ft_add_quotes(line)));
+					ft_add_quotes(line), 0));
 			return ;
 		}
 		i++;
@@ -198,7 +198,7 @@ void	ft_not_equal_var(t_cmd *cmd, char *line)
 		{
 			ft_add_after(&env.env_list, 15, cmd->env_vars[i]);
 			ft_add_after(&env.exp_list, 15, ft_strjoin("declare -x ",
-					ft_add_quotes(cmd->env_vars[i])));
+					ft_add_quotes(cmd->env_vars[i]), 0));
 			return ;
 		}
 		i++;

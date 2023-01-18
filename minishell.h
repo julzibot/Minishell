@@ -111,7 +111,7 @@ int		ft_strnstr(const char *haystack, const char *needle, size_t len);
 int		ft_strlen(char *s);
 int		ft_is_alnum(char c);
 char	*ft_strdup(char *str);
-char	*ft_strjoin(char *s1, char *s2);
+char	*ft_strjoin(char *s1, char *s2, int must_free);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 

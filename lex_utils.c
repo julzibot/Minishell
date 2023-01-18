@@ -131,17 +131,19 @@ int	arg_count(char *line)
 void	tab_list_init(char *line, char **lex_tab, t_cmd *parse_list)
 {
 	int	i;
+	int	lex_size;
 	
 	i = -1;
+	lex_size = arg_count(line);
 	if (lex_tab == NULL || parse_list == NULL || line == NULL)
 		return ;
-	lex_tab = malloc(sizeof(char*) * (arg_count(line) + 1));
-	parse_list->quoted = malloc(sizeof(int) * arg_count(line) + 1);
-	parse_list->space_after = malloc(sizeof(int) * arg_count(line) + 1);
-	while (++i < arg_count(line) + 1)
+	lex_tab = malloc(sizeof(char*) * (lex_size + 1));
+	parse_list->quoted = malloc(sizeof(int) * lex_size + 1);
+	parse_list->space_after = malloc(sizeof(int) * lex_size + 1);
+	while (++i < lex_size)
 	{
 		parse_list->quoted[i] = 0;
 		parse_list->space_after[i] = 0;
 	}
-	lex_tab[arg_count(line) + 1] = NULL;
+	lex_tab[lex_size] = NULL;
 }

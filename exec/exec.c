@@ -35,8 +35,8 @@ char	*ft_cmd_check(char **envp, char *cmd)
 	i = 0;
 	while (paths[i])
 	{
-		paths[i] = ft_strjoin(paths[i], "/");
-		paths[i] = ft_strjoin(paths[i], cmd);
+		paths[i] = ft_strjoin(paths[i], "/", 1);
+		paths[i] = ft_strjoin(paths[i], cmd, 1);
 		if (access(paths[i], F_OK | X_OK) == 0)
 			return (paths[i]);
 		i++;
@@ -71,12 +71,12 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	close(cmd->in_pipe[0]);
 	// signal(SIGQUIT, ft_handle_sigquit);
 	// signal(SIGINT, ft_handle_sigint);
-	for (int fd = 0; fd < 30; fd++) {
-			int flags = fcntl(fd, F_GETFD);
-			if (flags != -1) {
-				printf("in exec : fd %d is open\n", fd);
-			}
-		}
+	// for (int fd = 0; fd < 30; fd++) {
+	// 		int flags = fcntl(fd, F_GETFD);
+	// 		if (flags != -1) {
+	// 			printf("in exec : fd %d is open\n", fd);
+	// 		}
+	// 	}
 	printf ("---\n");
 	if (builtin)
 	{

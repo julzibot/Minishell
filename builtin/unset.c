@@ -67,7 +67,7 @@ void	ft_unset(t_cmd *cmd)
 	{
 			if (ft_unset_variable(&env.env_list, cmd->args[i]) == 1)
 				return ;
-			if (ft_unset_variable(&env.exp_list, ft_strjoin("declare -x ", cmd->args[i])) == 1)
+			if (ft_unset_variable(&env.exp_list, ft_strjoin("declare -x ", cmd->args[i], 0)) == 1)
 				return ;
 		i++;
 	}
