@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 14:34:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 15:40:53 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,15 @@ char	*ft_add_quotes(char *var)
 	if (var == NULL)
 		return (NULL);
 	env_var = malloc(sizeof(char) * (ft_strlen(var) + 3));
-	if (!env_var)
-		exit(1);
 	while (var[i])
 	{
+		env_var[j] = var[i];
 		if (env_var[j - 1] == '=')
 		{
 			env_var[j] = '\"';
 			j++;
 			break ;
 		}
-		env_var[j] = var[i];
 		j++;
 		i++;
 	}
@@ -52,7 +50,7 @@ char	*ft_add_quotes(char *var)
 		j++;
 	}
 	env_var[j] = '\0';
-	free(var);
+	//free(var);
 	return (env_var);
 }
 
@@ -122,6 +120,7 @@ char	*ft_verify_env_var(char *s)
 		i++;
 	}
 	str[i] = '\0';
+	free(s); // NEW !!!
 	return (str);
 }
 
@@ -134,18 +133,7 @@ char	*ft_var_content(t_cmd *cmd, char *line)
 	while (curr)
 	{
 		if (ft_strncmp(curr->line, line, ft_varlen(line)) == 0) // ft_strcmp!
-		{
-			// printf("GETS TO CONTENT\n");
-			// printf("LINE: %s\n", line);
-			// ft_update_var(&env.env_list, line);
-			// ft_update_var(&env.exp_list, ft_strjoin("declare -x ", ft_add_quotes(line)));
-			//ft_update_env(&env.env_list, &env.exp_list, line);
-			//ft_update_var(line);
-			//ft_unset(&env.env_list, &env.exp_list, line);
-			//ft_export(cmd);
 			return (line);
-			//return (NULL);
-		}
 		curr = curr->next;
 	}
 	return (NULL);
