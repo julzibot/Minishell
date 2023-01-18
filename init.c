@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 11:43:39 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 11:44:43 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 13:51:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 	parse_list->env_vars = env_vars;
 	parse_list->quoted = NULL;
 	parse_list->space_after = NULL;
-	parse_list->env_list = env.env_list;
-	parse_list->exp_list = NULL;
 	parse_list->infile = STDIN_FILENO;
 	parse_list->outfile = STDOUT_FILENO;
 	parse_list->next = NULL;
@@ -38,7 +36,6 @@ void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 	parse_list->in_pipe[1] = -1;
 	parse_list->redir_in = -1;
 	parse_list->cmd_done = 0;
-	parse_list->term = NULL;
 }
 
 void	ft_init_env(char **envp)

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/16 19:11:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 14:49:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,18 +61,97 @@ int	ft_atoi(const char *str)
 	return (res * sign);
 }
 
+void	ft_free_env(t_env *list)
+{
+	t_env	*curr;
+	t_env	*prev;
+
+	curr = list;
+	prev = NULL;
+	while (curr)
+	{
+		if (curr->next == NULL)
+		{
+			free(curr->line);
+			free(curr);
+			return ;
+		}
+		if (prev != NULL)
+		{
+			free(prev->line);
+			free(prev);
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+}
+
+int	ft_arrlen(char **s)
+{
+	int	i;
+
+	i = 0;
+	if (s == NULL)
+		return (0);
+	while (s[i])
+		i++;
+	return (i);
+}
+
+void	ft_free_char_array(char **s)
+{
+	int	i;
+
+	i = 0;
+	//printf("arr %s\n", s[0]);
+	while (i < ft_arrlen(s) - 1)
+	{
+		if (s[i] == NULL)
+			break ;
+		free(s[i]);
+		i++;
+	}
+	free(s);
+}
+
+void	ft_free_cmd(t_cmd *cmd)
+{
+	t_cmd	*curr;
+	t_cmd	*prev;
+
+	curr = cmd;
+	prev = NULL;
+	while (curr)
+	{
+		if (prev != NULL)
+			free(prev);
+		if (curr->next == NULL)
+		{
+			ft_free_char_array(curr->args);
+			ft_free_char_array(curr->env_vars);
+			free(curr);
+			return ;
+		}
+		ft_free_char_array(curr->args);
+		ft_free_char_array(curr->env_vars);
+		prev = curr;
+		curr = curr->next;
+	}
+}
+
 void	ft_exit(t_cmd *cmd)
 {
 	int	code;
 
 	code = 0;
-	if (cmd->args[2] != NULL)
-	{
-		ft_printf(2, "Minichelou: exit: too many arguments\n");
-		return ;		
-	}
+	//printf("%s\n", cmd->args[0]);
 	if (cmd->args[1] != NULL)
 	{
+		if (cmd->args[2] != NULL)
+		{
+			ft_printf(2, "Minichelou: exit: too many arguments\n");
+			return ;		
+		}
 		if (ft_is_digit(cmd->args[1]))
 		{
 			ft_printf(2, "Minichelou: exit: %s: numeric argument required\n", cmd->args[1]);
@@ -81,6 +160,9 @@ void	ft_exit(t_cmd *cmd)
 		code = ft_atoi(cmd->args[1]);
 		code %= 256;
 	}
-	free(cmd->env_vars);
+	ft_free_env(env.env_list);
+	ft_free_env(env.exp_list);
+	ft_free_cmd(cmd);
+	//system("leaks minishell");
 	exit(code);
 }

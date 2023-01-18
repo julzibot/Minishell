@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/18 11:45:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 14:24:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	ft_exec_parent(t_cmd *cmd)
 {
 	if (!cmd->args)
 		return (0);
+	//printf("EXIT %s\n", cmd->args[0]);
 	if (ft_strncmp(cmd->args[0], "exit", 4) == 0 &&
 			ft_strlen(cmd->args[0]) == 4)
 		ft_exit(cmd);
@@ -88,7 +89,7 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 		temp = parse_list;
 		if (temp->next)
 			parse_list = temp->next;
-		free(temp);
+		//free(temp);
 	}
 }
 
