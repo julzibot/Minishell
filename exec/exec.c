@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/17 20:53:32 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 10:51:37 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,11 +91,11 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 
 void	exec_builtin(t_cmd *cmd, int builtin)
 {
-	if (builtin == 1)
-		ft_cd(&env.exp_list, &env.env_list, cmd->args[1]);
+	// if (builtin == 1)
+	// 	ft_cd(cmd);
 	// else if (builtin == 2)
 	// 	ft_print_env(env.env_list);
-	else if (builtin == 3)
+	if (builtin == 3)
 		ft_echo(cmd);
 	else if (builtin == 4)
 		ft_pwd(cmd);
