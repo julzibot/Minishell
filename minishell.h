@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/18 10:40:17 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 11:48:03 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,11 @@ typedef	struct	s_cmd
 	struct termios	*term;
 	struct s_cmd	*next;
 }	t_cmd;
+
+/**************INIT***************/
+void	parse_init(t_cmd *parse_list, char **envp, char **env_vars);
+void	ft_init_env(char **envp);
+void	ft_init_termios(struct termios *term);
 
 /*********MILAN 2/12/2022*********/
 char	*ft_remove_cmd(char *line, char *remove);

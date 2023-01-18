@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2023/01/16 17:42:05 by mstojilj         ###   ########.fr        #
+#    Updated: 2023/01/18 11:44:55 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRCS	= Minishell.c jules.c utils.c \
 			fuse_quotes.c \
 			lex_utils.c \
 			signals.c \
+			init.c \
 			get_env_vars.c \
 			builtin/env.c \
 			builtin/echo.c \

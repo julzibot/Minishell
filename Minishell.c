@@ -6,47 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/17 20:30:41 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 11:45:14 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 t_gl_env	env;
-
-void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
-{
-	(void)envp;
-	env.gl = 0;
-	env.error_code = 0;
-	parse_list->env_vars = env_vars;
-	parse_list->quoted = NULL;
-	parse_list->space_after = NULL;
-	parse_list->env_list = env.env_list;
-	parse_list->exp_list = NULL;
-	parse_list->infile = STDIN_FILENO;
-	parse_list->outfile = STDOUT_FILENO;
-	parse_list->next = NULL;
-	parse_list->piped = 0;
-	parse_list->redir[0] = 0;
-	parse_list->redir[1] = 0;
-	parse_list->out_pipe[0] = -1;
-	parse_list->out_pipe[1] = -1;
-	parse_list->heredoc[0] = -1;
-	parse_list->heredoc[1] = -1;
-	parse_list->in_pipe[0] = -1;
-	parse_list->in_pipe[1] = -1;
-	parse_list->redir_in = -1;
-	parse_list->cmd_done = 0;
-	parse_list->term = NULL;
-}
-
-void	ft_init_env(char **envp)
-{
-	ft_get_env(&env.env_list, envp); // For env command
-	ft_get_env(&env.exp_list, envp); // For export command
-	ft_get_export(&env.exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"
-}
 
 int	ft_exec_parent(t_cmd *cmd)
 {
@@ -66,6 +32,10 @@ int	ft_exec_parent(t_cmd *cmd)
 	{
 		ft_unset(cmd);
 		return (1);
+	}
+	else if (ft_strcmp(cmd->args[0], "cd") == 0)
+	{
+		ft_cd(cmd);
 	}
 	else if (ft_strncmp(cmd->args[0], "export", 6) == 0 &&
 			ft_strlen(cmd->args[0]) == 6)
@@ -125,16 +95,6 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	}
 }
 
-void	ft_init_termios(struct termios *term)
-{
-	term = malloc(sizeof(struct termios));
-	if (!term)
-		exit(1);
-	tcgetattr(STDOUT_FILENO, term);
-	term->c_lflag = term->c_lflag ^ ECHOCTL;
-	tcsetattr(STDOUT_FILENO, TCSAFLUSH, term);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	(void)argc;
@@ -167,27 +127,3 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (0);
 }
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	(void)argc;
-// 	(void)argv;
-// 	(void)envp;
-// 	char	*line;
-// 	char	**tokens;
-// 	t_cmd *parse_list;
-	
-// 	parse_list = malloc(sizeof(t_cmd));
-// 	if (!parse_list)
-// 		exit(1);
-// 	parse_list->env_vars = NULL;
-// 	parse_list->quoted = NULL;
-// 	parse_list->space_after = NULL;
-// 	while (1)
-// 	{
-// 		line = readline(PROMPT);
-// 		tokens = lexing(line, parse_list);
-// 		parse_list = parsing(tokens, parse_list);
-// 	}
-// 	return (0);
-// }
