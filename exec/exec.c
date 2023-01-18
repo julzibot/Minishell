@@ -50,11 +50,8 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 
 	close(cmd->out_pipe[0]);
 	close(cmd->in_pipe[1]);
-	if (!cmd->redir[0] && cmd->infile != STDIN_FILENO)
-	{
-		dup2(cmd->infile, STDIN_FILENO);
-		close(cmd->infile);
-	}
+	if (!cmd->redir[0] && cmd->in_pipe[0] != -1)
+		dup2(cmd->in_pipe[0], STDIN_FILENO);
 	else if (cmd->redir[0] && cmd->redir_in != STDIN_FILENO)
 	{
 		dup2(cmd->redir_in, STDIN_FILENO);
@@ -71,6 +68,13 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	close(cmd->in_pipe[0]);
 	// signal(SIGQUIT, ft_handle_sigquit);
 	// signal(SIGINT, ft_handle_sigint);
+	for (int fd = 0; fd < 30; fd++) {
+			int flags = fcntl(fd, F_GETFD);
+			if (flags != -1) {
+				printf("in exec : fd %d is open\n", fd);
+			}
+		}
+	printf ("---\n");
 	if (builtin)
 	{
 		exec_builtin(cmd, builtin);
