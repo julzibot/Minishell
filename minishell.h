@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/18 11:48:03 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 14:07:37 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ typedef struct s_gl_env
 typedef	struct	s_cmd
 {
 	pid_t			shell_pid;
-	char			*cmd;       // cd
 	char			**args;     // cd -> ../folder <-
 	char			**env_vars; // a=b (export)
 	int				infile;     // fd
@@ -68,9 +67,6 @@ typedef	struct	s_cmd
 	int				*space_after;
 	int				wait_value;
 	int				cmd_done;
-	t_env			*env_list;
-	t_env			*exp_list;
-	struct termios	*term;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -170,7 +166,7 @@ void	ft_remove_line(t_env **env_list, t_env *node);
 
 /***********EXIT***********/
 void	ft_exit(t_cmd *cmd);
-void	ft_free_env(t_cmd *cmd);
+void	ft_free_env(t_env *env);
 void	ft_free_list(t_env **list);
 
 /**********SIGNALS*********/
