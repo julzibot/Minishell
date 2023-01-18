@@ -6,13 +6,15 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 10:51:37 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 18:19:38 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 extern t_gl_env	env;
+
+// Maybe some leaks with paths not being freed?
 
 char	*ft_cmd_check(char **envp, char *cmd)
 {
@@ -39,8 +41,9 @@ char	*ft_cmd_check(char **envp, char *cmd)
 			return (paths[i]);
 		i++;
 	}
-	printf("%s : command not found\n", cmd); // Align with bash output
-	exit(127);
+	env.gl = 127;
+	printf("Minichelou: %s: command not found\n", cmd);
+	exit(env.gl);
 }
 
 int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 18:10:19 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/18 18:16:47 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,17 @@ void	ft_cd(t_cmd *cmd)
 	else if (cmd->args[1] != NULL)
 		ret = chdir(cmd->args[1]);
 	if (ret == -1)
+	{
 		ft_cd_error(cmd);
+		return ;
+	}
 	if (ft_update_pwd(&env.exp_list, &env.env_list, "PWD=") == 1) // Update PWD=
 		return ;
 }
 
 char	*ft_pwd(t_cmd *cmd)
 {
-	char	*cwd; // cwd = Current Working Directory
+	char	*cwd;
 
 	cwd = malloc(sizeof(char) * (PATH_MAX - 1));
 	if (!cwd)
