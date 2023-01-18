@@ -79,12 +79,16 @@ int	ft_verify_equal(char *s) // Checks if there is "="
 {
 	int	i;
 
-	i = 0;
-	while (s[i])
+	if (!s)
+		return (0);
+	i = -1;
+	while (s[++i])
 	{
-		if (s[i] == '=')
+		if (!ft_is_alnum(s[i]) && !((s[i] == '=') || \
+			(s[i] == '+' && s[i + 1] == '=')))
+			return (0);
+		else if (s[i] == '=')
 			return (1);
-		i++;
 	}
 	return (0);
 }

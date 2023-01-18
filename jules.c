@@ -51,11 +51,7 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	t_cmd	*next_cmd;
 
 	temp->piped = 1;
-	// printf("fd here : %d\n", temp->outfile);
-	// if (pipe(temp->out_pipe) == -1)
-	// 	return NULL;
 	next_cmd = malloc(sizeof(t_cmd));
-	// next_cmd->infile = dup(temp->out_pipe[0]);
 	next_cmd->piped = 0;
 	next_cmd->infile = temp->out_pipe[0];
 	next_cmd->outfile = STDOUT_FILENO;
@@ -99,8 +95,7 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 			close(cmd->redir_in);
 		if (pipe(cmd->heredoc) == -1)
 			return (0);
-		cmd->redir_in = dup(cmd->heredoc[0]);
-		close(cmd->heredoc[0]);
+		cmd->redir_in = cmd->heredoc[0];
 		line = readline("> ");
 		while (ft_strcmp(line, filename_delim))
 		{
@@ -188,22 +183,22 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	}
 	
 	// TEST PRINTS
-	// temp = parse_list;
-	// while (temp->next != NULL)
-	// {
-	// 	printf("%p\n", temp);
-	// 	i = -1;
-	// 	while (temp->args && temp->args[++i])
-	// 		printf("%s\n", temp->args[i]);
+	temp = parse_list;
+	while (temp->next != NULL)
+	{
+		printf("%p\n", temp);
+		i = -1;
+		while (temp->args && temp->args[++i])
+			printf("%s\n", temp->args[i]);
 		// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
-	// 	temp = temp->next;
-	// }
-	// printf("%p\n", temp);
-	// i = -1;
-	// while (temp->args && temp->args[++i])
-	// 	printf("%s\n", temp->args[i]);
+		temp = temp->next;
+	}
+	printf("%p\n", temp);
+	i = -1;
+	while (temp->args && temp->args[++i])
+		printf("%s\n", temp->args[i]);
 	// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
-	// printf("\n\n");
+	printf("\n\n");
 	
 	i = -1;
 	while (parse_list->env_vars && parse_list->env_vars[++i])
