@@ -35,7 +35,13 @@ char	**lexing(char *line, t_cmd *parse_list)
 			if (is_delim(line[i]) == 1)
 				parse_list->quoted[j] = 1;
 			i = lineseg(line, i, lex_tab + j, parse_list->quoted[j]);
-			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
+			if (i == -1)
+			{
+				lex_tab = NULL;
+				printf("Error : unclosed quotes !\n");
+				return (lex_tab);
+			}
+			else if (is_delim(line[i]) != 4 /*is not a space or tab*/)
 				i--;
 			else
 				parse_list->space_after[j] = 1;
@@ -148,11 +154,11 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	int		type;
 	char	*str;
 
-	// i = -1;
-	// if (lex_tab == NULL)
-	// 	return (NULL);
-	// while (lex_tab[++i])
-	// 	printf("lex %d : %s\n", i, lex_tab[i]);
+	if (lex_tab == NULL)
+		return (parse_list);
+	i = -1;
+	while (lex_tab[++i])
+		printf("lex %d : %s\n", i, lex_tab[i]);
 	
 	// INIT
 	i = -1;

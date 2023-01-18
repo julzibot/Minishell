@@ -74,6 +74,8 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 			var_quoted = 0;
 		seg[s_i++] = line[i];
 	}
+	if ((quoted || var_quoted) && !line[i])
+		return (-1);
 	seg[s_i] = line[i];
 	if (!quoted && is_delim(line[i]) == 1)
 		q_type = 1;
