@@ -110,7 +110,9 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 
 int	token_type(char *token, int quoted)
 {
-	if (!ft_strncmp(token, "<<", 2))
+	if (!token)
+		return (-1);
+	else if (!ft_strncmp(token, "<<", 2))
 		return (0);
 	else if (!ft_strncmp(token, ">>", 2))
 		return (1);

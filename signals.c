@@ -19,7 +19,7 @@ void	check_line_exists(char *line) // CTRL-D
 	if (line == NULL)
 	{
 		ft_printf(2, "\e[1A\e[%dCexit\n", 13);
-		//exit(0);
+		exit(0);
 	}
 	else
 		return ;

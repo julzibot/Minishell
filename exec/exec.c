@@ -39,7 +39,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 			return (paths[i]);
 		i++;
 	}
-	perror("Command not found"); // Align with bash output
+	printf("%s : command not found\n", cmd); // Align with bash output
 	exit(127);
 }
 
