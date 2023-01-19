@@ -22,16 +22,24 @@ char	**lexing(char *line, t_cmd *parse_list)
 
 	i = -1;
 	j = 0;
-	lex_tab = malloc(sizeof(char*) * (arg_count(line) + 1));
+	lex_tab = malloc(sizeof(char*) * 40);
 	tab_list_init(line, lex_tab, parse_list);
 	if (line == NULL)
 		return (NULL);
+	printf ("malloc : %d\n", arg_count(line) + 1);
 	while (line[++i])
 	{
 		if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3/*is pipe or redir*/)
+		{
 			i += lex_pipe_redir(line + i, lex_tab + j++);
+			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
+				i--;
+			else
+				parse_list->space_after[j] = 1;
+		}
 		else if (is_delim(line[i]) == 1 || !is_delim(line[i]) /*is quote, or beginning of word*/)
 		{
+			parse_list->quoted[j] = 0;
 			if (is_delim(line[i]) == 1)
 				parse_list->quoted[j] = 1;
 			i = lineseg(line, i, lex_tab + j, parse_list->quoted[j]);
@@ -44,13 +52,14 @@ char	**lexing(char *line, t_cmd *parse_list)
 					printf("Error : chelou input detected\n");
 				return (lex_tab);
 			}
-			else if (is_delim(line[i]) != 4 /*is not a space or tab*/)
+			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
 				i--;
 			else
 				parse_list->space_after[j] = 1;
 			j++;
 		}
 	}
+	printf ("after : %d\n", j);
 	lex_tab[j] = NULL;
 	return (lex_tab);
 }
@@ -207,7 +216,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	while (temp->args && temp->args[++i])
 		printf("%s\n", temp->args[i]);
 	// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
-	printf("\n\n");
+	printf("\n");
 	
 	i = -1;
 	while (parse_list->env_vars && parse_list->env_vars[++i])

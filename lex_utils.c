@@ -38,7 +38,7 @@ int	seg_size(char *line, int i)
 	}
 	if (!quoted && is_delim(line[i]) == 1)
 		count++;
-	return (count + quoted + 1);
+	return (count + quoted);
 }
 
 int	lineseg(char *line, int i, char **lex_tab, int quoted)
@@ -101,26 +101,30 @@ int	lex_pipe_redir(char *c, char **lex_tab)
 		count = 1;
 	str = malloc(2 + count);
 	str[0] = c[0];
-	str[count] = c[0];
+	if (count)
+		str[count] = c[0];
 	str[1 + count] = '\0';
 	*lex_tab = str;
-	return (count);
+	return (1 + count);
 }
 
 int	arg_count(char *line)
 {
 	int	count;
 	int	i;
+	int	delim;
 
 	i = -1;
 	count = 1;
 	while (line && line[++i])
 	{
-		if (is_delim(line[i]) == 3 && line[0] == line[1])
-			i += 2;
-		else if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3)
-			i++;
-		else if (is_delim(line[i]) == 1 || !is_delim(line[i]))
+		delim = is_delim(line[i]);
+		if (delim == 2 || delim == 3)
+		{
+			if (delim == 3 && line[0] == line[1])
+				i++;
+		}
+		else if (delim == 1 || !delim)
 		{
 			i += seg_size(line, i);
 			if (is_delim(line[i]) != 4)
@@ -142,13 +146,14 @@ void	tab_list_init(char *line, char **lex_tab, t_cmd *parse_list)
 	lex_size = arg_count(line);
 	if (lex_tab == NULL || parse_list == NULL || line == NULL)
 		return ;
-	lex_tab = malloc(sizeof(char*) * (lex_size + 1));
-	parse_list->quoted = malloc(sizeof(int) * lex_size + 1);
-	parse_list->space_after = malloc(sizeof(int) * lex_size + 1);
+	// lex_tab = malloc(sizeof(char*) * (lex_size + 1));
+	parse_list->quoted = malloc(sizeof(int) * (lex_size + 1));
+	parse_list->space_after = malloc(sizeof(int) * (lex_size + 1));
 	while (++i < lex_size)
 	{
 		parse_list->quoted[i] = 0;
 		parse_list->space_after[i] = 0;
 	}
 	lex_tab[lex_size] = NULL;
+	return;
 }
