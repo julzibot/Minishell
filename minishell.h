@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 19:39:47 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 20:02:48 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,22 @@
 
 # ifndef PROMPT
 # define PROMPT "Mini_chelou: "
+# endif
+
+# ifndef CMD
+# define CMD 1
+# endif
+
+# ifndef NOT_EXEC
+# define NOT_EXEC 126
+# endif
+
+# ifndef NOT_CMD
+# define NOT_CMD 127
+# endif
+
+# ifndef SIG_C
+# define SIG_C 130
 # endif
 
 typedef struct s_env
