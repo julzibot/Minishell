@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/18 14:24:08 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 11:46:07 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	ft_exec_parent(t_cmd *cmd)
 	else if (ft_strncmp(cmd->args[0], "env", 3) == 0 &&
 			ft_strlen(cmd->args[0]) == 3)
 	{
+		printf("is env\n");
 		ft_print_env(env.env_list);
 		return (1);
 	}
@@ -131,9 +132,10 @@ int	main(int argc, char **argv, char **envp)
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
 		env_vars = parse_list->env_vars;
-		// exec_pipeline(parse_list, envp);
+		exec_pipeline(parse_list, envp);
 		free_list(parse_list);
-		// free(line);
+		free(line);
+		//system("leaks minishell\n");
 	}
 	return (0);
 }
