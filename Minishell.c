@@ -115,6 +115,8 @@ int	main(int argc, char **argv, char **envp)
 
 	term = NULL;
 	env_vars = NULL;
+	env.gl = 0;
+	env.error_code = 0;
 	ft_init_termios(term);
 	ft_init_env(envp);
 	while (1)
@@ -125,10 +127,9 @@ int	main(int argc, char **argv, char **envp)
 		if (!parse_list)
 			exit(1);
 		parse_init(parse_list, envp, env_vars);
-		// line = ft_strdup("echo hello world");
 		line = readline(PROMPT);
 		check_line_exists(line);
-		// add_history(line);
+		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
 		env_vars = parse_list->env_vars;

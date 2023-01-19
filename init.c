@@ -17,8 +17,6 @@ extern t_gl_env	env;
 void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 {
 	(void)envp;
-	env.gl = 0;
-	env.error_code = 0;
 	parse_list->env_vars = env_vars;
 	parse_list->quoted = NULL;
 	parse_list->space_after = NULL;

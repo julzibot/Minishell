@@ -1,4 +1,5 @@
 #include "minishell.h"
+extern t_gl_env	env;
 
 static  char	*get_vars_init(char *token, char *str)
 {
@@ -135,9 +136,14 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 	i = ft_strlen(str);
 	while (token[i])
 	{
-		if (token[i] == '$' && (!token[i + 1] || is_delim(token[i + 1]) == 1))
-			str = ft_strjoin(str, ft_strdup("$"), 2);
-		str = check_var_name(token + i, env_vars, str, env_list);
+		if (token[i] == '$' && token[i + 1] == '?')
+			str = ft_strjoin(str, ft_itoa(env.error_code), 2);
+		else
+		{
+			if (token[i] == '$' && (!token[i + 1] || is_delim(token[i + 1]) == 1))
+				str = ft_strjoin(str, ft_strdup("$"), 2);
+			str = check_var_name(token + i, env_vars, str, env_list);
+		}
 		while (token[++i] && token[i] != '$')
 			;
 	}

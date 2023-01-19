@@ -114,6 +114,7 @@ char	*ft_strdup(char *str);
 char	*ft_strjoin(char *s1, char *s2, int must_free);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_itoa(int n);
 
 /***********UTILS**********/
 char	**token_join(char **args, char *token);
