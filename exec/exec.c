@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 18:19:38 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 11:22:39 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,8 @@ int	is_builtin(t_cmd *cmd)
 {
 	if (ft_strncmp(cmd->args[0], "cd", 2) == 0)
 		return (1);
-	else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
-		return (2);
+	// else if (ft_strncmp(cmd->args[0], "env", 3) == 0)
+	// 	return (2);
 	else if (ft_strncmp(cmd->args[0], "echo", 4) == 0)
 		return (3);
 	else if (strcmp(cmd->args[0], "pwd") == 0) // FT_STRCMP!
@@ -176,24 +176,3 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 	}
 	return ;
 }
-
-// int	main(int argc, char **argv, char **env)
-// {
-// 	(void)argc;
-// 	(void)argv;
-// 	char	*line;
-// 	t_env 	*env_list;
-// 	t_env	*exp_list;
-	
-// 	env_list = NULL;
-// 	exp_list = NULL;
-// 	ft_get_env(&env_list, env); // For env command
-// 	ft_get_env(&exp_list, env); // For export command
-// 	ft_get_export(&exp_list);   // Declare -x PWD="somewhere/nice/and/cozy"
-// 	while (1)
-// 	{
-// 		line = readline("MiniShelly: ");
-// 		ft_exec_cmd()
-// 	}
-// 	return (0);
-// }
