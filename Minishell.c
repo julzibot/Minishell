@@ -84,8 +84,8 @@ int	main(int argc, char **argv, char **envp)
 	env_vars = NULL;
 	env.gl = 0;
 	env.error_code = 0;
-	ft_init_termios(term);
-	ft_init_env(envp);
+	// ft_init_termios(term);
+	// ft_init_env(envp);
 	while (1)
 	{
 		signal(SIGQUIT, SIG_IGN);
@@ -99,9 +99,8 @@ int	main(int argc, char **argv, char **envp)
 		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
-		//free(env_vars);
 		env_vars = parse_list->env_vars;
-		exec_pipeline(parse_list, envp);
+		// exec_pipeline(parse_list, envp);
 		free_list(parse_list, tokens);
 		// free(line);
 		//system("leaks minishell\n");

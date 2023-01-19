@@ -22,7 +22,7 @@ char	**lexing(char *line, t_cmd *parse_list)
 
 	i = -1;
 	j = 0;
-	lex_tab = malloc(sizeof(char*) * 40);
+	lex_tab = malloc(sizeof(char*) * arg_count(line));
 	tab_list_init(line, lex_tab, parse_list);
 	if (line == NULL)
 		return (NULL);
@@ -168,9 +168,9 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 
 	if (lex_tab == NULL)
 		return (parse_list);
-	i = -1;
-	while (lex_tab[++i])
-		printf("lex %d : %s\n", i, lex_tab[i]);
+	// i = -1;
+	// while (lex_tab[++i])
+	// 	printf("lex %d : %s\n", i, lex_tab[i]);
 	
 	// INIT
 	i = -1;

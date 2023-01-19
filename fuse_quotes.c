@@ -38,7 +38,7 @@ static  char	*rem_quotes(char *str, int pos)
 			ret[i] = str[i];
 		ret[i] = '\0';
 	}
-	//free(str);
+	free(str);
 	return (ret);
 }
 
@@ -93,6 +93,7 @@ int	quotes_skip(char **tab, int *space_after)
 	int	count;
 
 	count = 0;
+	printf("oi %d\n", ft_strlen(tab[0]));
 	while (!space_after[count] && ((tab[0][ft_strlen(tab[0]) - 1] == '\"' \
 		&& tab[1] && tab[1][0] == '\"') || (tab[0][ft_strlen(tab[0]) - 1] == '\'' \
 		&& tab[1] && tab[1][0] == '\'')))

@@ -156,12 +156,12 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 			exec_builtin(cmd, is_builtin(cmd));
 			return ;
 		}
-	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
-	{
-		env.error_code = 127;
-		ft_printf(2, "Mini_chelou: %s: command not found\n", cmd->args[0]);
-		return ;
-	}
+	// if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
+	// {
+	// 	env.error_code = 127;
+	// 	ft_printf(2, "Mini_chelou: %s: command not found\n", cmd->args[0]);
+	// 	return ;
+	// }
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
 	{
