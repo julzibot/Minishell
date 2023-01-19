@@ -1,4 +1,5 @@
 #include "minishell.h"
+
 extern t_gl_env	env;
 
 static  char	*get_vars_init(char *token, char *str)

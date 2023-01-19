@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/19 11:46:07 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 16:31:29 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 		ft_exec_cmd(temp, envp);
 		if (temp->next)
 			temp = temp->next;
+		printf("%d\n", env.error_code);
 		// for (int fd = 0; fd < 30; fd++) {
 		// 	int flags = fcntl(fd, F_GETFD);
 		// 	if (flags != -1) {
@@ -134,6 +135,7 @@ int	main(int argc, char **argv, char **envp)
 		parse_list = parsing(tokens, parse_list);
 		env_vars = parse_list->env_vars;
 		exec_pipeline(parse_list, envp);
+		printf("Error %d\n", env.error_code);
 		free_list(parse_list);
 		free(line);
 		//system("leaks minishell\n");
