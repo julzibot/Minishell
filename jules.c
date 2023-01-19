@@ -35,10 +35,13 @@ char	**lexing(char *line, t_cmd *parse_list)
 			if (is_delim(line[i]) == 1)
 				parse_list->quoted[j] = 1;
 			i = lineseg(line, i, lex_tab + j, parse_list->quoted[j]);
-			if (i == -1)
+			if (i < 0)
 			{
 				lex_tab = NULL;
-				printf("Error : unclosed quotes !\n");
+				if (i == -1)
+					printf("Error : unclosed quotes !\n");
+				else if (i == -2)
+					printf("Error : chelou input detected\n");
 				return (lex_tab);
 			}
 			else if (is_delim(line[i]) != 4 /*is not a space or tab*/)

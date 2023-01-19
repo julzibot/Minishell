@@ -58,10 +58,13 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 	seg = malloc(seg_size(line, i));
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 		seg[s_i++] = line[i - 1];
+	if (line[i] == '\\' || line[i] == ';')
+		return (-2);
 	seg[s_i++] = line[i];
 	while (line[++i] && ((quoted && line[i] != line[q_type]) \
 		|| (!quoted && !is_delim(line[i])) \
-		|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))))
+		|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))) \
+		&& !(!quoted && (line[i] == '\\' || line[i] == ';')))
 	{
 		if (line[i] == '=' && !quoted && !is_var)
 			is_var = 1;
@@ -76,6 +79,8 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 	}
 	if ((quoted || var_quoted) && !line[i])
 		return (-1);
+	else if (!quoted && (line[i] == '\\' || line[i] == ';'))
+	return (-2);
 	seg[s_i] = line[i];
 	if (!quoted && is_delim(line[i]) == 1)
 		q_type = 1;
