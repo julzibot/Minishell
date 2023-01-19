@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:52:26 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 16:56:26 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 {
 	char	*env_line;
 	char	**paths;
+	char	*path;
 	int		i;
 
 	i = 0;
@@ -38,11 +39,14 @@ char	*ft_cmd_check(char **envp, char *cmd)
 		paths[i] = ft_strjoin(paths[i], "/", 1);
 		paths[i] = ft_strjoin(paths[i], cmd, 1);
 		if (access(paths[i], F_OK | X_OK) == 0)
-			return (paths[i]);
+		{
+			path = ft_strdup(paths[i]);
+			ft_free_char_array(paths);
+			return (path);
+		}
 		i++;
 	}
 	return (NULL);
-	//ft_free_char_array(paths);
 }
 
 int		ft_exec(t_cmd *cmd, char **envp, int builtin) // Execute a command

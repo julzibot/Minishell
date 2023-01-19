@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:32:47 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 17:16:06 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,12 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 	t_env	*curr;
 
 	curr = *exp_list;
+	if (!curr)
+		return ;
 	while (curr)
 	{
 		curr->line = ft_add_quotes(curr->line); // 19/01 HERE POSSIBLE LEAKS
-		curr->line = ft_strjoin("declare -x ", curr->line, 0);
+		curr->line = ft_strjoin("declare -x ", curr->line, 2);
 		curr = curr->next;
 	}
 }
