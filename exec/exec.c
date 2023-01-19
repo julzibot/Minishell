@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:56:26 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 19:29:45 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 	{
 		env.error_code = 127;
 		ft_printf(2, "Mini_chelou: %s: command not found\n", cmd->args[0]);
-		exit(127);
+		return ;
 	}
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
