@@ -80,7 +80,7 @@ int		ft_exec(t_cmd *cmd, char **envp, int builtin) // Execute a command
 	// 			printf("in exec : fd %d is open\n", fd);
 	// 		}
 	// 	}
-	printf ("---\n");
+	// printf ("---\n");
 	if (builtin)
 	{
 		exec_builtin(cmd, builtin);
@@ -179,8 +179,10 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 			close (cmd->redir_in);
 		if (cmd->redir[1] == 1)
 			close(cmd->outfile);
-		close (cmd->in_pipe[0]);
-		close (cmd->out_pipe[1]);
+		if (cmd->in_pipe[0] != -1)
+			close (cmd->in_pipe[0]);
+		if (cmd->in_pipe[1] != -1)
+			close (cmd->out_pipe[1]);
 	}
 	return ;
 }

@@ -91,17 +91,23 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 	}
 }
 
-void	free_list(t_cmd *parse_list)
+void	free_list(t_cmd *parse_list, char **tokens)
 {
 	t_cmd	*temp;
 
 	while (parse_list && parse_list->next)
 	{
 		temp = parse_list->next;
+		// free(parse_list->space_after);
+		// free(parse_list->quoted);
 		free(parse_list);
 		parse_list = temp;
 	}
+	// free(parse_list->space_after);
+	// free(parse_list->quoted);
 	free(parse_list);
+	free(tokens);
+	return;
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -133,11 +139,11 @@ int	main(int argc, char **argv, char **envp)
 		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
+		free(env_vars);
 		env_vars = parse_list->env_vars;
 		exec_pipeline(parse_list, envp);
-		printf("Error %d\n", env.error_code);
-		free_list(parse_list);
-		free(line);
+		free_list(parse_list, tokens);
+		// free(line);
 		//system("leaks minishell\n");
 	}
 	return (0);
