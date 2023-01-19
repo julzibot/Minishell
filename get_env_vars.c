@@ -2,13 +2,15 @@
 
 extern t_gl_env	env;
 
-static  char	*get_vars_init(char *token, char *str)
+static  char	*get_vars_init(char *token)
 {
 	int	i;
 	int	v_i;
+	char	*str;
 
 	i = 0;
 	v_i = 0;
+	str = NULL;
 	while (token[i] == '\"' || token[i] == '\'')
 		i++;
 	while (token[i] && token[i] != '$')
@@ -123,6 +125,27 @@ static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env
 	return (str);
 }
 
+char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
+{
+	int	i;
+
+	i = 0;
+	if (token[i] == '$' && token[i + 1] == '?')
+	{
+		str = ft_strjoin(str, ft_itoa(env.error_code), 2);
+		i++;
+		while (token[++i] && token[i] != '$')
+			str = char_cat(str, token[i]);
+	}
+	else
+	{
+		if (token[i] == '$' && (!token[i + 1] || is_delim(token[i + 1]) == 1))
+			str = ft_strjoin(str, ft_strdup("$"), 2);
+		str = check_var_name(token + i, env_vars, str, env_list);
+	}
+	return (str);
+}
+
 char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
 {
 	int	i;
@@ -130,21 +153,13 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 	// printf("GET_IN %s\n", token);
 
 	i = 0;
-	str = NULL;
 	if (!token)
 		return (NULL);
-	str = get_vars_init(token, str);
+	str = get_vars_init(token);
 	i = ft_strlen(str);
 	while (token[i])
 	{
-		if (token[i] == '$' && token[i + 1] == '?')
-			str = ft_strjoin(str, ft_itoa(env.error_code), 2);
-		else
-		{
-			if (token[i] == '$' && (!token[i + 1] || is_delim(token[i + 1]) == 1))
-				str = ft_strjoin(str, ft_strdup("$"), 2);
-			str = check_var_name(token + i, env_vars, str, env_list);
-		}
+		str = expand_vars(token + i, str, env_vars, env_list);
 		while (token[++i] && token[i] != '$')
 			;
 	}
