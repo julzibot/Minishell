@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/19 13:53:44 by mstojilj         ###   ########.fr       */
+/*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
+/*   Updated: 2023/01/19 21:04:25 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,22 @@
 
 # ifndef PROMPT
 # define PROMPT "Mini_chelou: "
+# endif
+
+# ifndef CMD
+# define CMD 1
+# endif
+
+# ifndef NOT_EXEC
+# define NOT_EXEC 126
+# endif
+
+# ifndef NOT_CMD
+# define NOT_CMD 127
+# endif
+
+# ifndef SIG_C
+# define SIG_C 130
 # endif
 
 typedef struct s_env
@@ -128,9 +144,11 @@ char				**ft_split(char const *s, char c);
 
 /***********EXEC***********/
 void	ft_exec_cmd(t_cmd *cmd, char **env);
-int		ft_exec(t_cmd *cmd, char **envp, int builtin);
+int		ft_exec(t_cmd *cmd, char **envp);
 char	*ft_substr(char *s, unsigned int start);
 char	*ft_strstr(char *haystack, char *needle);
+void	exec_builtin(t_cmd *cmd, int builtin);
+int		is_builtin(t_cmd *cmd);
 void	exec_builtin(t_cmd *cmd, int builtin);
 
 /***********ENV************/
