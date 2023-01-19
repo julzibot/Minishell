@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 18:16:47 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 13:41:36 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 		exit(1);
 	if (getcwd(s, PATH_MAX - 1) == NULL) // If NULL no path found
 		return (1);
-	ft_update_env(env_list, exp_list, ft_strjoin(env, s, 0));
+	ft_update_env(env_list, exp_list, ft_strjoin(env, s, -1));
 	return (0);
 }
 
@@ -54,6 +54,7 @@ void	ft_cd(t_cmd *cmd)
 			exit(1);
 		s = getenv("HOME");
 		ret = chdir(s);
+		free(s);
 		// ft_update_pwd(&env.exp_list, &env.env_list, "PWD=");
 	}
 	else if (ft_strcmp(cmd->args[1], "..") == 0 && cmd->args[2] == NULL)
@@ -81,5 +82,6 @@ char	*ft_pwd(t_cmd *cmd)
 	if (cwd == NULL)
 		return (NULL);
 	ft_printf(cmd->outfile, "%s\n", cwd);
+	//free(cwd);
 	return (cwd);
 }

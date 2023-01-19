@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 16:07:07 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 13:50:28 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,15 @@ int	ft_atoi(const char *str)
 
 void	ft_free_env(t_env *list)
 {
-	t_env	*curr;
 	t_env	*prev;
 
-	curr = list;
 	prev = NULL;
-	while (curr)
+	while (list)
 	{
-		if (curr->next == NULL)
+		if (list->next == NULL)
 		{
-			free(curr->line);
-			free(curr);
+			free(list->line);
+			free(list);
 			return ;
 		}
 		if (prev != NULL)
@@ -81,8 +79,8 @@ void	ft_free_env(t_env *list)
 			free(prev->line);
 			free(prev);
 		}
-		prev = curr;
-		curr = curr->next;
+		prev = list;
+		list = list->next;
 	}
 }
 
@@ -116,26 +114,24 @@ void	ft_free_char_array(char **s)
 
 void	ft_free_cmd(t_cmd *cmd)
 {
-	t_cmd	*curr;
 	t_cmd	*prev;
 
-	curr = cmd;
 	prev = NULL;
-	while (curr)
+	while (cmd)
 	{
 		if (prev != NULL)
 			free(prev);
-		if (curr->next == NULL)
+		if (cmd->next == NULL)
 		{
-			ft_free_char_array(curr->args);
-			ft_free_char_array(curr->env_vars);
-			free(curr);
+			ft_free_char_array(cmd->args);
+			ft_free_char_array(cmd->env_vars);
+			free(cmd);
 			return ;
 		}
-		ft_free_char_array(curr->args);
-		ft_free_char_array(curr->env_vars);
-		prev = curr;
-		curr = curr->next;
+		ft_free_char_array(cmd->args);
+		ft_free_char_array(cmd->env_vars);
+		prev = cmd;
+		cmd = cmd->next;
 	}
 }
 
@@ -160,9 +156,9 @@ void	ft_exit(t_cmd *cmd)
 		code = ft_atoi(cmd->args[1]);
 		code %= 256;
 	}
-	// ft_free_env(env.env_list);
-	// ft_free_env(env.exp_list);
-	// ft_free_cmd(cmd);
-	//system("leaks minishell");
+	//ft_free_env(env.env_list);
+	//ft_free_env(env.exp_list);
+	//ft_free_cmd(cmd); If freed, gives three leaks
+	system("leaks minishell");
 	exit(code);
 }

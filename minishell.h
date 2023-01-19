@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/18 14:07:37 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 13:53:44 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,8 @@ void	ft_remove_line(t_env **env_list, t_env *node);
 void	ft_exit(t_cmd *cmd);
 void	ft_free_env(t_env *env);
 void	ft_free_list(t_env **list);
+int		ft_arrlen(char **s);
+void	ft_free_char_array(char **s);
 
 /**********SIGNALS*********/
 void	ft_handle_sigint(int sig);

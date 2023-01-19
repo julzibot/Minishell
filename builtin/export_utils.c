@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 16:07:56 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 13:43:16 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*ft_add_quotes(char *var)
 		j++;
 	}
 	env_var[j] = '\0';
-	//free(var);
+	free(var);
 	return (env_var);
 }
 
@@ -61,7 +61,7 @@ int	ft_verify_double(t_env *env_list, char *line) // Checks duplicate
 	curr = env_list;
 	while (curr)
 	{
-		if (strcmp(curr->line, line) == 0) // put ft_strcmp!
+		if (ft_strcmp(curr->line, line) == 0)
 			return (1);
 		curr = curr->next;
 	}

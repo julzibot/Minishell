@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 11:22:39 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 13:55:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 			return (paths[i]);
 		i++;
 	}
+	ft_free_char_array(paths);
 	env.gl = 127;
 	printf("Minichelou: %s: command not found\n", cmd);
 	exit(env.gl);
@@ -172,7 +173,6 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 			close(cmd->outfile);
 		close (cmd->in_pipe[0]);
 		close (cmd->out_pipe[1]);
-
 	}
 	return ;
 }

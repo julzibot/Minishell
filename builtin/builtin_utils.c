@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:51:18 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/16 17:53:46 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 13:39:41 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,38 +65,6 @@ int	ft_get_to_str(char *line, char *remove, int *j)
 	while (line[i] && ft_isspace(line[i] == 0))
 		i++;
 	return (i);
-}
-
-// Removes cmd from string
-// Ex. char	*ft_remove_cmd("cd ../past", "cd ")
-// "cd ../past" -> "../past"
-// 🚨 Don't forget to free afterwards! 🚨
-char	*ft_remove_cmd(char *line, char *remove)
-{
-	char	*s;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	if (line == NULL)
-		return (NULL);
-	if (remove == NULL)
-		return (line);
-	i = ft_get_to_str(line, remove, &j);
-	if (j == 0)
-		return (line);
-	i -= j;
-	s = malloc(sizeof(char) * (i + 1));
-	i = 0;
-	while (line[j])
-	{
-		s[i] = line[j];
-		i++;
-		j++;
-	}
-	s[i] = '\0';
-	return (s);
 }
 
 int	ft_isspace(char c)

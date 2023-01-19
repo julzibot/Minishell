@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/13 16:58:30 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 13:42:23 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	ft_add_queue(t_env **root, char *s) // Add line to ENV linked list
 	{
 		if (curr->next == NULL)
 		{
-			curr->next = malloc(sizeof(t_env));
+			//curr->next = malloc(sizeof(t_env));
 			curr->next = node;
 			return ;
 		}
@@ -62,6 +62,7 @@ void	ft_print_env(t_env *env_lst)
 	int	i;
 
 	i = 0;
+	printf("prints\n");
 	for (t_env *curr = env_lst; curr; curr = curr->next)
 	{
 		if (curr == NULL)

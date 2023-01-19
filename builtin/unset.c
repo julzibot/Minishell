@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/18 16:08:22 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 13:36:26 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	ft_unset(t_cmd *cmd)
 	{
 			if (ft_unset_variable(&env.env_list, cmd->args[i]) == 1)
 				return ;
-			if (ft_unset_variable(&env.exp_list, ft_strjoin("declare -x ", cmd->args[i], 0)) == 1)
+			if (ft_unset_variable(&env.exp_list, ft_strjoin("declare -x ", cmd->args[i], -1)) == 1)
 				return ;
 		i++;
 	}
