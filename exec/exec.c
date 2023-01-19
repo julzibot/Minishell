@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 13:55:12 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 16:56:26 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 {
 	char	*env_line;
 	char	**paths;
+	char	*path;
 	int		i;
 
 	i = 0;
@@ -38,16 +39,17 @@ char	*ft_cmd_check(char **envp, char *cmd)
 		paths[i] = ft_strjoin(paths[i], "/", 1);
 		paths[i] = ft_strjoin(paths[i], cmd, 1);
 		if (access(paths[i], F_OK | X_OK) == 0)
-			return (paths[i]);
+		{
+			path = ft_strdup(paths[i]);
+			ft_free_char_array(paths);
+			return (path);
+		}
 		i++;
 	}
-	ft_free_char_array(paths);
-	env.gl = 127;
-	printf("Minichelou: %s: command not found\n", cmd);
-	exit(env.gl);
+	return (NULL);
 }
 
-int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
+int		ft_exec(t_cmd *cmd, char **envp, int builtin) // Execute a command
 {
 	char	*path;
 	(void)builtin;
@@ -86,9 +88,9 @@ int		ft_exec(t_cmd *cmd, char **env, int builtin) // Execute a command
 	}
 	else
 	{
-		path = ft_cmd_check(env, cmd->args[0]);
-		execve(path, cmd->args, env);
-		// exit(0);
+		path = ft_cmd_check(envp, cmd->args[0]);
+		execve(path, cmd->args, envp);
+		exit(0);
 	}
 	return (1);
 }
@@ -147,6 +149,12 @@ void	ft_exec_cmd(t_cmd *cmd, char **envp)
 		if (cmd->redir[1] == 1)
 			close(cmd->outfile);
 		return ;
+	}
+	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
+	{
+		env.error_code = 127;
+		ft_printf(2, "Mini_chelou: %s: command not found\n", cmd->args[0]);
+		exit(127);
 	}
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 13:32:04 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 17:23:29 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,19 @@ char	*ft_strdup_free(char *str)
 	return (dup);
 }
 
+void	ft_free_join(char *s1, char *s2, int must_free)
+{
+	if (must_free == 1)
+		free(s1);
+	if (must_free == 2)
+		free(s2);
+	if (must_free == 3)
+	{
+		free(s1);
+		free(s2);
+	}
+}
+
 char	*ft_strjoin(char *s1, char *s2, int must_free)
 {
 	char	*str;
@@ -144,10 +157,7 @@ char	*ft_strjoin(char *s1, char *s2, int must_free)
 	while (s2[++j])
 		str[i++] = s2[j];
 	str[i] = '\0';
-	if (must_free > 0)
-		free(s1);
-	if (must_free == 2)
-		free(s2);
+	ft_free_join(s1, s2, must_free);
 	return (str);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 13:43:16 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 16:59:18 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ char	*ft_var_content(t_cmd *cmd, char *line)
 	curr = env.env_list;
 	while (curr)
 	{
-		if (ft_strncmp(curr->line, line, ft_varlen(line)) == 0) // ft_strcmp!
+		if (ft_strncmp(curr->line, line, ft_varlen(line)) == 0)
 			return (line);
 		curr = curr->next;
 	}
