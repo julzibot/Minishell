@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 14:06:02 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 14:23:31 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,24 +63,16 @@ int	ft_atoi(const char *str)
 
 void	ft_free_env(t_env *list)
 {
-	t_env	*prev;
+	t_env	*curr;
+	t_env	*tmp;
 
-	prev = NULL;
-	while (list)
+	curr = list;
+	tmp = NULL;
+	while (curr)
 	{
-		if (list->next == NULL)
-		{
-			free(list->line);
-			free(list);
-			return ;
-		}
-		if (prev != NULL)
-		{
-			free(prev->line);
-			free(prev);
-		}
-		prev = list;
-		list = list->next;
+		tmp = curr->next;
+		free(curr);
+		curr = tmp;
 	}
 }
 
@@ -159,6 +151,6 @@ void	ft_exit(t_cmd *cmd)
 	//ft_free_env(env.env_list);
 	//ft_free_env(env.exp_list);
 	//ft_free_cmd(cmd); If freed, gives three leaks
-	//system("leaks minishell");
+	system("leaks minishell");
 	exit(code);
 }

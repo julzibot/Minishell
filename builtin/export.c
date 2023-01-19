@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 13:37:51 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 14:26:28 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 	curr = *exp_list;
 	while (curr)
 	{
-		curr->line = ft_add_quotes(curr->line);
-		curr->line = ft_strjoin("declare -x ", curr->line, -1);
+		curr->line = ft_add_quotes(curr->line); // 19/01 HERE POSSIBLE LEAKS
+		curr->line = ft_strjoin("declare -x ", curr->line, 0);
 		curr = curr->next;
 	}
 }
@@ -161,7 +161,7 @@ void	ft_loop_assign_vars(char **env_vars, char *line)
 	}
 }
 
-void	ft_equal_var(t_cmd *cmd, char *line)
+void	ft_equal_var(t_cmd *cmd, char *line) // Line is cmd->args[i]
 {
 	if (ft_change_var_content(cmd, line)) // Check if content change
 	{

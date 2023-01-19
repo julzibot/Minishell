@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 13:41:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 15:21:57 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ void	ft_cd_error(t_cmd *cmd)
 {
 	if (access(cmd->args[1], R_OK) == -1)
 	{
-		env.gl = 1;
+		env.error_code = 1;
 		ft_printf(2, "Minichelou: cd: %s: Permission denied\n", cmd->args[1]);
 		return ;
 	}
-	env.gl = 1;
+	env.error_code = 1;
 	ft_printf(2, "Minichelou: cd: %s: No such file or directory\n", cmd->args[1]);
 }
 
