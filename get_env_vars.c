@@ -131,13 +131,12 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 	str = NULL;
 	if (!token)
 		return (NULL);
-	else if (token[0] == '$' && !token[1])
-		return (ft_strdup(token));
 	str = get_vars_init(token, str);
-	while (str && str[i])
-		i++;
+	i = ft_strlen(str);
 	while (token[i])
 	{
+		if (token[i] == '$' && (!token[i + 1] || is_delim(token[i + 1]) == 1))
+			str = ft_strjoin(str, ft_strdup("$"), 2);
 		str = check_var_name(token + i, env_vars, str, env_list);
 		while (token[++i] && token[i] != '$')
 			;
