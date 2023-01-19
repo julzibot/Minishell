@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 17:23:29 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 20:37:32 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	i = 0;
 	if (!s1 || !s2)
 		return (-1);
+	//printf("s1 %s s2 %s\n", s1, s2);
 	if (n == 0)
 		return (0);
 	while (*s1 && *s2 && *s1 == *s2 && ++i < n)

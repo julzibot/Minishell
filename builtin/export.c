@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 17:16:06 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 20:39:44 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,12 +202,15 @@ void	ft_export(t_cmd *cmd)
 	j = 0;
 	if (cmd->args[1] == NULL || cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
 		return ;
+	printf("%s\n", cmd->env_vars[0]);
 	while (cmd->args[i])
 	{
 		while (cmd->env_vars[j])
 		{
-			if (ft_strncmp(cmd->args[i], cmd->env_vars[j], ft_varlen(cmd->args[i])) == 0
-					&& ft_verify_double(env.env_list, cmd->args[i]) == 0)
+			printf("i %d j %d\n", i, j);
+			//printf("args %s vars %s\n", cmd->args[i], cmd->env_vars[j]);
+			if (ft_strncmp(cmd->args[i], cmd->env_vars[j], ft_varlen(cmd->args[i])) == 0 &&
+				ft_verify_double(env.env_list, cmd->args[i]) == 0)
 			{
 				if (ft_verify_equal(cmd->args[i])) // Equal sign found
 					ft_equal_var(cmd, cmd->args[i]);

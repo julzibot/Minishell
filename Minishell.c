@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/19 16:31:29 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/19 21:06:13 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,48 +14,11 @@
 
 t_gl_env	env;
 
-int	ft_exec_parent(t_cmd *cmd)
-{
-	if (!cmd->args)
-		return (0);
-	//printf("EXIT %s\n", cmd->args[0]);
-	if (ft_strncmp(cmd->args[0], "exit", 4) == 0 &&
-			ft_strlen(cmd->args[0]) == 4)
-		ft_exit(cmd);
-	else if (ft_strncmp(cmd->args[0], "env", 3) == 0 &&
-			ft_strlen(cmd->args[0]) == 3)
-	{
-		printf("is env\n");
-		ft_print_env(env.env_list);
-		return (1);
-	}
-	else if (ft_strncmp(cmd->args[0], "unset", 5) == 0 &&
-			ft_strlen(cmd->args[0]) == 5)
-	{
-		ft_unset(cmd);
-		return (1);
-	}
-	else if (ft_strcmp(cmd->args[0], "cd") == 0)
-	{
-		ft_cd(cmd);
-	}
-	else if (ft_strncmp(cmd->args[0], "export", 6) == 0 &&
-			ft_strlen(cmd->args[0]) == 6)
-	{
-		if (cmd->args[1] == NULL)
-			ft_print_env(env.exp_list);
-		else
-			ft_export(cmd);
-		return (1);
-	}
-	return (0);
-}
-
 void	exec_pipeline(t_cmd *parse_list, char **envp)
 {
 	t_cmd	*temp;
-	int	len;
-	int	i;
+	int		len;
+	int		i;
 
 	len = cmd_lstsize(parse_list);
 	i = 0;
@@ -70,12 +33,9 @@ void	exec_pipeline(t_cmd *parse_list, char **envp)
 			temp->next->in_pipe[0] = temp->out_pipe[0];
 			temp->next->in_pipe[1] = temp->out_pipe[1];
 		}
-		if (ft_exec_parent(temp))
-			return ;
 		ft_exec_cmd(temp, envp);
 		if (temp->next)
 			temp = temp->next;
-		printf("%d\n", env.error_code);
 		// for (int fd = 0; fd < 30; fd++) {
 		// 	int flags = fcntl(fd, F_GETFD);
 		// 	if (flags != -1) {
@@ -139,7 +99,7 @@ int	main(int argc, char **argv, char **envp)
 		add_history(line);
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
-		free(env_vars);
+		//free(env_vars);
 		env_vars = parse_list->env_vars;
 		exec_pipeline(parse_list, envp);
 		free_list(parse_list, tokens);
