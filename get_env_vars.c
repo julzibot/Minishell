@@ -27,16 +27,11 @@ static  char	*get_vars_init(char *token)
 	return (str);
 }
 
-static  char	*get_value(char *token, int namelen, char *env_var, char *str)
+int	value_size(char *env_var, int namelen, int quoted)
 {
-	int	v_i;
 	int	v_len;
-	int	quoted;
-	char	*value;
+	int	v_i;
 
-	quoted = 0;
-	if ((token[0] == '\"' || token[1] == '\"') && token[namelen + 1] == '\"')
-		quoted = 1;
 	v_i = -1;
 	v_len = 0;
 	while (env_var[++v_i] && !quoted)
@@ -44,14 +39,25 @@ static  char	*get_value(char *token, int namelen, char *env_var, char *str)
 		if (is_delim(env_var[v_i] == 1))
 			v_len++;
 	}
-	value = malloc(ft_strlen(env_var) - v_len - namelen + quoted);
+	return (ft_strlen(env_var) - v_len - namelen + quoted);
+}
+
+static  char	*get_value(char *token, int namelen, char *env_var, char *str)
+{
+	int	v_i;
+	int	quoted;
+	char	*value;
+
+	quoted = 0;
 	v_i = -1;
-	v_len = namelen;
-	while (env_var[++v_len])
+	if ((token[0] == '\"' || token[1] == '\"') && token[namelen + 1] == '\"')
+		quoted = 1;
+	value = malloc(value_size(env_var, namelen, quoted));
+	while (env_var[++namelen])
 	{
-		while (is_delim(env_var[v_len]) == 1)
-			v_len++;
-		value[++v_i] = env_var[v_len];
+		while (is_delim(env_var[namelen]) == 1)
+			namelen++;
+		value[++v_i] = env_var[namelen];
 	}
 	value[++v_i] = '\"';
 	value[v_i + quoted] = '\0';

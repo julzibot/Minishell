@@ -29,62 +29,54 @@ static  char *check_concat(char *cpy)
     return (NULL);
 }
 
+char   *assign_new_value(char *env_var, char *cpy)
+{
+    int concat;
+    int namelen;
+
+    concat = 0;
+    namelen = 0;
+    while (env_var[namelen] != '=')
+        namelen++;
+    if (cpy && cpy[namelen] && cpy[namelen] == '+' && cpy[namelen + 1] == '=')
+        concat = 1;
+    if (!ft_strncmp(env_var, cpy, namelen) && cpy[namelen + concat] == '=')
+    {
+        if (!concat)
+        {
+            free(env_var);
+            env_var = ft_strdup(cpy);
+        }
+        else
+            env_var = ft_strjoin(env_var, ft_strdup(cpy + namelen + concat + 1), 2);
+        return(env_var);
+    }
+    return(env_var);
+}
+
 static  char	**create_var(char **env_vars, char *cpy, t_env *env_list)
 {
 	int	j;
-	int	namelen;
-    int concat;
     int must_ret;
+    char    *save;
     t_env   *temp;
 
     must_ret = 0;
-	j = -1;
+    temp = env_list;
+    j = -1;
 	while (env_vars && env_vars[++j])
 	{
-        concat = 0;
-		namelen = 0;
-		while (env_vars[j][namelen] != '=')
-			namelen++;
-        if (cpy && cpy[namelen] && cpy[namelen] == '+' && cpy[namelen + 1] == '=')
-            concat = 1;
-		if (!ft_strncmp(env_vars[j], cpy, namelen) && cpy[namelen + concat] == '=')
-		{
-            if (!concat)
-            {
-                free(env_vars[j]);
-			    env_vars[j] = ft_strdup(cpy);
-            }
-            else
-                env_vars[j] = ft_strjoin(env_vars[j], ft_strdup(cpy + namelen + concat + 1), 2);
-			must_ret = 1;
-		}
+        save = ft_strdup(env_vars[j]);
+        env_vars[j] = assign_new_value(env_vars[j], cpy);
+        if (ft_strcmp(save, env_vars[j]))
+            must_ret = 1;
 	}
-
-    temp = env_list;
     j = env_lstsize(env_list);
     while (j-- > 0)
 	{
-        concat = 0;
-		namelen = 0;
-		while (temp->line[namelen] != '=')
-			namelen++;
-        if (cpy && cpy[namelen] && cpy[namelen] == '+' && cpy[namelen + 1] == '=')
-            concat = 1;
-		if (!ft_strncmp(temp->line, cpy, namelen) && cpy[namelen + concat] == '=')
-		{
-            if (!concat)
-            {
-                free(temp->line);
-			    temp->line = ft_strdup(cpy);
-            }
-            else
-                temp->line = ft_strjoin(temp->line, ft_strdup(cpy + namelen + concat + 1), 2);
-			while (j > 0)
-                j--;
-		}
+        temp->line = assign_new_value(temp->line, cpy);
         temp = temp->next;
 	}
-
     if (!must_ret)
 	    env_vars = token_join(env_vars, check_concat(ft_strdup(cpy)));
 	return (env_vars);
