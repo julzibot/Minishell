@@ -67,6 +67,13 @@ typedef	struct s_seg
 	int	var_quoted;
 } t_seg;
 
+typedef struct	s_lex
+{
+	char **lex_tab;
+	int	i;
+	int	j;
+} t_lex;
+
 typedef struct s_gl_env
 {
 	pid_t	gl;

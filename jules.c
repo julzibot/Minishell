@@ -25,65 +25,74 @@ int	check_lexpr_error(char *line, int delim)
 	return (0);
 }
 
+int	lex_pr(t_lex *l, char *line, int delim, t_cmd *parse_list)
+{
+	int	lexpr;
+
+	lexpr = check_lexpr_error(line + l->i, delim);
+	if (lexpr)
+	{
+		l->lex_tab = NULL;
+		if (lexpr == 1)
+			printf("Error : input ends with a pipe\n");
+		else if (lexpr == 2)
+			printf("Error : this redirection is chelou !\n");
+		return (1);
+	}
+	l->i += lex_pipe_redir(line + l->i, l->lex_tab + l->j++);
+	if (is_delim(line[l->i]) != 4 /*is not a space or tab*/)
+		l->i--;
+	else
+		parse_list->space_after[l->j] = 1;
+	return (0);
+}
+
+int	lex_qw(t_lex *l, char *line, int delim, t_cmd *parse_list)
+{
+	parse_list->quoted[l->j] = 0;
+	if (delim == 1)
+		parse_list->quoted[l->j] = 1;
+	l->i = lineseg(line, l->i, l->lex_tab + l->j, parse_list->quoted[l->j]);
+	if (l->i < 0)
+	{
+		l->lex_tab = NULL;
+		if (l->i == -1)
+			printf("Error : unclosed quotes !\n");
+		else if (l->i == -2)
+			printf("Error : chelou input detected\n");
+		return (1);
+	}
+	if (is_delim(line[l->i]) != 4 /*is not a space or tab*/)
+		l->i--;
+	else
+		parse_list->space_after[l->j] = 1;
+	l->j++;
+	return (0);
+}
+
 char	**lexing(char *line, t_cmd *parse_list)
 {
-	int		i;
-	int 	j;
-	int		lexpr;
+	t_lex	*l;
 	int		delim;
-	char	**lex_tab;
 
-	i = -1;
-	j = 0;
 	if (line == NULL)
 		return (NULL);
-	lex_tab = malloc(sizeof(char*) * arg_count(line));
-	tab_list_init(line, lex_tab, parse_list);
-	while (line[++i])
+	l = malloc(sizeof(t_lex));
+	l->i = 0;
+	l->j = 0;
+	l->lex_tab = malloc(sizeof(char*) * arg_count(line));
+	tab_list_init(line, l->lex_tab, parse_list);
+	while (line[l->i])
 	{
-		delim = is_delim(line[i]);
-		if (delim == 2 || delim == 3/*is pipe or redir*/)
-		{
-			lexpr = check_lexpr_error(line + i, delim);
-			if (lexpr)
-			{
-				lex_tab = NULL;
-				if (lexpr == 1)
-					printf("Error : input ends with a pipe\n");
-				else if (lexpr == 2)
-					printf("Error : this redirection is chelou !\n");
-				return (lex_tab);
-			}
-			i += lex_pipe_redir(line + i, lex_tab + j++);
-			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
-				i--;
-			else
-				parse_list->space_after[j] = 1;
-		}
-		else if (delim == 1 || !delim /*is quote, or beginning of word*/)
-		{
-			parse_list->quoted[j] = 0;
-			if (delim == 1)
-				parse_list->quoted[j] = 1;
-			i = lineseg(line, i, lex_tab + j, parse_list->quoted[j]);
-			if (i < 0)
-			{
-				lex_tab = NULL;
-				if (i == -1)
-					printf("Error : unclosed quotes !\n");
-				else if (i == -2)
-					printf("Error : chelou input detected\n");
-				return (lex_tab);
-			}
-			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
-				i--;
-			else
-				parse_list->space_after[j] = 1;
-			j++;
-		}
+		delim = is_delim(line[l->i]);
+		if ((delim == 2 || delim == 3) && lex_pr(l, line, delim, parse_list)/*is pipe or redir*/)
+				return (l->lex_tab);
+		else if ((delim == 1 || !delim) && lex_qw(l, line, delim, parse_list)/*is quote, or beginning of word*/)
+				return (l->lex_tab);
+		l->i++;
 	}
-	lex_tab[j] = NULL;
-	return (lex_tab);
+	l->lex_tab[l->j] = NULL;
+	return (l->lex_tab);
 }
 
 t_cmd	*lst_next_cmd(t_cmd *temp)
@@ -128,7 +137,6 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 		return (0); // error handling here
 	line = NULL;
 	
-
 	if (!type)
 	{
 		if (cmd->redir_in != -1)
@@ -240,9 +248,6 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	i = -1;
 	while (parse_list->env_vars && parse_list->env_vars[++i])
 		printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
-
-
-
 
 	return(parse_list);
 }
