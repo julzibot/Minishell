@@ -25,11 +25,11 @@ int	check_lexpr_error(char *line, int delim)
 	return (0);
 }
 
-int	lex_pr(t_lex *l, char *line, int delim, t_cmd *parse_list)
+int	lex_pr(t_lex *l, char *line, t_cmd *parse_list)
 {
 	int	lexpr;
 
-	lexpr = check_lexpr_error(line + l->i, delim);
+	lexpr = check_lexpr_error(line + l->i, l->delim);
 	if (lexpr)
 	{
 		l->lex_tab = NULL;
@@ -47,10 +47,10 @@ int	lex_pr(t_lex *l, char *line, int delim, t_cmd *parse_list)
 	return (0);
 }
 
-int	lex_qw(t_lex *l, char *line, int delim, t_cmd *parse_list)
+int	lex_qw(t_lex *l, char *line, t_cmd *parse_list)
 {
 	parse_list->quoted[l->j] = 0;
-	if (delim == 1)
+	if (l->delim == 1)
 		parse_list->quoted[l->j] = 1;
 	l->i = lineseg(line, l->i, l->lex_tab + l->j, parse_list->quoted[l->j]);
 	if (l->i < 0)
@@ -73,26 +73,28 @@ int	lex_qw(t_lex *l, char *line, int delim, t_cmd *parse_list)
 char	**lexing(char *line, t_cmd *parse_list)
 {
 	t_lex	*l;
-	int		delim;
+	char	**ret;
 
 	if (line == NULL)
 		return (NULL);
 	l = malloc(sizeof(t_lex));
 	l->i = 0;
 	l->j = 0;
+	l->delim = -1;
 	l->lex_tab = malloc(sizeof(char*) * arg_count(line));
 	tab_list_init(line, l->lex_tab, parse_list);
 	while (line[l->i])
 	{
-		delim = is_delim(line[l->i]);
-		if ((delim == 2 || delim == 3) && lex_pr(l, line, delim, parse_list)/*is pipe or redir*/)
-				return (l->lex_tab);
-		else if ((delim == 1 || !delim) && lex_qw(l, line, delim, parse_list)/*is quote, or beginning of word*/)
+		l->delim = is_delim(line[l->i]);
+		if (((l->delim == 2 || l->delim == 3) && lex_pr(l, line, parse_list)) \
+			|| ((!l->delim || l->delim == 1) && lex_qw(l, line, parse_list)))
 				return (l->lex_tab);
 		l->i++;
 	}
 	l->lex_tab[l->j] = NULL;
-	return (l->lex_tab);
+	ret = ft_tabdup(l->lex_tab, 1);
+	free(l);
+	return (ret);
 }
 
 t_cmd	*lst_next_cmd(t_cmd *temp)

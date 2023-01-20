@@ -69,7 +69,8 @@ typedef	struct s_seg
 
 typedef struct	s_lex
 {
-	char **lex_tab;
+	char	**lex_tab;
+	int	delim;
 	int	i;
 	int	j;
 } t_lex;
@@ -158,6 +159,7 @@ int	env_lstsize(t_env *list);
 // static char			*strseg(const char *str, char c);
 // static unsigned int	size_count(const char *str, char c);
 char				**ft_split(char const *s, char c);
+char	**ft_tabdup(char **tab, int must_free);
 
 /***********EXEC***********/
 void	ft_exec_cmd(t_cmd *cmd, char **env);

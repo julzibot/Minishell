@@ -216,6 +216,23 @@ int	cmd_lstsize(t_cmd *list)
 	return (len);
 }
 
+char	**ft_tabdup(char **tab, int must_free)
+{
+	char **dup;
+	int	i;
+
+	i = -1;
+	dup = malloc(sizeof(char*) * (ft_tablen(tab) + 1));
+	if (!dup)
+		return (NULL);
+	while (tab[++i])
+		dup[i] = ft_strdup(tab[i]);
+	dup[i] = NULL;
+	if (must_free)
+		free(tab);
+	return (dup);
+}
+
 char    *char_cat(char *str, char c)
 {
     char    *new;
@@ -255,3 +272,40 @@ int	is_delim(char c)
 	else
 		return(0);
 }
+
+
+
+
+	// //SEGSIZE
+	// while (line[++i] && ((quoted && line[i] != q_type) \
+	// 	|| (!quoted && !is_delim(line[i])) \
+	// 	|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))))
+	// {
+	// 	if (line[i] == '=' && !quoted && !is_var)
+	// 		is_var = 1;
+	// 	else if (is_var && !var_quoted && is_delim(line[i]) == 1)
+	// 	{
+	// 		var_quoted = 1;
+	// 		var_q_type = i;
+	// 	}
+	// 	else if (is_var && var_quoted && line[i] == line[var_q_type])
+	// 		var_quoted = 0;
+	// 	count++;
+	// }
+	// //LINESEG
+	// while (line[++i] && ((quoted && line[i] != line[q_type]) \
+	// 	|| (!quoted && !is_delim(line[i])) \
+	// 	|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))) \
+	// 	&& !(!quoted && (line[i] == '\\' || line[i] == ';')))
+	// {
+	// 	if (line[i] == '=' && !quoted && !is_var)
+	// 		is_var = 1;
+	// 	else if (is_var && !var_quoted && is_delim(line[i]) == 1)
+	// 	{
+	// 		var_quoted = 1;
+	// 		var_q_type = i;
+	// 	}
+	// 	else if (is_var && var_quoted && line[i] == line[var_q_type])
+	// 		var_quoted = 0;
+	// 	seg[s_i++] = line[i];
+	// }
