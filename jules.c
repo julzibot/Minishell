@@ -14,33 +14,56 @@
 
 extern t_gl_env	env;
 
+int	check_lexpr_error(char *line, int delim)
+{
+	if (delim == 2 && !line[1])
+		return (1);
+	else if (delim == 3 && \
+		((is_delim(line[1]) == 3 && line[1] != line[0]) \
+		|| (line[1] == line[0] && is_delim(line[2]) == 3)))
+		return (2);
+	return (0);
+}
+
 char	**lexing(char *line, t_cmd *parse_list)
 {
 	int		i;
 	int 	j;
+	int		lexpr;
+	int		delim;
 	char	**lex_tab;
 
 	i = -1;
 	j = 0;
-	lex_tab = malloc(sizeof(char*) * arg_count(line));
-	tab_list_init(line, lex_tab, parse_list);
 	if (line == NULL)
 		return (NULL);
-	printf ("malloc : %d\n", arg_count(line) + 1);
+	lex_tab = malloc(sizeof(char*) * arg_count(line));
+	tab_list_init(line, lex_tab, parse_list);
 	while (line[++i])
 	{
-		if (is_delim(line[i]) == 2 || is_delim(line[i]) == 3/*is pipe or redir*/)
+		delim = is_delim(line[i]);
+		if (delim == 2 || delim == 3/*is pipe or redir*/)
 		{
+			lexpr = check_lexpr_error(line + i, delim);
+			if (lexpr)
+			{
+				lex_tab = NULL;
+				if (lexpr == 1)
+					printf("Error : input ends with a pipe\n");
+				else if (lexpr == 2)
+					printf("Error : this redirection is chelou !\n");
+				return (lex_tab);
+			}
 			i += lex_pipe_redir(line + i, lex_tab + j++);
 			if (is_delim(line[i]) != 4 /*is not a space or tab*/)
 				i--;
 			else
 				parse_list->space_after[j] = 1;
 		}
-		else if (is_delim(line[i]) == 1 || !is_delim(line[i]) /*is quote, or beginning of word*/)
+		else if (delim == 1 || !delim /*is quote, or beginning of word*/)
 		{
 			parse_list->quoted[j] = 0;
-			if (is_delim(line[i]) == 1)
+			if (delim == 1)
 				parse_list->quoted[j] = 1;
 			i = lineseg(line, i, lex_tab + j, parse_list->quoted[j]);
 			if (i < 0)
@@ -59,7 +82,6 @@ char	**lexing(char *line, t_cmd *parse_list)
 			j++;
 		}
 	}
-	printf ("after : %d\n", j);
 	lex_tab[j] = NULL;
 	return (lex_tab);
 }

@@ -26,7 +26,7 @@ static  char *check_concat(char *cpy)
         else
             return (cpy);
     }
-    return(NULL);
+    return (NULL);
 }
 
 static  char	**create_var(char **env_vars, char *cpy, t_env *env_list)
