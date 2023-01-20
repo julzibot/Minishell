@@ -57,6 +57,16 @@ typedef struct s_env
 	struct s_env	*next;
 } t_env;
 
+typedef	struct s_seg
+{
+	int	quoted;
+	int	q_type;
+	int	s_i;
+	int var_q_type;
+	int	is_var;
+	int	var_quoted;
+} t_seg;
+
 typedef struct s_gl_env
 {
 	pid_t	gl;
