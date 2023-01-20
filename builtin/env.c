@@ -57,17 +57,21 @@ void	ft_get_env(t_env **env_list, char **env) // Copies env to env_list
 	env[i] = NULL;
 }
 
-void	ft_print_env(t_env *env_lst)
+void	ft_print_env(t_env *env_lst, t_cmd *cmd)
 {
 	int	i;
+	int	fd;
 
 	i = 0;
-	printf("prints\n");
+	fd = cmd->outfile;
+	if (cmd->redir[1] == 0 && cmd->piped == 1)
+		fd = cmd->out_pipe[1];
+	printf("print env!!!\n");
 	for (t_env *curr = env_lst; curr; curr = curr->next)
 	{
 		if (curr == NULL)
 			break ;
-		printf("%d - %s\n", i, curr->line);
+		ft_printf(fd, "%d - %s\n", i, curr->line);
 		i++;
 	}
 }

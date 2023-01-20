@@ -57,13 +57,13 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 		status = ft_exec_cmd(temp, envp);
 		if (temp->next)
 			temp = temp->next;
-		// for (int fd = 0; fd < 30; fd++) {
-		// 	int flags = fcntl(fd, F_GETFD);
-		// 	if (flags != -1) {
-		// 		printf("after closes : fd %d is open\n", fd);
-		// 	}
-		// }
-		// printf ("---\n");
+		for (int fd = 0; fd < 30; fd++) {
+			int flags = fcntl(fd, F_GETFD);
+			if (flags != -1) {
+				printf("after closes : fd %d is open\n", fd);
+			}
+		}
+		printf ("---\n");
 	}
 	i = 0;
 	while (i++ < len)
@@ -87,8 +87,8 @@ int	main(int argc, char **argv, char **envp)
 	env_vars = NULL;
 	env.gl = 0;
 	env.error_code = 0;
-	// ft_init_termios(term);
-	// ft_init_env(envp);
+	ft_init_termios(term);
+	ft_init_env(envp);
 	while (1)
 	{
 		signal(SIGQUIT, SIG_IGN);

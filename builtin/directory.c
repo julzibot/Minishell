@@ -73,7 +73,11 @@ void	ft_cd(t_cmd *cmd)
 char	*ft_pwd(t_cmd *cmd)
 {
 	char	*cwd;
+	int		fd;
 
+	fd = cmd->outfile;
+	if (cmd->redir[1] == 0 && cmd->piped == 1)
+		fd = cmd->out_pipe[1];
 	cwd = malloc(sizeof(char) * (PATH_MAX - 1));
 	if (!cwd)
 		exit(1);
@@ -81,7 +85,8 @@ char	*ft_pwd(t_cmd *cmd)
 	cwd[PATH_MAX - 1] = '\0';
 	if (cwd == NULL)
 		return (NULL);
-	ft_printf(cmd->outfile, "%s\n", cwd);
+	printf("enter PWD fd %d\n", fd);
+	ft_printf(fd, "%s\n", cwd);
 	//free(cwd);
 	return (cwd);
 }

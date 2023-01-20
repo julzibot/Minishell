@@ -78,7 +78,7 @@ int	ft_loop_echo_nl(char **args, int i, int *nl)
 	return (1);
 }
 
-void	ft_do_echo(t_cmd *cmd)
+void	ft_do_echo(t_cmd *cmd, int fd)
 {
 	int	i;
 	int	j;
@@ -92,21 +92,26 @@ void	ft_do_echo(t_cmd *cmd)
 	{
 		while (cmd->args[i][j])
 		{
-			write(1, &cmd->args[i][j], 1);
+			write(fd, &cmd->args[i][j], 1);
 			j++;
 		}
 		if (cmd->args[i + 1] != NULL)
-			write(1, " ", 1);
+			write(fd, " ", 1);
 		j = 0;
 		i++;
 	}
 	if (nl == 0)
-		write(1, "\n", 1);
+		write(fd, "\n", 1);
 }
 
 void	ft_echo(t_cmd *cmd)
 {
+	int	fd;
+
+	fd = cmd->outfile;
+	if (cmd->redir[1] == 0 && cmd->piped == 1)
+		fd = cmd->out_pipe[1];
 	if (cmd->args[1] == NULL)
-		write(1, "\n", 1);
-	ft_do_echo(cmd);
+		write(fd, "\n", 1);
+	ft_do_echo(cmd, fd);
 }

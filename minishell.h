@@ -172,14 +172,14 @@ int		is_builtin(t_cmd *cmd);
 /***********ENV************/
 int		ft_varlen(char *str);
 void	ft_get_env(t_env **env_list, char **env);
-void	ft_print_env(t_env *env_lst);
+void	ft_print_env(t_env *env_lst, t_cmd *cmd);
 char	*ft_get_env_var(char *line, char *remove);
 void	ft_add_queue(t_env **root, char *s);
 void	ft_update_env(t_env **env_list, t_env **exp_list, char *line);
 
 /***********ECHO***********/
 void	ft_echo(t_cmd *cmd);	             // Echo function
-void	ft_do_echo(t_cmd *cmd);				 // Echo (no options)
+void	ft_do_echo(t_cmd *cmd, int fd);		 // Echo (no options)
 int		ft_is_echo_nl(char *s);
 
 /***********EXPORT*********/

@@ -65,7 +65,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 	{
 		paths[i] = ft_strjoin(paths[i], "/", 1);
 		paths[i] = ft_strjoin(paths[i], cmd, 1);
-		printf("HELLO %d\n", access(paths[i], F_OK | X_OK));
+		// printf("HELLO %d\n", access(paths[i], F_OK | X_OK));
 		if (access(paths[i], F_OK | X_OK) == 0)
 		{
 			path = ft_strdup(paths[i]);
@@ -83,7 +83,7 @@ void		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 	char	*path;
 
 	close(cmd->out_pipe[0]);
-	// close(cmd->in_pipe[1]);
+	close(cmd->in_pipe[1]);
 	if (!cmd->redir[0] && cmd->in_pipe[0] != -1)
 		dup2(cmd->in_pipe[0], STDIN_FILENO);
 	else if (cmd->redir[0] && cmd->redir_in != STDIN_FILENO)
@@ -121,7 +121,7 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 	if (builtin == 1)
 		ft_cd(cmd);
 	else if (builtin == 2)
-		ft_print_env(env.env_list);
+		ft_print_env(env.env_list, cmd);
 	if (builtin == 3)
 		ft_echo(cmd);
 	else if (builtin == 4)
@@ -131,13 +131,27 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 	else if (builtin == 6)
 	{
 		if (cmd->args[1] == NULL)
-			ft_print_env(env.exp_list);
+			ft_print_env(env.exp_list, cmd);
 		else
 			ft_export(cmd);
 	}
 	else if (builtin == 7)
 		ft_exit(cmd);
 	return (status);
+}
+
+void	ft_close_fds(t_cmd *cmd)
+{
+	if (cmd->redir[0] == 1)
+		close (cmd->redir_in);
+	if (cmd->redir[1] == 1)
+		close(cmd->outfile);
+	if (cmd->in_pipe[0] != -1)
+		close (cmd->in_pipe[0]);
+	if (cmd->in_pipe[1] != -1)
+		close (cmd->out_pipe[1]);
+	if (cmd->in_pipe[1] != -1)
+		close (cmd->in_pipe[1]);
 }
 
 int	ft_exec_cmd(t_cmd *cmd, char **envp)
@@ -158,9 +172,10 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	if (is_builtin(cmd) != 0)
 		{
 			status = exec_builtin(cmd, is_builtin(cmd));
+			ft_close_fds(cmd);
 			return (status);
 		}
-	printf("ENTERS\n");
+	// printf("ENTERS\n");
 	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
 	{
 		//env.error_code = 127;
@@ -178,15 +193,6 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 		// exit(0);
 	}
 	else
-	{
-		if (cmd->redir[0] == 1)
-			close (cmd->redir_in);
-		if (cmd->redir[1] == 1)
-			close(cmd->outfile);
-		if (cmd->in_pipe[0] != -1)
-			close (cmd->in_pipe[0]);
-		if (cmd->in_pipe[1] != -1)
-			close (cmd->out_pipe[1]);
-	}
+		ft_close_fds(cmd);
 	return (status);
 }
