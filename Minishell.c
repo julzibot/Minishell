@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/20 14:39:21 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 17:00:21 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,7 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 	}
 	i = 0;
 	while (i++ < len)
-	{
 		waitpid(-1, &status, 0);
-	}
 	return (status);
 }
 
@@ -102,7 +100,7 @@ int	main(int argc, char **argv, char **envp)
 		parse_list = parsing(tokens, parse_list);
 		env_vars = parse_list->env_vars;
 		env.error_code = exec_pipeline(parse_list, envp);
-		free_list(parse_list, tokens);
+		//free_list(parse_list, tokens);
 		// free(line);
 		// system("leaks minishell\n");
 	}

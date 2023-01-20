@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:34:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 17:41:04 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,13 @@ void	ft_remove_line(t_env **env_list, t_env *node)
 int	ft_unset_variable(t_env **list, char *s)
 {
 	t_env	*curr;
-	int		n;
 
-	n = ft_varlen(s);
 	curr = *list;
+	if (curr == NULL)
+		return (1);
 	while (curr)
 	{
-		if (curr == NULL)
-		{
-			ft_printf(2, "%s: not a valid identifier\n", s);
-			return (1);
-		}
-		if (ft_strncmp(curr->line, s, n) == 0)
+		if (ft_strncmp(curr->line, s, ft_varlen(s)) == 0)
 		{
 			ft_remove_line(list, curr);
 			return (0);
@@ -58,17 +53,26 @@ int	ft_unset_variable(t_env **list, char *s)
 }
 
 // Unsets ENV variable
-void	ft_unset(t_cmd *cmd)
+int	ft_unset(t_cmd *cmd)
 {
 	int	i;
+	int	err;
 
 	i = 1;
+	err = 0;
 	while (cmd->args[i])
 	{
+			if (ft_verify_err_var(cmd->args[i]))
+			{
+				err = 1;
+				ft_print_error(ENV_VAR, cmd, cmd->args[i]);
+				return (err);
+			}
 			if (ft_unset_variable(&env.env_list, cmd->args[i]) == 1)
-				return ;
+				return (1);
 			if (ft_unset_variable(&env.exp_list, ft_strjoin("declare -x ", cmd->args[i], -1)) == 1)
-				return ;
+				return (1);
 		i++;
 	}
+	return (err);
 }

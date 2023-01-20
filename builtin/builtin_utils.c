@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:51:18 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 13:39:41 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 16:45:47 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,28 +43,6 @@ void	ft_add_after(t_env **env_list, int line_nb, char *s)
 		i++;
 		curr = curr->next;
 	}
-}
-
-int	ft_get_to_str(char *line, char *remove, int *j)
-{
-	int	i;
-	int	k;
-
-	i = 0;
-	k = 0;
-	while (ft_isspace(line[i]))
-		i++;
-	while (line[i] == remove[k] && remove[k])
-	{
-		i++;
-		k++;
-	}
-	while (ft_isspace(line[i]))
-		i++;
-	*j = k;
-	while (line[i] && ft_isspace(line[i] == 0))
-		i++;
-	return (i);
 }
 
 int	ft_isspace(char c)

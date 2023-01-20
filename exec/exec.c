@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 15:01:08 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 18:08:46 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,19 +135,19 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 	if (builtin == 1)
 		status = ft_cd(cmd);
 	else if (builtin == 2)
-		ft_print_env(env.env_list, cmd);
+		status = ft_print_env(env.env_list, cmd);
 	if (builtin == 3)
 		ft_echo(cmd);
 	else if (builtin == 4)
 		ft_pwd(cmd);
 	else if (builtin == 5)
-		ft_unset(cmd);
+		status = ft_unset(cmd);
 	else if (builtin == 6)
 	{
 		if (cmd->args[1] == NULL)
 			ft_print_env(env.exp_list, cmd);
 		else
-			ft_export(cmd);
+			status = ft_export(cmd);
 	}
 	else if (builtin == 7)
 		ft_exit(cmd);
@@ -170,17 +170,15 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 		return (status);
 	}
 	if (is_builtin(cmd) != 0)
-		{
-			status = exec_builtin(cmd, is_builtin(cmd));
-			ft_close_fds(cmd);
-			return (status);
-		}
+	{
+		status = exec_builtin(cmd, is_builtin(cmd));
+		ft_close_fds(cmd);
+		return (status);
+	}
 	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
 	{
-		//env.error_code = 127;
-		status = 127;
-		ft_get_err_code(status);
-		return (status);
+		ft_get_err_code(NOT_CMD);
+		return (NOT_CMD);
 	}
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)

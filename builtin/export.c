@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 16:15:46 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 17:49:47 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,50 +14,13 @@
 
 extern t_gl_env	env;
 
-int	ft_update_var(t_env **env_list, char *s)
+ // Adds declare -x and quotes
+void	ft_get_export(t_env **exp_list)
 {
 	t_env	*curr;
-	t_env	*new;
-	t_env	*prev;
 	int		i;
 
-	curr = *env_list;
 	i = 0;
-	new = malloc(sizeof(t_env));
-	new->next = NULL;
-	new->line = malloc(sizeof(char) * (ft_strlen(s) + 1));
-	ft_strcpy(new->line, s);
-	while (curr->next)
-	{
-		if (ft_strncmp(curr->line, s, ft_varlen(s)) == 0)
-		{
-			new->next = curr->next;
-			prev->next = new;
-			// free(curr->line);
-			// free(curr);
-			return (1);
-		}
-		i++;
-		prev = curr;
-		curr = curr->next;
-	}
-	return (0);
-}
-
-void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
-{
-	if (ft_verify_double(*env_list, line) == 1 || ft_verify_equal(line) == 1)
-		return ;
-	line = ft_verify_env_var(line);
-	if (line == NULL)
-		return ;
-	ft_update_var(env_list, line);
-	ft_update_var(exp_list, ft_strjoin("declare -x ", ft_add_quotes(line), -1));
-}
-
-void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
-{
-	t_env	*curr;
 
 	curr = *exp_list;
 	if (!curr)
@@ -68,16 +31,6 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 		curr->line = ft_strjoin("declare -x ", curr->line, 0); // if other than 0 gives segfault
 		curr = curr->next;
 	}
-}
-
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	int	i;
-
-	i = 0;
-	while (s1[i] && s2[i] && s1[i] == s2[i])
-		i++;
-	return (s1[i] - s2[i]);
 }
 
 // 6 EXPORT CASES:
@@ -113,20 +66,6 @@ int	ft_strcmp(const char *s1, const char *s2)
 // -----------------------------
 // 5) "export a=b c=d" -> "unset a c" ✅
 // Unset more than one variable
-
-int	ft_check_double_var(t_cmd *cmd, char *line) // Check if there is a duplicate
-{
-	int	i;
-
-	i = 0;
-	while (cmd->env_vars[i])
-	{
-		if (ft_strcmp(cmd->env_vars[i], line) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 int	ft_change_var_content(t_cmd *cmd, char *line) // Check if there is an existing variable that changed content
 {
@@ -193,35 +132,11 @@ void	ft_not_equal_var(t_cmd *cmd, char *line)
 	}
 }
 
-int	ft_verify_alphanum(char c)
-{
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-			|| c == '=' || c == '_')
-		return (0);
-	return (1);
-}
-
-int	ft_verify_err_var(char *line)
-{
-	int	i;
-
-	i = 0;
-	if (!(line[0] >= 'a' && line[0] <= 'z') && !(line[0] >= 'A' && line[0] <= 'Z'))
-		return (1);
-	i++;
-	while (line[i])
-	{
-		if (ft_verify_alphanum(line[i]))
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
 void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 {
-	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0 &&
-		ft_verify_double(env.env_list, args) == 0)
+	if (env_vars == NULL)
+		return ;
+	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0 && ft_verify_double(env.env_list, args) == 0)
 	{
 		if (ft_verify_equal(args)) // Equal sign found
 			ft_equal_var(cmd, args);
@@ -251,7 +166,7 @@ int	ft_export(t_cmd *cmd)
 				ft_print_error(ENV_VAR, cmd, cmd->args[i]);
 				break ;
 			}
-			ft_do_export(cmd->args[i], cmd->env_vars[i], cmd);
+			ft_do_export(cmd->args[i], cmd->env_vars[j], cmd);
 			j++;
 		}
 		j = 0;

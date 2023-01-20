@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 16:14:26 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 18:01:52 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,6 @@ void	ft_init_env(char **envp);
 void	ft_init_termios(struct termios *term);
 
 /*********MILAN 2/12/2022*********/
-char	*ft_remove_cmd(char *line, char *remove);
-int		ft_get_to_str(char *line, char *remove, int *j);
 void 	rl_replace_line(const char *text, int clear_undo);
 
 /***********LEXING**********/
@@ -176,8 +174,10 @@ int		is_builtin(t_cmd *cmd);
 /***********ENV************/
 int		ft_varlen(char *str);
 void	ft_get_env(t_env **env_list, char **env);
-void	ft_print_env(t_env *env_lst, t_cmd *cmd);
+void	ft_get_exp(t_env **exp_list, char **env);
+int		ft_print_env(t_env *env_lst, t_cmd *cmd);
 char	*ft_get_env_var(char *line, char *remove);
+int		ft_update_var(t_env **env_list, char *s);
 void	ft_add_queue(t_env **root, char *s);
 void	ft_update_env(t_env **env_list, t_env **exp_list, char *line);
 
@@ -195,6 +195,9 @@ int		ft_verify_double(t_env *env_list, char *line);
 char	*ft_verify_env_var(char *s);
 char	*ft_var_content(t_cmd *cmd, char *line);
 int		ft_verify_equal(char *s);
+int		ft_verify_err_var(char *line);
+int		ft_verify_alphanum(char c);
+
 
 /***********DIRECTORY******/
 int		ft_cd(t_cmd *cmd);
@@ -203,7 +206,7 @@ int		ft_update_pwd(t_env **exp_list, t_env **env_list, char *var);
 char	*ft_pwd(t_cmd *cmd);
 
 /***********UNSET**********/
-void	ft_unset(t_cmd *cmd);
+int		ft_unset(t_cmd *cmd);
 void	ft_remove_line(t_env **env_list, t_env *node);
 
 /***********EXIT***********/

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 20:37:32 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 17:45:00 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,16 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 		s2++;
 	}
 	return (*s1 - *s2);
+}
+
+int	ft_strcmp(const char *s1, const char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	return (s1[i] - s2[i]);
 }
 
 int	ft_is_alnum(char c)

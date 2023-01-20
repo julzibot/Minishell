@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2023/01/20 12:13:51 by mstojilj         ###   ########.fr        #
+#    Updated: 2023/01/20 17:42:54 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ SRCS	= Minishell.c jules.c utils.c \
 			builtin/export.c \
 			builtin/directory.c \
 			builtin/export_utils.c \
+			builtin/export_check.c \
 			builtin/builtin_utils.c \
 			exec/exec.c \
 			exec/exec_utils.c \

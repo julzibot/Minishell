@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:59:18 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 17:48:14 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,47 +50,8 @@ char	*ft_add_quotes(char *var)
 		j++;
 	}
 	env_var[j] = '\0';
-	free(var);
+	//free(var);
 	return (env_var);
-}
-
-int	ft_verify_double(t_env *env_list, char *line) // Checks duplicate
-{
-	t_env	*curr;
-
-	curr = env_list;
-	while (curr)
-	{
-		if (ft_strcmp(curr->line, line) == 0)
-			return (1);
-		curr = curr->next;
-	}
-	curr = env_list;
-	while (curr)
-	{
-		if (ft_strncmp(curr->line, line, ft_varlen(curr->line)) == 0)
-			return (1);
-		curr = curr->next;
-	}
-	return (0);
-}
-
-int	ft_verify_equal(char *s) // Checks if there is "="
-{
-	int	i;
-
-	if (!s)
-		return (0);
-	i = -1;
-	while (s[++i])
-	{
-		if (!ft_is_alnum(s[i]) && !((s[i] == '=') || \
-			(s[i] == '+' && s[i + 1] == '=')))
-			return (0);
-		else if (s[i] == '=')
-			return (1);
-	}
-	return (0);
 }
 
 char	*ft_verify_env_var(char *s)
@@ -141,4 +102,34 @@ char	*ft_var_content(t_cmd *cmd, char *line)
 		curr = curr->next;
 	}
 	return (NULL);
+}
+
+int	ft_update_var(t_env **env_list, char *s)
+{
+	t_env	*curr;
+	t_env	*new;
+	t_env	*prev;
+	int		i;
+
+	curr = *env_list;
+	i = 0;
+	new = malloc(sizeof(t_env));
+	new->next = NULL;
+	new->line = malloc(sizeof(char) * (ft_strlen(s) + 1));
+	ft_strcpy(new->line, s);
+	while (curr->next)
+	{
+		if (ft_strncmp(curr->line, s, ft_varlen(s)) == 0)
+		{
+			new->next = curr->next;
+			prev->next = new;
+			// free(curr->line);
+			// free(curr);
+			return (1);
+		}
+		i++;
+		prev = curr;
+		curr = curr->next;
+	}
+	return (0);
 }
