@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:34:25 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:17:56 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ int	ft_atoi(const char *str)
 	i = 0;
 	res = 0;
 	sign = 1;
-
 	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
 		i++;
 	if (str[i] == '-')
@@ -137,12 +136,14 @@ void	ft_exit(t_cmd *cmd)
 	{
 		if (cmd->args[2] != NULL)
 		{
-			ft_printf(2, "Minichelou: exit: too many arguments\n");
-			return ;		
+			ft_printf(2, "Mini_chelou: ");
+			ft_printf(2, "exit: too many arguments\n");
+			return;	
 		}
 		if (ft_is_digit(cmd->args[1]))
 		{
-			ft_printf(2, "Minichelou: exit: %s: numeric argument required\n", cmd->args[1]);
+			ft_printf(2, "Mini_chelou: ");
+			ft_printf(2, "exit: %s: numeric argument required\n", cmd->args[1]);
 			return ;
 		}
 		code = ft_atoi(cmd->args[1]);

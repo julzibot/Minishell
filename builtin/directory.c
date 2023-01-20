@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 18:36:56 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:09:36 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,14 @@ int	ft_cd_error(t_cmd *cmd)
 	if (fd == -1)
 	{
 		close(fd);
-		ft_printf(2, "Mini_chelou: cd: %s: No such file or directory\n", cmd->args[1]);
+		ft_printf(2, "Mini_chelou: ");
+		ft_printf(2, "cd: %s: No such file or directory\n", cmd->args[1]);
 		return (1);
 	}
 	if (access(cmd->args[1], F_OK) != 0)
 	{
-		ft_printf(2, "Mini_chelou: cd: %s: Permission denied\n", cmd->args[1]);
+		ft_printf(2, "Mini_chelou: ");
+		ft_printf(2, "cd: %s: Permission denied\n", cmd->args[1]);
 		return (1);
 	}
 	return (1);
@@ -89,6 +91,7 @@ char	*ft_pwd(t_cmd *cmd)
 	cwd[PATH_MAX - 1] = '\0';
 	if (cwd == NULL)
 		return (NULL);
+	ft_printf(fd, "%s\n", cwd);
 	//free(cwd);
 	return (cwd);
 }

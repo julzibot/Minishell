@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 17:48:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:11:39 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,8 @@ char	*ft_verify_env_var(char *s)
 	return (str);
 }
 
-char	*ft_var_content(t_cmd *cmd, char *line)
+char	*ft_var_content(char *line)
 {
-	(void)cmd;
 	t_env	*curr;
 
 	curr = env.env_list;

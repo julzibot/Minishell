@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 17:42:34 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 17:46:57 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:13:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_verify_alphanum(char c)
 {
 	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-			|| c == '=' || c == '_')
+		|| c == '=' || c == '_')
 		return (0);
 	return (1);
 }
@@ -25,7 +25,8 @@ int	ft_verify_err_var(char *line)
 	int	i;
 
 	i = 0;
-	if (!(line[0] >= 'a' && line[0] <= 'z') && !(line[0] >= 'A' && line[0] <= 'Z'))
+	if (!(line[0] >= 'a' && line[0] <= 'z')
+		&& !(line[0] >= 'A' && line[0] <= 'Z'))
 		return (1);
 	i++;
 	if (line[i] == '\0')
@@ -39,7 +40,7 @@ int	ft_verify_err_var(char *line)
 	return (0);
 }
 
-int	ft_verify_double(t_env *env_list, char *line) // Checks duplicate
+int	ft_verify_double(t_env *env_list, char *line)
 {
 	t_env	*curr;
 
@@ -60,7 +61,7 @@ int	ft_verify_double(t_env *env_list, char *line) // Checks duplicate
 	return (0);
 }
 
-int	ft_verify_equal(char *s) // Checks if there is "="
+int	ft_verify_equal(char *s)
 {
 	int	i;
 

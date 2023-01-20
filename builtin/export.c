@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 17:49:47 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:15:54 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,10 @@
 
 extern t_gl_env	env;
 
- // Adds declare -x and quotes
+// Adds declare -x and quotes
 void	ft_get_export(t_env **exp_list)
 {
 	t_env	*curr;
-	int		i;
-
-	i = 0;
 
 	curr = *exp_list;
 	if (!curr)
@@ -28,7 +25,8 @@ void	ft_get_export(t_env **exp_list)
 	while (curr)
 	{
 		curr->line = ft_add_quotes(curr->line); // 19/01 HERE POSSIBLE LEAKS
-		curr->line = ft_strjoin("declare -x ", curr->line, 0); // if other than 0 gives segfault
+		curr->line = ft_strjoin("declare -x ",
+				curr->line, 0); // if other than 0 gives segfault
 		curr = curr->next;
 	}
 }
@@ -67,16 +65,19 @@ void	ft_get_export(t_env **exp_list)
 // 5) "export a=b c=d" -> "unset a c" ✅
 // Unset more than one variable
 
-int	ft_change_var_content(t_cmd *cmd, char *line) // Check if there is an existing variable that changed content
+// Check if there is an existing variable that changed content
+int	ft_change_var_content(t_cmd *cmd, char *line)
+
 {
 	int	i;
 
 	i = 0;
 	while (cmd->env_vars[i])
 	{
-		if (ft_strncmp(cmd->env_vars[i], line, ft_varlen(line)) == 0) // Same VAR found
+		if (ft_strncmp(cmd->env_vars[i],
+				line, ft_varlen(line)) == 0) // Same VAR found
 		{
-			if (ft_strcmp(cmd->env_vars[i], line) != 0) // Check if VAR is the same
+			if (ft_strcmp(cmd->env_vars[i], line) != 0)
 				return (1);
 		}
 		i++;
@@ -136,7 +137,8 @@ void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 {
 	if (env_vars == NULL)
 		return ;
-	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0 && ft_verify_double(env.env_list, args) == 0)
+	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0
+		&& ft_verify_double(env.env_list, args) == 0)
 	{
 		if (ft_verify_equal(args)) // Equal sign found
 			ft_equal_var(cmd, args);
