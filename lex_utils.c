@@ -1,26 +1,16 @@
 #include "minishell.h"
 
-int	seg_size(char *line, int i)
+int	count_loop(char *line, int i, int quoted, char q_type)
 {
 	int	count;
-	int	quoted;
-	int is_var;
+	int	is_var;
 	int	var_quoted;
-	char	q_type;
 	int	var_q_type;
 
-	quoted = 0;
-	count = 1;
-	is_var = 0;
-	var_quoted = 0;
-	if (is_delim(line[i]) == 1)
-	{
-		quoted = 1;
-		q_type = line[i];
-	}
+	count = 0;
 	var_q_type = i;
-	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
-		count++;
+	var_quoted = 0;
+	is_var = 0;
 	while (line[++i] && ((quoted && line[i] != q_type) \
 		|| (!quoted && !is_delim(line[i])) \
 		|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))))
@@ -36,58 +26,88 @@ int	seg_size(char *line, int i)
 			var_quoted = 0;
 		count++;
 	}
+	return (count);
+}
+
+int	seg_size(char *line, int i)
+{
+	int	count;
+	int	quoted;
+	char	q_type;
+
+	quoted = 0;
+	count = 1;
+	q_type = '\"';
+	if (is_delim(line[i]) == 1)
+	{
+		quoted = 1;
+		q_type = line[i];
+	}
+	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
+		count++;
+	count += count_loop(line, i, quoted, q_type);
 	if (!quoted && is_delim(line[i]) == 1)
 		count++;
 	return (count + quoted);
 }
 
+void	segvars_init(t_seg *segvars, int i, int quoted)
+{
+	segvars->quoted = quoted;
+	segvars->is_var = 0;
+	segvars->var_quoted = 0;
+	segvars->s_i = 0;
+	segvars->q_type = i;
+	segvars->var_q_type = i;
+}
+
+int	seg_loop(char *line, int i, char *seg, t_seg *segvars)
+{
+	while (line[++i] && ((segvars->quoted && line[i] != line[segvars->q_type]) \
+		|| (!segvars->quoted && !is_delim(line[i])) \
+		|| (!segvars->quoted && segvars->is_var && (is_delim(line[i]) != 4 || segvars->var_quoted))) \
+		&& !(!segvars->quoted && (line[i] == '\\' || line[i] == ';')))
+	{
+		if (line[i] == '=' && !segvars->quoted && !segvars->is_var)
+			segvars->is_var = 1;
+		else if (segvars->is_var && !segvars->var_quoted && is_delim(line[i]) == 1)
+		{
+			segvars->var_quoted = 1;
+			segvars->var_q_type = i;
+		}
+		else if (segvars->is_var && segvars->var_quoted && line[i] == line[segvars->var_q_type])
+			segvars->var_quoted = 0;
+		seg[segvars->s_i++] = line[i];
+	}
+	return (i);
+}
+
 int	lineseg(char *line, int i, char **lex_tab, int quoted)
 {
-	int	s_i;
 	char	*seg;
-	int	q_type;
-	int var_q_type;
-	int	is_var;
-	int	var_quoted;
+	t_seg *segvars;
 
-	is_var = 0;
-	var_quoted = 0;
-	s_i = 0;
-	q_type = i;
-	var_q_type = i;
+	segvars = malloc(sizeof(t_seg));
+	segvars_init(segvars, i, quoted);
 	seg = malloc(seg_size(line, i) + 1);
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
-		seg[s_i++] = line[i - 1];
+		seg[segvars->s_i++] = line[i - 1];
 	if (line[i] == '\\' || line[i] == ';')
 		return (-2);
-	seg[s_i++] = line[i];
-	while (line[++i] && ((quoted && line[i] != line[q_type]) \
-		|| (!quoted && !is_delim(line[i])) \
-		|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))) \
-		&& !(!quoted && (line[i] == '\\' || line[i] == ';')))
-	{
-		if (line[i] == '=' && !quoted && !is_var)
-			is_var = 1;
-		else if (is_var && !var_quoted && is_delim(line[i]) == 1)
-		{
-			var_quoted = 1;
-			var_q_type = i;
-		}
-		else if (is_var && var_quoted && line[i] == line[var_q_type])
-			var_quoted = 0;
-		seg[s_i++] = line[i];
-	}
-	if ((quoted || var_quoted) && !line[i])
+	seg[segvars->s_i++] = line[i];
+	i = seg_loop(line, i, seg, segvars);
+	if ((quoted || segvars->var_quoted) && !line[i])
 		return (-1);
 	else if (!quoted && (line[i] == '\\' || line[i] == ';'))
 		return (-2);
-	seg[s_i] = line[i];
+	seg[segvars->s_i] = line[i];
 	if (!quoted && is_delim(line[i]) == 1)
-		q_type = 1;
+		segvars->q_type = 1;
 	else
-		q_type = 0;
-	seg[s_i + quoted + q_type] = '\0';
+		segvars->q_type = 0;
+	seg[segvars->s_i + quoted + segvars->q_type] = '\0';
 	*lex_tab = seg;
+	free(segvars);
 	return (i + quoted);
 }
  
