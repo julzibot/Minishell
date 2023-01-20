@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 21:04:25 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 11:46:45 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,13 +162,12 @@ char				**ft_split(char const *s, char c);
 char	**ft_tabdup(char **tab, int must_free);
 
 /***********EXEC***********/
-void	ft_exec_cmd(t_cmd *cmd, char **env);
+int		ft_exec_cmd(t_cmd *cmd, char **env);
 int		ft_exec(t_cmd *cmd, char **envp);
 char	*ft_substr(char *s, unsigned int start);
 char	*ft_strstr(char *haystack, char *needle);
-void	exec_builtin(t_cmd *cmd, int builtin);
+int		exec_builtin(t_cmd *cmd, int builtin);
 int		is_builtin(t_cmd *cmd);
-void	exec_builtin(t_cmd *cmd, int builtin);
 
 /***********ENV************/
 int		ft_varlen(char *str);

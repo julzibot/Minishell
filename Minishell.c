@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/19 21:06:13 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 11:51:37 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	main(int argc, char **argv, char **envp)
 		tokens = lexing(line, parse_list);
 		parse_list = parsing(tokens, parse_list);
 		env_vars = parse_list->env_vars;
-		// exec_pipeline(parse_list, envp);
+		exec_pipeline(parse_list, envp);
 		free_list(parse_list, tokens);
 		// free(line);
 		//system("leaks minishell\n");

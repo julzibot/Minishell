@@ -6,7 +6,7 @@
 #    By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/18 10:30:11 by jibot             #+#    #+#              #
-#    Updated: 2023/01/19 14:06:05 by mstojilj         ###   ########.fr        #
+#    Updated: 2023/01/20 11:53:13 by mstojilj         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME	= minishell
 
 CC		= gcc -Wall -Wextra -Werror -g3
 
-RM		= rm -f
+RM		= rm -rf
 
 SRCS	= Minishell.c jules.c utils.c \
 			create_env_vars.c \
