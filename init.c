@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 11:43:39 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 17:23:24 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 23:34:35 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	ft_init_env(char **envp)
 	ft_get_env(&env.env_list, envp); // For env command
 	ft_get_exp(&env.exp_list, envp); // For export command
 	ft_get_export(&env.exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"
+	ft_sort_list(&env.exp_list);
 }
 
 void	ft_init_termios(struct termios *term)

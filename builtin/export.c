@@ -6,30 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 19:15:54 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 23:26:44 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 extern t_gl_env	env;
-
-// Adds declare -x and quotes
-void	ft_get_export(t_env **exp_list)
-{
-	t_env	*curr;
-
-	curr = *exp_list;
-	if (!curr)
-		return ;
-	while (curr)
-	{
-		curr->line = ft_add_quotes(curr->line); // 19/01 HERE POSSIBLE LEAKS
-		curr->line = ft_strjoin("declare -x ",
-				curr->line, 0); // if other than 0 gives segfault
-		curr = curr->next;
-	}
-}
 
 // 6 EXPORT CASES:
 // -----------------------------
@@ -64,6 +47,23 @@ void	ft_get_export(t_env **exp_list)
 // -----------------------------
 // 5) "export a=b c=d" -> "unset a c" ✅
 // Unset more than one variable
+
+// Adds declare -x and quotes
+void	ft_get_export(t_env **exp_list)
+{
+	t_env	*curr;
+
+	curr = *exp_list;
+	if (!curr)
+		return ;
+	while (curr)
+	{
+		curr->line = ft_add_quotes(curr->line); // 19/01 HERE POSSIBLE LEAKS
+		curr->line = ft_strjoin("declare -x ",
+				curr->line, 0); // if other than 0 gives segfault
+		curr = curr->next;
+	}
+}
 
 // Check if there is an existing variable that changed content
 int	ft_change_var_content(t_cmd *cmd, char *line)
@@ -135,8 +135,6 @@ void	ft_not_equal_var(t_cmd *cmd, char *line)
 
 void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 {
-	if (env_vars == NULL)
-		return ;
 	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0
 		&& ft_verify_double(env.env_list, args) == 0)
 	{
@@ -157,7 +155,10 @@ int	ft_export(t_cmd *cmd)
 	j = 0;
 	err = 0;
 	if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
-		return (0);
+	{
+		ft_add_queue(&env.exp_list, ft_strjoin("declare -x ", cmd->args[1], 0));
+		return (0); // Rajouter condition dans le parsing pour export
+	}
 	while (cmd->args[i])
 	{
 		while (cmd->env_vars[j])
