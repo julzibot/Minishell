@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:34:10 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:39:53 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,9 @@ void	ft_handle_sigint(int sig)
 	rl_redisplay();
 }
 
-void	ft_child_sigint(int sig)
-{
-	(void)sig;
-	printf("killed gl\n");
-	kill(env.gl, SIGTERM);
-	write(1, "\n", 1);
-}
-
 void	ft_child_sig(void)
 {
-	signal(SIGINT, &ft_child_sigint);
+	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 }
 

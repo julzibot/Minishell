@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/20 18:32:49 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:36:16 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,10 @@ int	main(int argc, char **argv, char **envp)
 	env_vars = NULL;
 	ft_init_termios(term);
 	ft_init_env(envp);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, ft_handle_sigint);
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, ft_handle_sigint);
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);

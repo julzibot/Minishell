@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 18:36:11 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:36:40 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,5 +205,6 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	}
 	else
 		ft_close_fds(cmd);
+	signal(SIGINT, SIG_IGN);
 	return (status);
 }
