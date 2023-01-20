@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 18:08:46 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 18:36:11 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,20 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 	return (status);
 }
 
+int	ft_verify_dollar(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '$')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 int	ft_exec_cmd(t_cmd *cmd, char **envp)
 {
 	struct termios original_termios;
@@ -175,7 +189,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 		ft_close_fds(cmd);
 		return (status);
 	}
-	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
+	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0 && ft_verify_dollar(cmd->args[0]) == 0)
 	{
 		ft_get_err_code(NOT_CMD);
 		return (NOT_CMD);

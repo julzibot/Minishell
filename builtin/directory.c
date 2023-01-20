@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 15:12:20 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 18:36:56 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	ft_cd(t_cmd *cmd)
 			exit(1);
 		s = getenv("HOME");
 		ret = chdir(s);
-		free(s);
+		// free(s);
 		// ft_update_pwd(&env.exp_list, &env.env_list, "PWD=");
 	}
 	else if (ft_strcmp(cmd->args[1], "..") == 0 && cmd->args[2] == NULL)
