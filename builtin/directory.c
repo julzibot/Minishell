@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:32:38 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 15:12:20 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,33 @@ int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 	return (0);
 }
 
-void	ft_cd_error(t_cmd *cmd)
+int	ft_cd_error(t_cmd *cmd)
 {
-	if (access(cmd->args[1], R_OK) == -1)
+	int	fd;
+
+	fd = open(cmd->args[1], O_DIRECTORY);
+	if (fd == -1)
 	{
-		env.error_code = 1;
-		ft_printf(2, "Minichelou: cd: %s: Permission denied\n", cmd->args[1]);
-		return ;
+		close(fd);
+		ft_printf(2, "Mini_chelou: cd: %s: No such file or directory\n", cmd->args[1]);
+		return (1);
 	}
-	env.error_code = 1;
-	ft_printf(2, "Minichelou: cd: %s: No such file or directory\n", cmd->args[1]);
+	if (access(cmd->args[1], F_OK) != 0)
+	{
+		ft_printf(2, "Mini_chelou: cd: %s: Permission denied\n", cmd->args[1]);
+		return (1);
+	}
+	return (1);
 }
 
-void	ft_cd(t_cmd *cmd)
+int	ft_cd(t_cmd *cmd)
 {
 	int		ret;
 	char	*s;
 
 	ret = 0;
 	if (ft_update_pwd(&env.exp_list, &env.env_list, "OLDPWD=") == 1) // Update OLDPWD=
-		return ;
+		return (0);
 	if (cmd->args[1] == NULL || ft_strcmp(cmd->args[1], "~") == 0)
 	{
 		s = malloc(sizeof(char) * (PATH_MAX - 1));
@@ -62,12 +69,9 @@ void	ft_cd(t_cmd *cmd)
 	else if (cmd->args[1] != NULL)
 		ret = chdir(cmd->args[1]);
 	if (ret == -1)
-	{
-		ft_cd_error(cmd);
-		return ;
-	}
-	if (ft_update_pwd(&env.exp_list, &env.env_list, "PWD=") == 1) // Update PWD=
-		return ;
+		return (ft_cd_error(cmd));
+	ft_update_pwd(&env.exp_list, &env.env_list, "PWD="); // Update PWD=
+	return (0);
 }
 
 char	*ft_pwd(t_cmd *cmd)
@@ -85,8 +89,6 @@ char	*ft_pwd(t_cmd *cmd)
 	cwd[PATH_MAX - 1] = '\0';
 	if (cwd == NULL)
 		return (NULL);
-	printf("enter PWD fd %d\n", fd);
-	ft_printf(fd, "%s\n", cwd);
 	//free(cwd);
 	return (cwd);
 }

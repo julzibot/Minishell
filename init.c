@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 11:43:39 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:33:52 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 14:38:26 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 
 void	ft_init_env(char **envp)
 {
+	env.gl = 0;
+	env.error_code = 0;
 	ft_get_env(&env.env_list, envp); // For env command
 	ft_get_env(&env.exp_list, envp); // For export command
 	ft_get_export(&env.exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"

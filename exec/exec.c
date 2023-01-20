@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 12:28:27 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 15:01:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,20 @@ void	ft_child_termios(struct termios *original_termios, struct termios *modified
 	modified_termios->c_cc[VEOF] = -1;
 	//modified_termios.c_lflag &= ~ICANON; // Disable canonical mode
 	tcsetattr(STDIN_FILENO, TCSANOW, modified_termios);
+}
+
+void	ft_close_fds(t_cmd *cmd)
+{
+	if (cmd->redir[0] == 1)
+		close (cmd->redir_in);
+	if (cmd->redir[1] == 1)
+		close(cmd->outfile);
+	if (cmd->in_pipe[0] != -1)
+		close (cmd->in_pipe[0]);
+	if (cmd->in_pipe[1] != -1)
+		close (cmd->out_pipe[1]);
+	if (cmd->in_pipe[1] != -1)
+		close (cmd->in_pipe[1]);
 }
 
 int	is_builtin(t_cmd *cmd)
@@ -119,7 +133,7 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 
 	status = 0;
 	if (builtin == 1)
-		ft_cd(cmd);
+		status = ft_cd(cmd);
 	else if (builtin == 2)
 		ft_print_env(env.env_list, cmd);
 	if (builtin == 3)
@@ -138,20 +152,6 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 	else if (builtin == 7)
 		ft_exit(cmd);
 	return (status);
-}
-
-void	ft_close_fds(t_cmd *cmd)
-{
-	if (cmd->redir[0] == 1)
-		close (cmd->redir_in);
-	if (cmd->redir[1] == 1)
-		close(cmd->outfile);
-	if (cmd->in_pipe[0] != -1)
-		close (cmd->in_pipe[0]);
-	if (cmd->in_pipe[1] != -1)
-		close (cmd->out_pipe[1]);
-	if (cmd->in_pipe[1] != -1)
-		close (cmd->in_pipe[1]);
 }
 
 int	ft_exec_cmd(t_cmd *cmd, char **envp)
@@ -175,7 +175,6 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 			ft_close_fds(cmd);
 			return (status);
 		}
-	// printf("ENTERS\n");
 	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
 	{
 		//env.error_code = 127;

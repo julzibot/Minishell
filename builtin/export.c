@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 20:39:44 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 16:15:46 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	ft_get_export(t_env **exp_list) // Adds declare -x and quotes
 	while (curr)
 	{
 		curr->line = ft_add_quotes(curr->line); // 19/01 HERE POSSIBLE LEAKS
-		curr->line = ft_strjoin("declare -x ", curr->line, 2);
+		curr->line = ft_strjoin("declare -x ", curr->line, 0); // if other than 0 gives segfault
 		curr = curr->next;
 	}
 }
@@ -193,33 +193,69 @@ void	ft_not_equal_var(t_cmd *cmd, char *line)
 	}
 }
 
-void	ft_export(t_cmd *cmd)
+int	ft_verify_alphanum(char c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+			|| c == '=' || c == '_')
+		return (0);
+	return (1);
+}
+
+int	ft_verify_err_var(char *line)
+{
+	int	i;
+
+	i = 0;
+	if (!(line[0] >= 'a' && line[0] <= 'z') && !(line[0] >= 'A' && line[0] <= 'Z'))
+		return (1);
+	i++;
+	while (line[i])
+	{
+		if (ft_verify_alphanum(line[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
+{
+	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0 &&
+		ft_verify_double(env.env_list, args) == 0)
+	{
+		if (ft_verify_equal(args)) // Equal sign found
+			ft_equal_var(cmd, args);
+		else
+			ft_not_equal_var(cmd, args);
+	}
+}
+
+int	ft_export(t_cmd *cmd)
 {
 	int	i;
 	int	j;
+	int	err;
 
 	i = 1;
 	j = 0;
-	if (cmd->args[1] == NULL || cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
-		return ;
-	printf("%s\n", cmd->env_vars[0]);
+	err = 0;
+	if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
+		return (0);
 	while (cmd->args[i])
 	{
 		while (cmd->env_vars[j])
 		{
-			printf("i %d j %d\n", i, j);
-			//printf("args %s vars %s\n", cmd->args[i], cmd->env_vars[j]);
-			if (ft_strncmp(cmd->args[i], cmd->env_vars[j], ft_varlen(cmd->args[i])) == 0 &&
-				ft_verify_double(env.env_list, cmd->args[i]) == 0)
+			if (ft_verify_err_var(cmd->args[i]))
 			{
-				if (ft_verify_equal(cmd->args[i])) // Equal sign found
-					ft_equal_var(cmd, cmd->args[i]);
-				else
-					ft_not_equal_var(cmd, cmd->args[i]);
+				err = 1;
+				ft_print_error(ENV_VAR, cmd, cmd->args[i]);
+				break ;
 			}
+			ft_do_export(cmd->args[i], cmd->env_vars[i], cmd);
 			j++;
 		}
 		j = 0;
 		i++;
 	}
+	return (err);
 }

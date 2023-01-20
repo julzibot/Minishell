@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/20 12:13:04 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 14:39:21 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,13 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 		status = ft_exec_cmd(temp, envp);
 		if (temp->next)
 			temp = temp->next;
-		for (int fd = 0; fd < 30; fd++) {
-			int flags = fcntl(fd, F_GETFD);
-			if (flags != -1) {
-				printf("after closes : fd %d is open\n", fd);
-			}
-		}
-		printf ("---\n");
+		// for (int fd = 0; fd < 30; fd++) {
+		// 	int flags = fcntl(fd, F_GETFD);
+		// 	if (flags != -1) {
+		// 		printf("after closes : fd %d is open\n", fd);
+		// 	}
+		// }
+		// printf ("---\n");
 	}
 	i = 0;
 	while (i++ < len)
@@ -81,18 +81,16 @@ int	main(int argc, char **argv, char **envp)
 	char			**tokens;
 	char			**env_vars;
 	t_cmd 			*parse_list;
-	struct termios			*term;
+	struct termios	*term;
 
 	term = NULL;
 	env_vars = NULL;
-	env.gl = 0;
-	env.error_code = 0;
 	ft_init_termios(term);
 	ft_init_env(envp);
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, ft_handle_sigint);
 	while (1)
 	{
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, ft_handle_sigint);
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
@@ -106,7 +104,7 @@ int	main(int argc, char **argv, char **envp)
 		env.error_code = exec_pipeline(parse_list, envp);
 		free_list(parse_list, tokens);
 		// free(line);
-		//system("leaks minishell\n");
+		// system("leaks minishell\n");
 	}
 	return (0);
 }

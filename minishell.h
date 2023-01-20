@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 12:09:41 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 16:14:26 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@
 
 # ifndef CMD
 # define CMD 1
+# endif
+
+# ifndef ENV_VAR
+# define ENV_VAR 2
 # endif
 
 # ifndef NOT_EXEC
@@ -183,7 +187,7 @@ void	ft_do_echo(t_cmd *cmd, int fd);		 // Echo (no options)
 int		ft_is_echo_nl(char *s);
 
 /***********EXPORT*********/
-void	ft_export(t_cmd *cmd);
+int		ft_export(t_cmd *cmd);
 void	ft_get_export(t_env **exp_list);
 void	ft_add_after(t_env **env_list, int line_nb, char *s);
 char	*ft_add_quotes(char *var);
@@ -193,7 +197,8 @@ char	*ft_var_content(t_cmd *cmd, char *line);
 int		ft_verify_equal(char *s);
 
 /***********DIRECTORY******/
-void	ft_cd(t_cmd *cmd);
+int		ft_cd(t_cmd *cmd);
+int		ft_cd_error(t_cmd *cmd);
 int		ft_update_pwd(t_env **exp_list, t_env **env_list, char *var);
 char	*ft_pwd(t_cmd *cmd);
 
@@ -216,7 +221,7 @@ void	ft_child_sig(void);
 void	check_line_exists(char *line);
 
 /***********ERRORS*********/
-void	ft_print_error(int error_code, t_cmd *cmd);
+void	ft_print_error(int error_code, t_cmd *cmd, char *line);
 void	ft_get_err_code(int error_code);
 
 #endif
