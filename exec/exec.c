@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 11:51:19 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 12:28:27 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,34 @@
 
 extern t_gl_env	env;
 
-// Maybe some leaks with paths not being freed?
+void	ft_child_termios(struct termios *original_termios, struct termios *modified_termios)
+{
+	tcgetattr(STDIN_FILENO, original_termios);
+	modified_termios = original_termios;
+	modified_termios->c_cc[VEOF] = -1;
+	//modified_termios.c_lflag &= ~ICANON; // Disable canonical mode
+	tcsetattr(STDIN_FILENO, TCSANOW, modified_termios);
+}
+
+int	is_builtin(t_cmd *cmd)
+{
+	if (ft_strcmp(cmd->args[0], "cd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd->args[0], "env") == 0)
+		return (2);
+	else if (ft_strcmp(cmd->args[0], "echo") == 0)
+		return (3);
+	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
+		return (4);
+	else if (ft_strcmp(cmd->args[0], "unset") == 0)
+		return (5);
+	else if (ft_strcmp(cmd->args[0], "export") == 0)
+		return (6);
+	else if (ft_strcmp(cmd->args[0], "exit") == 0)
+		return (7);
+	else
+		return (0);
+}
 
 char	*ft_cmd_check(char **envp, char *cmd)
 {
@@ -38,18 +65,20 @@ char	*ft_cmd_check(char **envp, char *cmd)
 	{
 		paths[i] = ft_strjoin(paths[i], "/", 1);
 		paths[i] = ft_strjoin(paths[i], cmd, 1);
+		printf("HELLO %d\n", access(paths[i], F_OK | X_OK));
 		if (access(paths[i], F_OK | X_OK) == 0)
 		{
 			path = ft_strdup(paths[i]);
 			ft_free_char_array(paths);
 			return (path);
 		}
-		i++;
+		else
+			i++;
 	}
 	return (NULL);
 }
 
-int		ft_exec(t_cmd *cmd, char **envp) // Execute a command
+void		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 {
 	char	*path;
 
@@ -71,8 +100,6 @@ int		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 	}
 	close(cmd->out_pipe[1]);
 	close(cmd->in_pipe[0]);
-	// signal(SIGQUIT, ft_handle_sigquit);
-	// signal(SIGINT, ft_handle_sigint);
 	// for (int fd = 0; fd < 30; fd++) {
 	// 		int flags = fcntl(fd, F_GETFD);
 	// 		if (flags != -1) {
@@ -82,8 +109,8 @@ int		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 	// printf ("---\n");
 	path = ft_cmd_check(envp, cmd->args[0]);
 	execve(path, cmd->args, envp);
-	exit(0);
-	return (1);
+	//exit(0);
+	return ;
 }
 
 int	exec_builtin(t_cmd *cmd, int builtin)
@@ -113,35 +140,6 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 	return (status);
 }
 
-int	is_builtin(t_cmd *cmd)
-{
-	if (ft_strcmp(cmd->args[0], "cd") == 0)
-		return (1);
-	else if (ft_strcmp(cmd->args[0], "env") == 0)
-		return (2);
-	else if (ft_strcmp(cmd->args[0], "echo") == 0)
-		return (3);
-	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-		return (4);
-	else if (ft_strcmp(cmd->args[0], "unset") == 0)
-		return (5);
-	else if (ft_strcmp(cmd->args[0], "export") == 0)
-		return (6);
-	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		return (7);
-	else
-		return (0);
-}
-
-void	ft_child_termios(struct termios *original_termios, struct termios *modified_termios)
-{
-	tcgetattr(STDIN_FILENO, original_termios);
-	modified_termios = original_termios;
-	modified_termios->c_cc[VEOF] = -1;
-	//modified_termios.c_lflag &= ~ICANON; // Disable canonical mode
-	tcsetattr(STDIN_FILENO, TCSANOW, modified_termios);
-}
-
 int	ft_exec_cmd(t_cmd *cmd, char **envp)
 {
 	struct termios original_termios;
@@ -162,11 +160,12 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 			status = exec_builtin(cmd, is_builtin(cmd));
 			return (status);
 		}
+	printf("ENTERS\n");
 	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
 	{
-		env.error_code = 127;
+		//env.error_code = 127;
 		status = 127;
-		ft_printf(2, "Mini_chelou: %s: command not found\n", cmd->args[0]);
+		ft_get_err_code(status);
 		return (status);
 	}
 	cmd->shell_pid = fork();
@@ -174,7 +173,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	{
 		ft_child_termios(&original_termios, &modified_termios);
 		ft_child_sig();
-		status = ft_exec(cmd, envp); // execve
+		ft_exec(cmd, envp); // execve
 		tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
 		// exit(0);
 	}

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 11:46:45 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 12:09:41 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ char	**ft_tabdup(char **tab, int must_free);
 
 /***********EXEC***********/
 int		ft_exec_cmd(t_cmd *cmd, char **env);
-int		ft_exec(t_cmd *cmd, char **envp);
+void	ft_exec(t_cmd *cmd, char **envp);
 char	*ft_substr(char *s, unsigned int start);
 char	*ft_strstr(char *haystack, char *needle);
 int		exec_builtin(t_cmd *cmd, int builtin);
@@ -214,5 +214,9 @@ void	ft_handle_sigquit(int sig);
 void	ft_child_sigint(int sig);
 void	ft_child_sig(void);
 void	check_line_exists(char *line);
+
+/***********ERRORS*********/
+void	ft_print_error(int error_code, t_cmd *cmd);
+void	ft_get_err_code(int error_code);
 
 #endif
