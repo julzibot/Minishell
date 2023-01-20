@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 19:36:40 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/20 19:58:35 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,10 +168,21 @@ int	ft_verify_dollar(char *s)
 	return (0);
 }
 
-int	ft_exec_cmd(t_cmd *cmd, char **envp)
+int	ft_fork(t_cmd *cmd, char **envp)
 {
 	struct termios original_termios;
     struct termios modified_termios;
+
+	ft_child_termios(&original_termios, &modified_termios);
+	ft_child_sig();
+	ft_exec(cmd, envp); // execve
+	tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
+	signal(SIGINT, SIG_IGN);
+	return (0);
+}
+
+int	ft_exec_cmd(t_cmd *cmd, char **envp)
+{
 	int	status;
 
 	status = 0;
@@ -189,20 +200,14 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 		ft_close_fds(cmd);
 		return (status);
 	}
-	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0 && ft_verify_dollar(cmd->args[0]) == 0)
+	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
 	{
 		ft_get_err_code(NOT_CMD);
 		return (NOT_CMD);
 	}
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
-	{
-		ft_child_termios(&original_termios, &modified_termios);
-		ft_child_sig();
-		ft_exec(cmd, envp); // execve
-		tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
-		// exit(0);
-	}
+		ft_fork(cmd, envp);
 	else
 		ft_close_fds(cmd);
 	signal(SIGINT, SIG_IGN);
