@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 13:50:14 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/19 16:33:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern t_gl_env	env;
+extern g_t_env	env;
 
 static  char	*rem_quotes(char *str, int pos)
 {

@@ -6,13 +6,38 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:41:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 14:31:03 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern t_gl_env	env;
+extern g_t_env	env;
+
+int	ft_do_quotes(char *var, char *env_var, int i, int j)
+{
+	while (var[i])
+	{
+		env_var[j++] = var[i++];
+		if (j != 0 && env_var[j - 1] == '=')
+		{
+			env_var[j++] = '\"';
+			break ;
+		}
+	}
+	while (var[i])
+	{
+		env_var[j] = var[i];
+		if (var[i + 1] == '\0')
+		{
+			env_var[++j] = '\"';
+			return (j);
+		}
+		i++;
+		j++;
+	}
+	return (j);
+}
 
 char	*ft_add_quotes(char *var)
 {
@@ -25,33 +50,8 @@ char	*ft_add_quotes(char *var)
 	if (var == NULL)
 		return (NULL);
 	env_var = malloc(sizeof(char) * (ft_strlen(var) + 4));
-	while (var[i])
-	{
-		env_var[j] = var[i];
-		if (j != 0 && env_var[j - 1] == '=')
-		{
-			env_var[j] = '\"';
-			j++;
-			break ;
-		}
-		j++;
-		i++;
-	}
-	while (var[i])
-	{
-		env_var[j] = var[i];
-		if (var[i + 1] == '\0')
-		{
-			j++;
-			env_var[j] = '\"';
-			j++;
-		}
-		if (var[i + 1] == '\0')
-			break ;
-		i++;
-		j++;
-	}
-	env_var[j] = '\0';
+	j = ft_do_quotes(var, env_var, i, j);
+	env_var[++j] = '\0';
 	//free(var);
 	return (env_var);
 }
@@ -87,7 +87,6 @@ char	*ft_verify_env_var(char *s)
 		i++;
 	}
 	str[i] = '\0';
-	//free(s); // NEW !!!
 	return (str);
 }
 
@@ -124,8 +123,6 @@ int	ft_update_var(t_env **env_list, char *s)
 		{
 			new->next = curr->next;
 			prev->next = new;
-			// free(curr->line);
-			// free(curr);
 			return (1);
 		}
 		i++;

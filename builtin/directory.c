@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 12:07:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 14:05:57 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern t_gl_env	env;
+extern g_t_env	env;
 
 int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 {
@@ -21,7 +21,7 @@ int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 	s = malloc(sizeof(char) * (PATH_MAX - 1));
 	if (!s)
 		exit(1);
-	if (getcwd(s, PATH_MAX - 1) == NULL) // If NULL no path found
+	if (getcwd(s, PATH_MAX - 1) == NULL)
 		return (1);
 	ft_update_env(env_list, exp_list, ft_strjoin(env, s, -1));
 	return (0);
@@ -55,7 +55,7 @@ int	ft_cd(t_cmd *cmd)
 	char	*s;
 
 	ret = 0;
-	if (ft_update_pwd(&env.exp_list, &env.env_list, "OLDPWD=") == 1) // Update OLDPWD=
+	if (ft_update_pwd(&env.exp_list, &env.env_list, "OLDPWD="))
 		return (0);
 	if (cmd->args[1] == NULL || ft_strcmp(cmd->args[1], "~") == 0)
 	{
@@ -64,8 +64,6 @@ int	ft_cd(t_cmd *cmd)
 			exit(1);
 		s = getenv("HOME");
 		ret = chdir(s);
-		// free(s);
-		// ft_update_pwd(&env.exp_list, &env.env_list, "PWD=");
 	}
 	else if (ft_strcmp(cmd->args[1], "..") == 0 && cmd->args[2] == NULL)
 		ret = chdir("..");
@@ -73,7 +71,7 @@ int	ft_cd(t_cmd *cmd)
 		ret = chdir(cmd->args[1]);
 	if (ret == -1)
 		return (ft_cd_error(cmd));
-	ft_update_pwd(&env.exp_list, &env.env_list, "PWD="); // Update PWD=
+	ft_update_pwd(&env.exp_list, &env.env_list, "PWD=");
 	return (0);
 }
 
@@ -90,6 +88,5 @@ char	*ft_pwd(t_cmd *cmd)
 	if (cwd == NULL)
 		return (NULL);
 	ft_printf(fd, "%s\n", cwd);
-	//free(cwd);
 	return (cwd);
 }

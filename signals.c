@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 19:39:53 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern t_gl_env	env;
+extern g_t_env	env;
 
 void	check_line_exists(char *line) // CTRL-D
 {

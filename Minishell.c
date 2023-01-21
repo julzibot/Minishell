@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/21 12:52:45 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_gl_env	env;
+g_t_env	env;
 
 void	free_list(t_cmd *parse_list, char **tokens)
 {

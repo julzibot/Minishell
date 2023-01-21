@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:42:42 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 14:10:03 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern t_gl_env	env;
+extern g_t_env	env;
 
 // 6 EXPORT CASES:
 // -----------------------------
@@ -82,7 +82,7 @@ int	ft_change_var_content(t_cmd *cmd, char *line)
 	while (cmd->env_vars[i])
 	{
 		if (ft_strncmp(cmd->env_vars[i],
-				line, ft_varlen(line)) == 0) // Same VAR found
+				line, ft_varlen(line)) == 0)
 		{
 			if (ft_strcmp(cmd->env_vars[i], line) != 0)
 				return (1);
@@ -110,11 +110,11 @@ void	ft_loop_assign_vars(char **env_vars, char *line)
 	}
 }
 
-void	ft_equal_var(t_cmd *cmd, char *line) // Line is cmd->args[i]
+void	ft_equal_var(t_cmd *cmd, char *line)
 {
-	if (ft_change_var_content(cmd, line)) // Check if content change
+	if (ft_change_var_content(cmd, line))
 	{
-		ft_update_var(&env.env_list, line); // Function needs change
+		ft_update_var(&env.env_list, line);
 		ft_update_var(&env.exp_list, line);
 		return ;
 	}
@@ -145,7 +145,7 @@ void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0
 		&& ft_verify_double(env.env_list, args) == 0)
 	{
-		if (ft_verify_equal(args)) // Equal sign found
+		if (ft_verify_equal(args))
 			ft_equal_var(cmd, args);
 		else
 			ft_not_equal_var(cmd, args);
@@ -164,7 +164,7 @@ int	ft_export(t_cmd *cmd)
 	if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
 	{
 		ft_add_queue(&env.exp_list, ft_strjoin("declare -x ", cmd->args[1], 0));
-		return (0); // Rajouter condition dans le parsing pour export
+		return (0);
 	}
 	while (cmd->args[i])
 	{
