@@ -63,6 +63,7 @@ typedef struct s_env
 
 typedef	struct s_seg
 {
+	int	count;
 	int	quoted;
 	int	q_type;
 	int	s_i;

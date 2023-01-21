@@ -2,33 +2,30 @@
 
 int	count_loop(char *line, int i, int quoted, char q_type)
 {
-	int	count;
-	int	is_var;
-	int	var_quoted;
-	int	var_q_type;
+	t_seg	cl;
 
-	count = 0;
-	var_q_type = i;
-	var_quoted = 0;
-	is_var = 0;
+	cl.count = 0;
+	cl.var_q_type = i;
+	cl.var_quoted = 0;
+	cl.is_var = 0;
 	while (line[++i] && ((quoted && line[i] != q_type) \
 		|| (!quoted && !is_delim(line[i])) \
-		|| (!quoted && is_var && (is_delim(line[i]) != 4 || var_quoted))))
+		|| (!quoted && cl.is_var && (is_delim(line[i]) != 4 || cl.var_quoted))))
 	{
-		if (line[i] == '=' && !quoted && !is_var)
-			is_var = 1;
-		else if (is_var && !var_quoted && is_delim(line[i]) == 1)
+		if (line[i] == '=' && !quoted && !cl.is_var)
+			cl.is_var = 1;
+		else if (cl.is_var && !cl.var_quoted && is_delim(line[i]) == 1)
 		{
-			var_quoted = 1;
-			var_q_type = i;
+			cl.var_quoted = 1;
+			cl.var_q_type = i;
 		}
-		else if (is_var && var_quoted && line[i] == line[var_q_type])
-			var_quoted = 0;
-		count++;
+		else if (cl.is_var && cl.var_quoted && line[i] == line[cl.var_q_type])
+			cl.var_quoted = 0;
+		cl.count++;
 	}
 	if (!quoted && is_delim(line[i]) == 1)
-		count++;
-	return (count);
+		cl.count++;
+	return (cl.count);
 }
 
 int	seg_size(char *line, int i)
@@ -170,6 +167,5 @@ void	tab_list_init(char **lex_tab, char *line, t_cmd *parse_list)
 		parse_list->quoted[i] = 0;
 		parse_list->space_after[i] = 0;
 	}
-	// lex_tab[lex_size - 1] = NULL;
 	return;
 }

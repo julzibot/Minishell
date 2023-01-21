@@ -16,6 +16,7 @@ g_t_env	env;
 
 void	free_list(t_cmd *parse_list, char **tokens)
 {
+	(void)tokens;
 	t_cmd	*temp;
 
 	if (parse_list->env_vars)
@@ -30,7 +31,8 @@ void	free_list(t_cmd *parse_list, char **tokens)
 		free(parse_list);
 		parse_list = temp;
 	}
-	ft_free_char_array(tokens);
+	if (tokens)
+		ft_free_char_array(tokens);
 	return;
 }
 
@@ -47,7 +49,6 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 	temp = parse_list;
 	while (i++ < len)
 	{
-		// close (temp->in_pipe[0]);
 		if (temp->piped && pipe(temp->out_pipe) == -1)
 			return (1);
 		if (temp->piped && temp->next)
@@ -58,13 +59,6 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 		status = ft_exec_cmd(temp, envp);
 		if (temp->next)
 			temp = temp->next;
-		// for (int fd = 0; fd < 30; fd++) {
-		// 	int flags = fcntl(fd, F_GETFD);
-		// 	if (flags != -1) {
-		// 		printf("after closes : fd %d is open\n", fd);
-		// 	}
-		// }
-		// printf ("---\n");
 	}
 	i = 0;
 	while (i++ < len)
@@ -105,20 +99,12 @@ int	main(int argc, char **argv, char **envp)
 			{
 				ft_free_char_array(env_vars);
 				env_vars = ft_tabdup(parse_list->env_vars, 0);
-				// exec_pipeline(parse_list, envp);
+				exec_pipeline(parse_list, envp);
 			}
 		}
-		check_line_exists(line, parse_list, tokens);
-		// for (int fd = 0; fd < 30; fd++) {
-		// 	int flags = fcntl(fd, F_GETFD);
-		// 	if (flags != -1) {
-		// 		printf("after closes : fd %d is open\n", fd);
-		// 	}
-		// }
-		printf ("---\n");
 		free_list(parse_list, tokens);
 		free(line);
-		system("leaks minishell\n");
+		// system("leaks minishell\n");
 	}
 	return (0);
 }

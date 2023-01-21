@@ -140,10 +140,28 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	return (next_cmd);
 }
 
+int	heredoc_handle(t_cmd *cmd, char *filename_delim)
+{
+	char	*line;
+
+	if (cmd->redir_in != -1)
+		close(cmd->redir_in);
+	if (pipe(cmd->heredoc) == -1)
+		return (0);
+	cmd->redir_in = cmd->heredoc[0];
+	line = readline("> ");
+	while (ft_strcmp(line, filename_delim))
+	{
+		ft_printf(cmd->heredoc[1], "%s\n", line);
+		line = readline("> ");
+	}
+	close(cmd->heredoc[1]);
+	return (1);
+}
+
 int	redir(t_cmd *cmd, char **redir_ptr, int type)
 {
 	char	*filename_delim;
-	char	*line;
 
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)
@@ -151,23 +169,9 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
 		close (cmd->outfile);
 	cmd->redir[type % 2] = 1;
-	line = NULL;
 	
-	if (!type)
-	{
-		if (cmd->redir_in != -1)
-			close(cmd->redir_in);
-		if (pipe(cmd->heredoc) == -1)
-			return (0);
-		cmd->redir_in = cmd->heredoc[0];
-		line = readline("> ");
-		while (ft_strcmp(line, filename_delim))
-		{
-			ft_printf(cmd->heredoc[1], "%s\n", line);
-			line = readline("> ");
-		}
-		close(cmd->heredoc[1]);
-	}
+	if (!type && !heredoc_handle(cmd, filename_delim))
+		return (0);
 	else if (type == 2)
 	{
 		if (cmd->redir_in != -1)
@@ -232,7 +236,6 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 				i++;
 			else
 			{
-				free_list(parse_list, lex_tab);
 				printf("Error : this redirection is chelou !\n");
 				env.error_code = 258;
 				return (NULL);
