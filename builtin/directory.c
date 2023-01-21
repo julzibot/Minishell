@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 19:09:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 12:07:36 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,16 @@ int	ft_cd_error(t_cmd *cmd)
 	int	fd;
 
 	fd = open(cmd->args[1], O_DIRECTORY);
-	if (fd == -1)
+	if (access(cmd->args[1], F_OK) != 0)
 	{
 		close(fd);
 		ft_printf(2, "Mini_chelou: ");
 		ft_printf(2, "cd: %s: No such file or directory\n", cmd->args[1]);
 		return (1);
 	}
-	if (access(cmd->args[1], F_OK) != 0)
+	if (fd == -1)
 	{
+		close(fd);
 		ft_printf(2, "Mini_chelou: ");
 		ft_printf(2, "cd: %s: Permission denied\n", cmd->args[1]);
 		return (1);
@@ -81,14 +82,11 @@ char	*ft_pwd(t_cmd *cmd)
 	char	*cwd;
 	int		fd;
 
+	cwd = NULL;
 	fd = cmd->outfile;
 	if (cmd->redir[1] == 0 && cmd->piped == 1)
 		fd = cmd->out_pipe[1];
-	cwd = malloc(sizeof(char) * (PATH_MAX - 1));
-	if (!cwd)
-		exit(1);
-	cwd = getcwd(cwd, PATH_MAX - 1);
-	cwd[PATH_MAX - 1] = '\0';
+	cwd = getcwd(cwd, 0);
 	if (cwd == NULL)
 		return (NULL);
 	ft_printf(fd, "%s\n", cwd);

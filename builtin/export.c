@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 23:26:44 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 12:47:04 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,10 @@ void	ft_get_export(t_env **exp_list)
 	while (curr)
 	{
 		curr->line = ft_add_quotes(curr->line); // 19/01 HERE POSSIBLE LEAKS
-		curr->line = ft_strjoin("declare -x ",
-				curr->line, 0); // if other than 0 gives segfault
+		curr->line = ft_strjoin(ft_strdup("declare -x "),
+				curr->line, 1);
+		if (curr->next == NULL)
+			break ;
 		curr = curr->next;
 	}
 }
@@ -95,7 +97,7 @@ void	ft_loop_assign_vars(char **env_vars, char *line)
 		if (ft_strcmp(env_vars[i], line) == 0)
 		{
 			ft_add_after(&env.env_list, 15, line);
-			ft_add_after(&env.exp_list, 15, ft_strjoin("declare -x ",
+			ft_add_queue(&env.exp_list, ft_strjoin("declare -x ",
 					ft_add_quotes(line), -1));
 			return ;
 		}
@@ -125,7 +127,7 @@ void	ft_not_equal_var(t_cmd *cmd, char *line)
 		if (ft_strncmp(cmd->env_vars[i], line, ft_strlen(line)) == 0)
 		{
 			ft_add_after(&env.env_list, 15, cmd->env_vars[i]);
-			ft_add_after(&env.exp_list, 15, ft_strjoin("declare -x ",
+			ft_add_queue(&env.exp_list, ft_strjoin("declare -x ",
 					ft_add_quotes(cmd->env_vars[i]), -1));
 			return ;
 		}

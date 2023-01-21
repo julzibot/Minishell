@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 23:32:33 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 11:53:06 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,13 +155,15 @@ char	*ft_itoa(int n);
 /***********UTILS**********/
 char	**token_join(char **args, char *token);
 char	*ft_strdup_free(char *str);
-void				*ft_calloc(size_t count, size_t size);
-int	cmd_lstsize(t_cmd *list);
-int	env_lstsize(t_env *list);
+void	*ft_calloc(size_t count, size_t size);
+int		cmd_lstsize(t_cmd *list);
+int		env_lstsize(t_env *list);
 // static char			*strseg(const char *str, char c);
 // static unsigned int	size_count(const char *str, char c);
-char				**ft_split(char const *s, char c);
+char	**ft_split(char const *s, char c);
 char	**ft_tabdup(char **tab, int must_free);
+int		ft_atoi(const char *str);
+int		ft_is_digit(char *s);
 
 /***********EXEC***********/
 int		ft_exec_cmd(t_cmd *cmd, char **env);

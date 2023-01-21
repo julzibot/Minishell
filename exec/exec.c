@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 19:58:35 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 12:00:19 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,23 @@ int	ft_fork(t_cmd *cmd, char **envp)
 	return (0);
 }
 
+int	ft_str_is_digit(char *s)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (1);
+	while (s[i])
+	{
+		if (s[i] >= '0' && s[i] < '9')
+			i++;
+		else
+			return (1);
+	}
+	return (0);
+}
+
 int	ft_exec_cmd(t_cmd *cmd, char **envp)
 {
 	int	status;
@@ -194,6 +211,11 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 			close(cmd->outfile);
 		return (status);
 	}
+	if (ft_str_is_digit(cmd->args[0]) == 0)
+	{
+		ft_get_err_code(ft_atoi(cmd->args[0]));
+		return (ft_atoi(cmd->args[0]));
+	}
 	if (is_builtin(cmd) != 0)
 	{
 		status = exec_builtin(cmd, is_builtin(cmd));
@@ -202,12 +224,19 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	}
 	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
 	{
+		env.error_code = 127;
 		ft_get_err_code(NOT_CMD);
 		return (NOT_CMD);
 	}
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
 		ft_fork(cmd, envp);
+	else if (cmd->shell_pid == -1)
+	{
+		ft_close_fds(cmd);
+		ft_print_error(3, NULL, NULL);
+		return (35);
+	}
 	else
 		ft_close_fds(cmd);
 	signal(SIGINT, SIG_IGN);

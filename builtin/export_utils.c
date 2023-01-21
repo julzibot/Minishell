@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 19:11:39 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 12:29:10 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ char	*ft_add_quotes(char *var)
 	j = 0;
 	if (var == NULL)
 		return (NULL);
-	env_var = malloc(sizeof(char) * (ft_strlen(var) + 3));
+	env_var = malloc(sizeof(char) * (ft_strlen(var) + 4));
 	while (var[i])
 	{
 		env_var[j] = var[i];
-		if (env_var[j - 1] == '=')
+		if (j != 0 && env_var[j - 1] == '=')
 		{
 			env_var[j] = '\"';
 			j++;

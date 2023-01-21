@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 00:00:07 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 12:13:57 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	ft_get_exp(t_env **exp_list, char **env)
 	len = ft_arrlen(env);
 	while (i < len - 1)
 	{
-		if (ft_strncmp(env[i], "_=/", 3) == 0)
+		if (ft_strncmp(env[i], "_=", 2) == 0)
 			i++;
 		ft_add_queue(exp_list, env[i]);
 		i++;
