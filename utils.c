@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 17:45:00 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 12:44:50 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,12 @@ int	ft_strlen(char *str)
 {
 	int	i;
 
+	i = 0;
 	if (!str)
 		return (0);
-	i = 0;
-	while (str[i])
+	while (str && str[i] != '\0')
 		i++;
-	return	(i);
+	return (i);
 }
 
 int	ft_varlen(char *str)
@@ -162,10 +162,12 @@ char	*ft_strjoin(char *s1, char *s2, int must_free)
 		return (s1);
 	i = -1;
 	j = -1;
-	str = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	str = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!str)
+		exit(1);
 	while (s1[++i])
 		str[i] = s1[i];
-	while (s2[++j])
+	while (s2 && s2[++j])
 		str[i++] = s2[j];
 	str[i] = '\0';
 	ft_free_join(s1, s2, must_free);
