@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 12:00:19 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:45:23 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	is_builtin(t_cmd *cmd)
 		return (0);
 }
 
-char	*ft_cmd_check(char **envp, char *cmd)
+char	*ft_cmd_check(char **envp, char *cmd, int option)
 {
 	char	*env_line;
 	char	**paths;
@@ -65,6 +65,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 	int		i;
 
 	i = 0;
+	path = NULL;
 	if (access(cmd, F_OK | X_OK) == 0)
 			return (cmd);
 	while (envp[i])
@@ -74,14 +75,16 @@ char	*ft_cmd_check(char **envp, char *cmd)
 		i++;
 	}
 	paths = ft_split(env_line, ':');
+	free(env_line);
 	i = 0;
 	while (paths[i])
 	{
 		paths[i] = ft_strjoin(paths[i], "/", 1);
 		paths[i] = ft_strjoin(paths[i], cmd, 1);
-		// printf("HELLO %d\n", access(paths[i], F_OK | X_OK));
 		if (access(paths[i], F_OK | X_OK) == 0)
 		{
+			if (option == 0)
+				break ;
 			path = ft_strdup(paths[i]);
 			ft_free_char_array(paths);
 			return (path);
@@ -89,6 +92,7 @@ char	*ft_cmd_check(char **envp, char *cmd)
 		else
 			i++;
 	}
+	free(path);
 	return (NULL);
 }
 
@@ -121,7 +125,7 @@ void		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 	// 		}
 	// 	}
 	// printf ("---\n");
-	path = ft_cmd_check(envp, cmd->args[0]);
+	path = ft_cmd_check(envp, cmd->args[0], 1);
 	execve(path, cmd->args, envp);
 	//exit(0);
 	return ;
@@ -222,7 +226,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 		ft_close_fds(cmd);
 		return (status);
 	}
-	if (ft_cmd_check(envp, cmd->args[0]) == NULL && is_builtin(cmd) == 0)
+	if (ft_cmd_check(envp, cmd->args[0], 0) == NULL && is_builtin(cmd) == 0)
 	{
 		env.error_code = 127;
 		ft_get_err_code(NOT_CMD);

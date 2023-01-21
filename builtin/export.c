@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 12:47:04 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:42:42 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,20 @@ extern t_gl_env	env;
 void	ft_get_export(t_env **exp_list)
 {
 	t_env	*curr;
+	char	*tmp;
 
+	tmp = NULL;
 	curr = *exp_list;
 	if (!curr)
 		return ;
 	while (curr)
 	{
-		curr->line = ft_add_quotes(curr->line); // 19/01 HERE POSSIBLE LEAKS
-		curr->line = ft_strjoin(ft_strdup("declare -x "),
-				curr->line, 1);
+		tmp = ft_add_quotes(curr->line);
+		tmp = ft_strjoin("declare -x ",
+				tmp, 2);
+		curr->line = malloc(sizeof(char) * (ft_strlen(tmp) + 1));
+		ft_strcpy(curr->line, tmp);
+		free(tmp);
 		if (curr->next == NULL)
 			break ;
 		curr = curr->next;

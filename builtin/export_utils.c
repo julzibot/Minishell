@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 12:29:10 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:41:14 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char	*ft_add_quotes(char *var)
 			env_var[j] = '\"';
 			j++;
 		}
+		if (var[i + 1] == '\0')
+			break ;
 		i++;
 		j++;
 	}
