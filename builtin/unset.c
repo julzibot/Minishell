@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 16:56:34 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,13 @@ int	ft_unset_variable(t_env **list, char *s)
 // Unsets ENV variable
 int	ft_unset(t_cmd *cmd)
 {
-	int	i;
-	int	err;
+	int		i;
+	int		err;
+	char	*exp;
 
 	i = 1;
 	err = 0;
+	exp = NULL;
 	while (cmd->args[i])
 	{
 		if (ft_verify_err_var(cmd->args[i]))
@@ -70,10 +72,15 @@ int	ft_unset(t_cmd *cmd)
 		}
 		if (ft_unset_variable(&env.env_list, cmd->args[i]) == 1)
 			return (1);
-		if (ft_unset_variable(&env.exp_list,
-				ft_strjoin("declare -x ", cmd->args[i], -1)) == 1)
+		exp = ft_strjoin("declare -x ", cmd->args[i], -1);
+		if (ft_unset_variable(&env.exp_list, exp) == 1)
+		{
+			free(exp);
 			return (1);
+		}
 		i++;
 	}
+	if (exp)
+		free(exp);
 	return (err);
 }

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 14:05:57 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 16:36:59 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 {
 	char	*s;
 
-	s = malloc(sizeof(char) * (PATH_MAX - 1));
+	s = NULL;
+	s = getcwd(s, 0);
 	if (!s)
-		exit(1);
-	if (getcwd(s, PATH_MAX - 1) == NULL)
 		return (1);
-	ft_update_env(env_list, exp_list, ft_strjoin(env, s, -1));
+	ft_update_env(env_list, exp_list, ft_strjoin(env, s, 2));
+	free(s);
 	return (0);
 }
 
@@ -88,5 +88,6 @@ char	*ft_pwd(t_cmd *cmd)
 	if (cwd == NULL)
 		return (NULL);
 	ft_printf(fd, "%s\n", cwd);
+	free(cwd);
 	return (cwd);
 }

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 14:10:03 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 17:21:43 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,7 @@ void	ft_get_export(t_env **exp_list)
 	while (curr)
 	{
 		tmp = ft_add_quotes(curr->line);
-		tmp = ft_strjoin("declare -x ",
-				tmp, 2);
+		tmp = ft_strjoin("declare -x ", tmp, 2);
 		curr->line = malloc(sizeof(char) * (ft_strlen(tmp) + 1));
 		ft_strcpy(curr->line, tmp);
 		free(tmp);
@@ -94,20 +93,26 @@ int	ft_change_var_content(t_cmd *cmd, char *line)
 
 void	ft_loop_assign_vars(char **env_vars, char *line)
 {
-	int	i;
+	int		i;
+	char	*exp;
 
 	i = 0;
+	exp = NULL;
+	exp = ft_strjoin("declare -x ", ft_add_quotes(line), 0);
 	while (env_vars[i])
 	{
 		if (ft_strcmp(env_vars[i], line) == 0)
 		{
+			printf("ENV %s\n", line);
+			printf("EXP %s\n", exp);
 			ft_add_after(&env.env_list, 15, line);
-			ft_add_queue(&env.exp_list, ft_strjoin("declare -x ",
-					ft_add_quotes(line), -1));
+			ft_add_queue(&env.exp_list, exp);
+			//free(exp);
 			return ;
 		}
 		i++;
 	}
+	//free(exp);
 }
 
 void	ft_equal_var(t_cmd *cmd, char *line)

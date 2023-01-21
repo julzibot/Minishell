@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 14:07:37 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 17:04:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
 	if (line == NULL)
 		return ;
 	ft_update_var(env_list, line);
-	ft_update_var(exp_list, ft_strjoin("declare -x ", ft_add_quotes(line), -1));
+	ft_update_var(exp_list, ft_strjoin("declare -x ", ft_add_quotes(line), 2));
 }
 
 int	ft_print_env(t_env *env_lst, t_cmd *cmd)

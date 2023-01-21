@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 11:43:39 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 14:58:43 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ void	ft_init_env(char **envp)
 
 void	ft_init_termios(struct termios *term)
 {
-	term = malloc(sizeof(struct termios));
-	if (!term)
-		exit(1);
+	// term = malloc(sizeof(struct termios));
+	// if (!term)
+	// 	exit(1);
 	tcgetattr(STDOUT_FILENO, term);
 	term->c_lflag = term->c_lflag ^ ECHOCTL;
 	tcsetattr(STDOUT_FILENO, TCSAFLUSH, term);

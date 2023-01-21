@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 14:08:29 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 17:15:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	ft_free_char_array(char **s)
 
 	i = 0;
 	//printf("arr %s\n", s[0]);
-	while (i < ft_arrlen(s) - 1)
+	while (i < ft_arrlen(s))
 	{
 		if (s[i] == NULL)
 			break ;
@@ -112,13 +112,6 @@ void	ft_free_cmd(t_cmd *cmd)
 	{
 		if (prev != NULL)
 			free(prev);
-		if (cmd->next == NULL)
-		{
-			ft_free_char_array(cmd->args);
-			ft_free_char_array(cmd->env_vars);
-			free(cmd);
-			return ;
-		}
 		ft_free_char_array(cmd->args);
 		ft_free_char_array(cmd->env_vars);
 		prev = cmd;
@@ -150,7 +143,7 @@ void	ft_exit(t_cmd *cmd)
 	}
 	//ft_free_env(env.env_list);
 	//ft_free_env(env.exp_list);
-	//ft_free_cmd(cmd); If freed, gives three leaks
-	system("leaks minishell");
+	ft_free_cmd(cmd);
+	//system("leaks minishell");
 	exit(code);
 }
