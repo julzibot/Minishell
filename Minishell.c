@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 17:52:21 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,16 +83,14 @@ int	main(int argc, char **argv, char **envp)
 	char			**tokens;
 	char			**env_vars;
 	t_cmd 			*parse_list;
-	struct termios	*term;
 
-	term = NULL;
 	env_vars = NULL;
-	// ft_init_termios(term);
-	// ft_init_env(envp);
+	ft_init_termios(&env.term);
+	ft_init_env(envp);
 	while (1)
 	{
-		// signal(SIGQUIT, SIG_IGN);
-		// signal(SIGINT, ft_handle_sigint);
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, ft_handle_sigint);
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
@@ -108,7 +106,7 @@ int	main(int argc, char **argv, char **envp)
 			{
 				free(env_vars);
 				env_vars = ft_tabdup(parse_list->env_vars, 0);
-				// exec_pipeline(parse_list, envp);
+				exec_pipeline(parse_list, envp);
 			}
 		}
 		free_list(parse_list, tokens);

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 17:09:41 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 17:39:40 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	*ft_add_quotes(char *var)
 	env_var = malloc(sizeof(char) * (ft_strlen(var) + 3));
 	j = ft_do_quotes(var, env_var, i, j);
 	env_var[++j] = '\0';
-	free(var);
+	//free(var);
 	return (env_var);
 }
 
@@ -117,7 +117,7 @@ int	ft_update_var(t_env **env_list, char *s)
 	new->next = NULL;
 	new->line = malloc(sizeof(char) * (ft_strlen(s) + 1));
 	ft_strcpy(new->line, s);
-	while (curr->next)
+	while (curr)
 	{
 		if (ft_strncmp(curr->line, s, ft_varlen(s)) == 0)
 		{

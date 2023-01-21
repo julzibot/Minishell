@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 14:56:20 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 17:30:27 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,11 @@ typedef struct	s_lex
 
 typedef struct s_gl_env
 {
-	pid_t	gl;
-	int		error_code;
-	t_env	*env_list;
-	t_env	*exp_list;
+	struct termios	term;
+	pid_t			gl;
+	int				error_code;
+	t_env			*env_list;
+	t_env			*exp_list;
 } g_t_env;
 
 typedef	struct	s_cmd

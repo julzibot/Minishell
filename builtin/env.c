@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 17:04:12 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 17:58:00 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	ft_add_queue(t_env **root, char *s)
 
 	curr = *root;
 	node = malloc(sizeof(t_env));
-	node->next = NULL;
 	node->line = malloc(sizeof(char) * (ft_strlen(s) + 1));
+	node->next = NULL;
 	ft_strcpy(node->line, s);
 	if (*root == NULL || root == NULL)
 	{
@@ -75,13 +75,18 @@ void	ft_get_exp(t_env **exp_list, char **env)
 
 void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
 {
+	char	*exp;
+
+	exp = NULL;
 	if (ft_verify_double(*env_list, line) == 1 || ft_verify_equal(line) == 1)
 		return ;
 	line = ft_verify_env_var(line);
 	if (line == NULL)
 		return ;
+	exp = ft_add_quotes(line);
+	exp = ft_strjoin("declare -x ", exp, 2);
 	ft_update_var(env_list, line);
-	ft_update_var(exp_list, ft_strjoin("declare -x ", ft_add_quotes(line), 2));
+	ft_update_var(exp_list, exp);
 }
 
 int	ft_print_env(t_env *env_lst, t_cmd *cmd)
