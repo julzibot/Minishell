@@ -50,7 +50,6 @@ int	syntax_err(t_lex *l, int lexpr)
 	}
 	if (error)
 		env.error_code = 258;
-	printf("1\n");
 	return (error);
 }
 
@@ -146,12 +145,12 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 	char	*filename_delim;
 	char	*line;
 
+	filename_delim = redir_ptr[1];
+	if (!filename_delim)
+		return (0);
 	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
 		close (cmd->outfile);
 	cmd->redir[type % 2] = 1;
-	filename_delim = redir_ptr[1];
-	if (!filename_delim)
-		return (0); // error handling here
 	line = NULL;
 	
 	if (!type)
@@ -213,8 +212,6 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	int		type;
 	char	*str;
 
-	if (lex_tab == NULL)
-		return (parse_list);
 	// i = -1;
 	// while (lex_tab[++i])
 	// 	printf("lex %d : %s\n", i, lex_tab[i]);
@@ -231,7 +228,15 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	{
 		type = token_type(lex_tab[i], parse_list->quoted[i]);
 		if (type < 4)
-			i += redir(temp, lex_tab + i, type);
+			if (redir(temp, lex_tab + i, type))
+				i++;
+			else
+			{
+				free_list(parse_list, lex_tab);
+				printf("Error : this redirection is chelou !\n");
+				env.error_code = 258;
+				return (NULL);
+			}
 		else if (type == 4)
 			temp = lst_next_cmd(temp);
 		else

@@ -216,6 +216,7 @@ void	ft_free_env(t_env *env);
 void	ft_free_list(t_env **list);
 int		ft_arrlen(char **s);
 void	ft_free_char_array(char **s);
+void	free_list(t_cmd *parse_list, char **tokens);
 
 /**********SIGNALS*********/
 void	ft_handle_sigint(int sig);
