@@ -48,7 +48,7 @@ char   *assign_new_value(char *env_var, char *cpy)
             env_var = ft_strdup(cpy);
         }
         else
-            env_var = ft_strjoin(env_var, ft_strdup(cpy + namelen + concat + 1), 2);
+            env_var = ft_strjoin(env_var, ft_strdup(cpy + namelen + concat + 1), 3);
         return(env_var);
     }
     return(env_var);

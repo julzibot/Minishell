@@ -61,7 +61,7 @@ static  char	*get_value(char *token, int namelen, char *env_var, char *str)
 	}
 	value[++v_i] = '\"';
 	value[v_i + quoted] = '\0';
-	str = ft_strjoin(str, value, 2);
+	str = ft_strjoin(str, value, 3);
 	return (str);
 }
 
@@ -138,7 +138,7 @@ char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
 	i = 0;
 	if (token[i] == '$' && token[i + 1] == '?')
 	{
-		str = ft_strjoin(str, ft_itoa(env.error_code), 2);
+		str = ft_strjoin(str, ft_itoa(env.error_code), 3);
 		i++;
 		while (token[++i] && token[i] != '$')
 			str = char_cat(str, token[i]);
@@ -146,7 +146,7 @@ char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
 	else
 	{
 		if (token[i] == '$' && (!token[i + 1] || is_delim(token[i + 1]) == 1))
-			str = ft_strjoin(str, ft_strdup("$"), 2);
+			str = ft_strjoin(str, ft_strdup("$"), 3);
 		str = check_var_name(token + i, env_vars, str, env_list);
 	}
 	return (str);
@@ -170,9 +170,9 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 			;
 	}
 	if (token[i - 1] == '\"' &&  (!str || str[ft_strlen(str) - 1] != '\"'))
-		str = ft_strjoin(str, ft_strdup("\""), 2);
+		str = ft_strjoin(str, ft_strdup("\""), 3);
 	else if (token[i - 1] == '\'' &&  (!str || str[ft_strlen(str) - 1] != '\''))
-		str = ft_strjoin(str, ft_strdup("\'"), 2);
+		str = ft_strjoin(str, ft_strdup("\'"), 3);
 	// printf("GET_OUT %s\n", str);
 	return (str);
 }
