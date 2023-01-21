@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/21 17:52:21 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 19:00:45 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	free_list(t_cmd *parse_list, char **tokens)
 	t_cmd	*temp;
 
 	if (parse_list->env_vars)
-		free(parse_list->env_vars);
+		ft_free_char_array(parse_list->env_vars);
 	if (parse_list->space_after)
 		free(parse_list->space_after);
 	if (parse_list->quoted)
@@ -30,7 +30,7 @@ void	free_list(t_cmd *parse_list, char **tokens)
 		free(parse_list);
 		parse_list = temp;
 	}
-	free(tokens);
+	ft_free_char_array(tokens);
 	return;
 }
 
@@ -96,7 +96,6 @@ int	main(int argc, char **argv, char **envp)
 			exit(1);
 		parse_init(parse_list, envp, ft_tabdup(env_vars, 0));
 		line = readline(PROMPT);
-		check_line_exists(line);
 		add_history(line);
 		tokens = lexing(line, parse_list);
 		if (tokens)
@@ -104,11 +103,12 @@ int	main(int argc, char **argv, char **envp)
 			parse_list = parsing(tokens, parse_list);
 			if	(parse_list)
 			{
-				free(env_vars);
+				ft_free_char_array(env_vars);
 				env_vars = ft_tabdup(parse_list->env_vars, 0);
-				exec_pipeline(parse_list, envp);
+				// exec_pipeline(parse_list, envp);
 			}
 		}
+		check_line_exists(line, parse_list, tokens);
 		// for (int fd = 0; fd < 30; fd++) {
 		// 	int flags = fcntl(fd, F_GETFD);
 		// 	if (flags != -1) {
@@ -118,7 +118,7 @@ int	main(int argc, char **argv, char **envp)
 		printf ("---\n");
 		free_list(parse_list, tokens);
 		free(line);
-		//system("leaks minishell\n");
+		system("leaks minishell\n");
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 17:12:03 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 19:02:09 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,15 +245,15 @@ char	**ft_tabdup(char **tab, int must_free)
 		dup[i] = ft_strdup(tab[i]);
 	dup[i] = NULL;
 	if (must_free)
-		free(tab);
+		ft_free_char_array(tab);
 	return (dup);
 }
 
 char    *char_cat(char *str, char c)
 {
-    char    *new;
-    int len;
-    int i;
+    char	*new;
+    int		len;
+    int 	i;
 
     i = 0;
     len = ft_strlen(str) + 2;

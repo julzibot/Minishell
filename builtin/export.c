@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 17:38:35 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 18:43:56 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void	ft_get_export(t_env **exp_list)
 	while (curr)
 	{
 		tmp = ft_add_quotes(curr->line);
+		free(curr->line);
 		tmp = ft_strjoin("declare -x ", tmp, 2);
 		curr->line = malloc(sizeof(char) * (ft_strlen(tmp) + 1));
 		ft_strcpy(curr->line, tmp);

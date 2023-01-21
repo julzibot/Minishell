@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 17:30:27 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 18:10:15 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ void	ft_handle_sigint(int sig);
 void	ft_handle_sigquit(int sig);
 void	ft_child_sigint(int sig);
 void	ft_child_sig(void);
-void	check_line_exists(char *line);
+void	check_line_exists(char *line, t_cmd *pl, char **tokens);
 
 /***********ERRORS*********/
 void	ft_print_error(int error_code, t_cmd *cmd, char *line);

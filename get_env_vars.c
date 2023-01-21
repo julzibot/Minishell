@@ -154,7 +154,7 @@ char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
 
 char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
 {
-	int	i;
+	int		i;
 	char	*str;
 	// printf("GET_IN %s\n", token);
 
