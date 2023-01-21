@@ -232,6 +232,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	{
 		type = token_type(lex_tab[i], parse_list->quoted[i]);
 		if (type < 4)
+		{
 			if (redir(temp, lex_tab + i, type))
 				i++;
 			else
@@ -240,6 +241,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 				env.error_code = 258;
 				return (NULL);
 			}
+		}
 		else if (type == 4)
 			temp = lst_next_cmd(temp);
 		else
