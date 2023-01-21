@@ -232,7 +232,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 				i++;
 			else
 			{
-				free_list(parse_list, lex_tab);
+				// free_list(parse_list, lex_tab);
 				printf("Error : this redirection is chelou !\n");
 				env.error_code = 258;
 				return (NULL);

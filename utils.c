@@ -233,6 +233,8 @@ char	**ft_tabdup(char **tab, int must_free)
 	char **dup;
 	int	i;
 
+	if (!tab)
+		return (NULL);
 	i = -1;
 	dup = malloc(sizeof(char*) * (ft_tablen(tab) + 1));
 	if (!dup)
