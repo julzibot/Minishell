@@ -95,7 +95,7 @@ int	main(int argc, char **argv, char **envp)
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
-		parse_init(parse_list, envp, env_vars);
+		parse_init(parse_list, envp, ft_tabdup(env_vars, 0));
 		line = readline(PROMPT);
 		check_line_exists(line);
 		add_history(line);
@@ -105,7 +105,8 @@ int	main(int argc, char **argv, char **envp)
 			parse_list = parsing(tokens, parse_list);
 			if	(parse_list)
 			{
-				env_vars = parse_list->env_vars;
+				free(env_vars);
+				env_vars = ft_tabdup(parse_list->env_vars, 0);
 				exec_pipeline(parse_list, envp);
 			}
 		}
