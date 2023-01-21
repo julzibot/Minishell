@@ -67,7 +67,10 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 	}
 	i = 0;
 	while (i++ < len)
+	{
 		waitpid(-1, &status, 0);
+		env.error_code = status;
+	}
 	return (status);
 }
 
@@ -98,10 +101,13 @@ int	main(int argc, char **argv, char **envp)
 		add_history(line);
 		tokens = lexing(line, parse_list);
 		if (tokens)
-		{	
+		{
 			parse_list = parsing(tokens, parse_list);
-			env_vars = parse_list->env_vars;
-			env.error_code = exec_pipeline(parse_list, envp);
+			if	(parse_list)
+			{
+				env_vars = parse_list->env_vars;
+				exec_pipeline(parse_list, envp);
+			}
 		}
 		// free_list(parse_list, tokens);
 		// free(line);
