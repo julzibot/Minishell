@@ -16,15 +16,16 @@ g_t_env	env;
 
 void	free_list(t_cmd *parse_list, char **tokens)
 {
-	(void)tokens;
 	t_cmd	*temp;
-
-	if (parse_list->env_vars)
-		ft_free_char_array(parse_list->env_vars);
-	if (parse_list->space_after)
-		free(parse_list->space_after);
-	if (parse_list->quoted)
-		free(parse_list->quoted);
+	if (parse_list)
+	{
+		if (parse_list->env_vars)
+			ft_free_char_array(parse_list->env_vars);
+		if (parse_list->space_after)
+			free(parse_list->space_after);
+		if (parse_list->quoted)
+			free(parse_list->quoted);
+	}
 	while (parse_list)
 	{
 		temp = parse_list->next;
@@ -103,7 +104,7 @@ int	main(int argc, char **argv, char **envp)
 			}
 		}
 		free_list(parse_list, tokens);
-		free(line);
+		// free(line);
 		// system("leaks minishell\n");
 	}
 	return (0);
