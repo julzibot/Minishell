@@ -67,6 +67,8 @@ int	ft_verify_equal(char *s)
 
 	if (!s)
 		return (0);
+	if (s && s[0] && '0' <= s[0] && s[0] <= '9')
+		return (0);
 	i = -1;
 	while (s[++i])
 	{
