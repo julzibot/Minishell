@@ -32,8 +32,6 @@ void	ft_close_fds(t_cmd *cmd)
 	if (cmd->in_pipe[0] != -1)
 		close (cmd->in_pipe[0]);
 	if (cmd->in_pipe[1] != -1)
-		close (cmd->out_pipe[1]);
-	if (cmd->in_pipe[1] != -1)
 		close (cmd->in_pipe[1]);
 }
 
@@ -121,13 +119,13 @@ void		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 	}
 	close(cmd->out_pipe[1]);
 	close(cmd->in_pipe[0]);
-	// for (int fd = 0; fd < 30; fd++) {
-	// 		int flags = fcntl(fd, F_GETFD);
-	// 		if (flags != -1) {
-	// 			printf("in exec : fd %d is open\n", fd);
-	// 		}
-	// 	}
-	// printf ("---\n");
+	for (int fd = 0; fd < 30; fd++) {
+			int flags = fcntl(fd, F_GETFD);
+			if (flags != -1) {
+				printf("in exec : fd %d is open\n", fd);
+			}
+		}
+	printf ("---\n");
 	path = ft_cmd_check(envp, cmd->args[0], 1);
 	execve(path, cmd->args, envp);
 	//exit(0);
@@ -245,7 +243,16 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 		return (35);
 	}
 	else
+	{
 		ft_close_fds(cmd);
+		for (int fd = 0; fd < 30; fd++) {
+			int flags = fcntl(fd, F_GETFD);
+			if (flags != -1) {
+				printf("in parent : fd %d is open\n", fd);
+			}
+		}
+		printf ("---\n");
+	}
 	signal(SIGINT, SIG_IGN);
 	return (status);
 }
