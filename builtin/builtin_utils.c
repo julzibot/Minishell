@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:51:18 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:57:55 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern	gl_t_env	env;
+extern	g_t_env	env;
 
 // t_env **env_list - environment variable list
 // int line_nb      - line after which we add new variable (line)

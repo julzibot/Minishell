@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-extern gl_t_env	env;
+extern g_t_env	env;
 
 static  char	*get_vars_init(char *token)
 {
