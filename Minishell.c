@@ -109,6 +109,13 @@ int	main(int argc, char **argv, char **envp)
 				exec_pipeline(parse_list, envp);
 			}
 		}
+		// for (int fd = 0; fd < 30; fd++) {
+		// 	int flags = fcntl(fd, F_GETFD);
+		// 	if (flags != -1) {
+		// 		printf("after closes : fd %d is open\n", fd);
+		// 	}
+		// }
+		printf ("---\n");
 		free_list(parse_list, tokens);
 		free(line);
 		//system("leaks minishell\n");
