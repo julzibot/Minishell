@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 19:10:55 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:57:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern t_gl_env	env;
+extern gl_t_env	env;
 
 void	ft_remove_line(t_env **env_list, t_env *node)
 {

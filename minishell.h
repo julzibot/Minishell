@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:44:01 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:57:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ typedef struct s_gl_env
 	int		error_code;
 	t_env	*env_list;
 	t_env	*exp_list;
-} t_gl_env;
+} gl_t_env;
 
 typedef	struct	s_cmd
 {

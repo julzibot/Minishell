@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:42:42 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:57:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern t_gl_env	env;
+extern gl_t_env	env;
 
 // 6 EXPORT CASES:
 // -----------------------------

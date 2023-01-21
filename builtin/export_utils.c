@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:41:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:57:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern t_gl_env	env;
+extern gl_t_env	env;
 
 char	*ft_add_quotes(char *var)
 {

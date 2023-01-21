@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:45:23 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:57:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern t_gl_env	env;
+extern gl_t_env	env;
 
 void	ft_child_termios(struct termios *original_termios, struct termios *modified_termios)
 {
@@ -83,10 +83,13 @@ char	*ft_cmd_check(char **envp, char *cmd, int option)
 		paths[i] = ft_strjoin(paths[i], cmd, 1);
 		if (access(paths[i], F_OK | X_OK) == 0)
 		{
-			if (option == 0)
-				break ;
 			path = ft_strdup(paths[i]);
 			ft_free_char_array(paths);
+			if (option == 0)
+			{
+				free(path);
+				return ("ok");
+			}
 			return (path);
 		}
 		else

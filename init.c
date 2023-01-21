@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 11:43:39 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/20 23:34:35 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:57:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern t_gl_env	env;
+extern gl_t_env	env;
 
 void	parse_init(t_cmd *parse_list, char **envp, char **env_vars)
 {

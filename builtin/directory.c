@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 12:07:36 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 13:57:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern t_gl_env	env;
+extern gl_t_env	env;
 
 int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 {
