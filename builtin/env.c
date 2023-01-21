@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 12:13:57 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 14:07:37 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 // t_env **env_list - environment variable list
 // int line_nb      - line after which we add new variable (line)
 // char *s          - line to add
-void	ft_add_queue(t_env **root, char *s) // Add line to ENV linked list
+void	ft_add_queue(t_env **root, char *s)
 {
 	t_env	*node;
 	t_env	*curr;
@@ -35,7 +35,6 @@ void	ft_add_queue(t_env **root, char *s) // Add line to ENV linked list
 	{
 		if (curr->next == NULL)
 		{
-			//curr->next = malloc(sizeof(t_env));
 			curr->next = node;
 			return ;
 		}
@@ -44,7 +43,7 @@ void	ft_add_queue(t_env **root, char *s) // Add line to ENV linked list
 	curr->next = node;
 }
 
-void	ft_get_env(t_env **env_list, char **env) // Copies env to env_list
+void	ft_get_env(t_env **env_list, char **env)
 {
 	int	i;
 

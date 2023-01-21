@@ -6,31 +6,24 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 14:51:18 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 14:04:21 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern	g_t_env	env;
-
-// t_env **env_list - environment variable list
-// int line_nb      - line after which we add new variable (line)
-// char *s          - line to add
+extern g_t_env	env;
 
 void	ft_sort_list(t_env **list)
 {
 	t_env	*curr;
 	char	*tmp;
 	int		sorted;
-	(void)tmp;
 
 	curr = *list;
 	tmp = NULL;
 	sorted = 1;
-	if (curr == NULL)
-		return ;
-	while (sorted)
+	while (sorted && curr)
 	{
 		sorted = 0;
 		curr = *list;

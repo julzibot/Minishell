@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 13:58:59 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/21 14:08:29 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,14 +131,13 @@ void	ft_exit(t_cmd *cmd)
 	int	code;
 
 	code = 0;
-	//printf("%s\n", cmd->args[0]);
 	if (cmd->args[1] != NULL)
 	{
 		if (cmd->args[2] != NULL)
 		{
 			ft_printf(2, "Mini_chelou: ");
 			ft_printf(2, "exit: too many arguments\n");
-			return;	
+			return ;
 		}
 		if (ft_is_digit(cmd->args[1]))
 		{
