@@ -96,7 +96,7 @@ char	**lexing(char *line, t_cmd *parse_list)
 	l->j = 0;
 	l->delim = -1;
 	l->lex_tab = malloc(sizeof(char*) * arg_count(line));
-	tab_list_init(line, l->lex_tab, parse_list);
+	tab_list_init(l->lex_tab, line, parse_list);
 	while (line[l->i])
 	{
 		l->delim = is_delim(line[l->i]);
@@ -212,9 +212,9 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	int		type;
 	char	*str;
 
-	// i = -1;
-	// while (lex_tab[++i])
-	// 	printf("lex %d : %s\n", i, lex_tab[i]);
+	i = -1;
+	while (lex_tab[++i])
+		printf("lex %d : %s\n", i, lex_tab[i]);
 	
 	// INIT
 	i = -1;
@@ -232,7 +232,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 				i++;
 			else
 			{
-				// free_list(parse_list, lex_tab);
+				free_list(parse_list, lex_tab);
 				printf("Error : this redirection is chelou !\n");
 				env.error_code = 258;
 				return (NULL);
@@ -251,6 +251,8 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			i += quotes_skip(lex_tab + i, parse_list->space_after + i);
 		}
 	}
+
+
 
 	temp = parse_list;
 	while (temp->next != NULL)

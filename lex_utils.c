@@ -26,6 +26,8 @@ int	count_loop(char *line, int i, int quoted, char q_type)
 			var_quoted = 0;
 		count++;
 	}
+	if (!quoted && is_delim(line[i]) == 1)
+		count++;
 	return (count);
 }
 
@@ -35,19 +37,16 @@ int	seg_size(char *line, int i)
 	int	quoted;
 	char	q_type;
 
+	// printf("char %c at pos %d\n", line[i], i);
 	quoted = 0;
 	count = 1;
-	q_type = '\"';
+	q_type = line[i];
 	if (is_delim(line[i]) == 1)
-	{
 		quoted = 1;
-		q_type = line[i];
-	}
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 		count++;
 	count += count_loop(line, i, quoted, q_type);
-	if (!quoted && is_delim(line[i]) == 1)
-		count++;
+	// printf("here : %d\n", count + quoted);
 	return (count + quoted);
 }
 
@@ -85,29 +84,31 @@ int	seg_loop(char *line, int i, char *seg, t_seg *segvars)
 int	lineseg(char *line, int i, char **lex_tab, int quoted)
 {
 	char	*seg;
-	t_seg *segvars;
+	t_seg *sv;
 
-	segvars = malloc(sizeof(t_seg));
-	segvars_init(segvars, i, quoted);
+	sv = malloc(sizeof(t_seg));
+	segvars_init(sv, i, quoted);
+	printf("size : %d\n", seg_size(line, i) + 1);
 	seg = malloc(seg_size(line, i) + 1);
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
-		seg[segvars->s_i++] = line[i - 1];
+		seg[sv->s_i++] = line[i - 1];
 	if (line[i] == '\\' || line[i] == ';')
 		return (-2);
-	seg[segvars->s_i++] = line[i];
-	i = seg_loop(line, i, seg, segvars);
-	if ((quoted || segvars->var_quoted) && !line[i])
+	seg[sv->s_i++] = line[i];
+	i = seg_loop(line, i, seg, sv);
+	if ((quoted || sv->var_quoted) && !line[i])
 		return (-1);
 	else if (!quoted && (line[i] == '\\' || line[i] == ';'))
 		return (-2);
-	seg[segvars->s_i] = line[i];
+	seg[sv->s_i] = line[i];
 	if (!quoted && is_delim(line[i]) == 1)
-		segvars->q_type = 1;
+		sv->q_type = 1;
 	else
-		segvars->q_type = 0;
-	seg[segvars->s_i + quoted + segvars->q_type] = '\0';
+		sv->q_type = 0;
+	seg[sv->s_i + quoted + sv->q_type] = '\0';
+	// printf("end : %d\n", sv->s_i);
 	*lex_tab = seg;
-	free(segvars);
+	free(sv);
 	return (i + quoted);
 }
  
@@ -157,13 +158,14 @@ int	arg_count(char *line)
 	return (count);
 }
 
-void	tab_list_init(char *line, char **lex_tab, t_cmd *parse_list)
+void	tab_list_init(char **lex_tab, char *line, t_cmd *parse_list)
 {
 	int	i;
 	int	lex_size;
 	
 	i = -1;
 	lex_size = arg_count(line);
+	printf("fuck %d\n", lex_size);
 	if (lex_tab == NULL || parse_list == NULL || line == NULL)
 		return ;
 	parse_list->quoted = malloc(sizeof(int) * (lex_size + 1));
@@ -173,6 +175,6 @@ void	tab_list_init(char *line, char **lex_tab, t_cmd *parse_list)
 		parse_list->quoted[i] = 0;
 		parse_list->space_after[i] = 0;
 	}
-	lex_tab[lex_size - 1] = NULL;
+	// lex_tab[lex_size - 1] = NULL;
 	return;
 }

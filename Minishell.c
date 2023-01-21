@@ -18,17 +18,18 @@ void	free_list(t_cmd *parse_list, char **tokens)
 {
 	t_cmd	*temp;
 
-	while (parse_list && parse_list->next)
+	if (parse_list->env_vars)
+		free(parse_list->env_vars);
+	if (parse_list->space_after)
+		free(parse_list->space_after);
+	if (parse_list->quoted)
+		free(parse_list->quoted);
+	while (parse_list)
 	{
 		temp = parse_list->next;
-		// free(parse_list->space_after);
-		// free(parse_list->quoted);
 		free(parse_list);
 		parse_list = temp;
 	}
-	// free(parse_list->space_after);
-	// free(parse_list->quoted);
-	free(parse_list);
 	free(tokens);
 	return;
 }
@@ -86,12 +87,12 @@ int	main(int argc, char **argv, char **envp)
 
 	term = NULL;
 	env_vars = NULL;
-	ft_init_termios(term);
-	ft_init_env(envp);
+	// ft_init_termios(term);
+	// ft_init_env(envp);
 	while (1)
 	{
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, ft_handle_sigint);
+		// signal(SIGQUIT, SIG_IGN);
+		// signal(SIGINT, ft_handle_sigint);
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
@@ -107,11 +108,11 @@ int	main(int argc, char **argv, char **envp)
 			{
 				free(env_vars);
 				env_vars = ft_tabdup(parse_list->env_vars, 0);
-				exec_pipeline(parse_list, envp);
+				// exec_pipeline(parse_list, envp);
 			}
 		}
-		// free_list(parse_list, tokens);
-		// free(line);
+		free_list(parse_list, tokens);
+		free(line);
 		//system("leaks minishell\n");
 	}
 	return (0);

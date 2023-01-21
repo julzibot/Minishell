@@ -24,7 +24,7 @@ static  char *check_concat(char *cpy)
             return (str);
         }
         else
-            return (cpy);
+            return (ft_strdup(cpy));
     }
     return (NULL);
 }
@@ -70,6 +70,7 @@ static  char	**create_var(char **env_vars, char *cpy, t_env *env_list)
         env_vars[j] = assign_new_value(env_vars[j], cpy);
         if (ft_strcmp(save, env_vars[j]))
             must_ret = 1;
+        free(save);
 	}
     j = env_lstsize(env_list);
     while (j-- > 0)
@@ -78,7 +79,7 @@ static  char	**create_var(char **env_vars, char *cpy, t_env *env_list)
         temp = temp->next;
 	}
     if (!must_ret)
-	    env_vars = token_join(env_vars, check_concat(ft_strdup(cpy)));
+	    env_vars = token_join(env_vars, check_concat(cpy));
 	return (env_vars);
 }
 
