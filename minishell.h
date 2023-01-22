@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 18:10:15 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 14:45:14 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,7 @@ char	*ft_strstr(char *haystack, char *needle);
 int		exec_builtin(t_cmd *cmd, int builtin);
 int		is_builtin(t_cmd *cmd);
 char	*ft_cmd_check(char **envp, char *cmd, int option);
+void	ft_free_paths(char **paths);
 
 /***********ENV************/
 int		ft_varlen(char *str);

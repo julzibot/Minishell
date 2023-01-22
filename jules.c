@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 13:49:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 12:40:45 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 15:36:14 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,18 +140,37 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 {
 	char	*line;
-
+	
+	signal(SIGINT, &ft_handle_sigint); // CTRL-C
+	signal(SIGQUIT, SIG_IGN); // CTRL-/
 	if (cmd->redir_in != -1)
 		close(cmd->redir_in);
 	if (pipe(cmd->heredoc) == -1)
 		return (0);
 	cmd->redir_in = cmd->heredoc[0];
 	line = readline("> ");
+	if (line == NULL)
+	{
+		free(filename_delim);
+		close(cmd->heredoc[1]);
+		return (1);
+	}
 	while (ft_strcmp(line, filename_delim))
 	{
+		if (line == NULL)
+		{
+			free(filename_delim);
+			close(cmd->heredoc[1]);
+			return (1);
+		}
 		ft_printf(cmd->heredoc[1], "%s\n", line);
+		free(line);
 		line = readline("> ");
 	}
+	if (line)
+		free(line);
+	if (filename_delim)
+		free(filename_delim);
 	close(cmd->heredoc[1]);
 	return (1);
 }

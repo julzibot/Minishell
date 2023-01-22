@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 10:54:21 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 14:57:04 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,11 @@ void	ft_free_exit(t_cmd *parse_list, char **tokens)
 		free(parse_list->quoted);
 	while (parse_list)
 	{
+		// if (parse_list->args)
+		// 	ft_free_char_array(parse_list->args);
 		temp = parse_list->next;
-		free(parse_list);
+		if (parse_list)
+			free(parse_list);
 		parse_list = temp;
 	}
 	ft_free_char_array(tokens);
@@ -81,11 +84,12 @@ void	ft_handle_sigint(int sig)
 void	ft_child_sig(void)
 {
 	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	signal(SIGQUIT, &ft_handle_sigquit);
 }
 
 void	ft_handle_sigquit(int sig)
 {
 	if (sig == SIGQUIT)
 		printf("Quit: 3\n");
+	signal(SIGQUIT, SIG_DFL);
 }
