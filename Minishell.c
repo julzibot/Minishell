@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/22 11:44:23 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 12:08:48 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	free_list(t_cmd *parse_list, char **tokens)
 	}
 	while (parse_list)
 	{
+		if (parse_list->args)
+			ft_free_char_array(parse_list->args);
 		temp = parse_list->next;
 		free(parse_list);
 		parse_list = temp;

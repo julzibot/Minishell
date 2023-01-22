@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 17:39:40 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 13:01:18 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ char	*ft_verify_env_var(char *s)
 		i++;
 	}
 	str[i] = '\0';
+	free(s);
 	return (str);
 }
 

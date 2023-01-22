@@ -24,6 +24,7 @@ static  char	*get_vars_init(char *token)
 			str[v_i] = token[v_i];
 		str[v_i] = '\0';
 	}
+	//free(token);
 	return (str);
 }
 
@@ -140,7 +141,6 @@ char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
 	str_code = NULL;
 	if (token[i] == '$' && token[i + 1] == '?')
 	{
-		printf("error code %d\n", env.error_code);
 		str_code = ft_itoa(env.error_code);
 		str = ft_strjoin(str, str_code, 3);
 		i++;

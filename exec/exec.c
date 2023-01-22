@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 11:49:18 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 13:14:13 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,24 @@ int	is_builtin(t_cmd *cmd)
 		return (0);
 }
 
+void	ft_free_paths(char **paths)
+{
+	int	i;
+
+	i = 0;
+	if (!paths)
+		return ;
+	while (i < ft_arrlen(paths))
+	{
+		if (paths[i] == NULL)
+			break ;
+		if (paths[i])
+			free(paths[i]);
+		i++;
+	}
+	free(paths);
+}
+
 char	*ft_cmd_check(char **envp, char *cmd, int option)
 {
 	char	*env_line;
@@ -82,7 +100,7 @@ char	*ft_cmd_check(char **envp, char *cmd, int option)
 		if (access(paths[i], F_OK | X_OK) == 0)
 		{
 			path = ft_strdup(paths[i]);
-			ft_free_char_array(paths);
+			ft_free_paths(paths);
 			if (option == 0)
 			{
 				free(path);
@@ -93,7 +111,7 @@ char	*ft_cmd_check(char **envp, char *cmd, int option)
 		else
 			i++;
 	}
-	free(path);
+	ft_free_paths(paths);
 	return (NULL);
 }
 
@@ -119,13 +137,13 @@ void		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 	}
 	close(cmd->out_pipe[1]);
 	close(cmd->in_pipe[0]);
-	for (int fd = 0; fd < 30; fd++) {
-			int flags = fcntl(fd, F_GETFD);
-			if (flags != -1) {
-				printf("in exec : fd %d is open\n", fd);
-			}
-		}
-	printf ("---\n");
+	// for (int fd = 0; fd < 30; fd++) {
+	// 		int flags = fcntl(fd, F_GETFD);
+	// 		if (flags != -1) {
+	// 			printf("in exec : fd %d is open\n", fd);
+	// 		}
+	// 	}
+	// printf ("---\n");
 	path = ft_cmd_check(envp, cmd->args[0], 1);
 	execve(path, cmd->args, envp);
 	//exit(0);

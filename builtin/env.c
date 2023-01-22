@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 18:41:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 13:11:01 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
 	exp = ft_strjoin("declare -x ", exp, 2);
 	ft_update_var(env_list, line);
 	ft_update_var(exp_list, exp);
+	free(exp);
 }
 
 int	ft_print_env(t_env *env_lst, t_cmd *cmd)

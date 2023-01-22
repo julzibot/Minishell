@@ -100,7 +100,8 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 	else
 		sv->q_type = 0;
 	seg[sv->s_i + quoted + sv->q_type] = '\0';
-	*lex_tab = seg;
+	*lex_tab = ft_strdup(seg);
+	free(seg);
 	free(sv);
 	return (i + quoted);
 }
