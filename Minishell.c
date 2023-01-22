@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/21 19:00:45 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 10:48:47 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,9 @@ int	main(int argc, char **argv, char **envp)
 				exec_pipeline(parse_list, envp);
 			}
 		}
+		check_line_exists(line, parse_list, tokens);
 		free_list(parse_list, tokens);
-		// free(line);
+		free(line);
 		// system("leaks minishell\n");
 	}
 	return (0);
