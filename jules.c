@@ -149,31 +149,40 @@ int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 		return (0);
 	cmd->redir_in = cmd->heredoc[0];
 	line = readline("> ");
-	if (line == NULL)
+	while (ft_strcmp(line, filename_delim) && line)
 	{
-		free(filename_delim);
-		close(cmd->heredoc[1]);
-		return (1);
-	}
-	while (ft_strcmp(line, filename_delim))
-	{
-		if (line == NULL)
-		{
-			free(filename_delim);
-			close(cmd->heredoc[1]);
-			return (1);
-		}
 		ft_printf(cmd->heredoc[1], "%s\n", line);
 		free(line);
 		line = readline("> ");
 	}
-	if (line)
-		free(line);
-	if (filename_delim)
-		free(filename_delim);
+	if (!line)
+	{
+		close(cmd->heredoc[1]);
+		return (0);
+	}
+	free(line);
 	close(cmd->heredoc[1]);
 	return (1);
 }
+
+// int	heredoc_handle(t_cmd *cmd, char *filename_delim)
+// {
+// 	char	*line;
+
+// 	if (cmd->redir_in != -1)
+// 		close(cmd->redir_in);
+// 	if (pipe(cmd->heredoc) == -1)
+// 		return (0);
+// 	cmd->redir_in = cmd->heredoc[0];
+// 	line = readline("> ");
+// 	while (ft_strcmp(line, filename_delim))
+// 	{
+// 		ft_printf(cmd->heredoc[1], "%s\n", line);
+// 		line = readline("> ");
+// 	}
+// 	close(cmd->heredoc[1]);
+// 	return (1);
+// }
 
 int	redir(t_cmd *cmd, char **redir_ptr, int type)
 {
