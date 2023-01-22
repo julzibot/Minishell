@@ -14,18 +14,18 @@
 
 extern g_t_env	env;
 
-int	check_lexpr_error(char *line, t_lex *l)
-{
-	if (l->delim == 2 && !line[l->i + 1])
-		return (1);
-	else if (l->delim == 2 && !l->i)
-		return (2);
-	else if (l->delim == 3 && \
-		((is_delim(line[l->i + 1]) == 3 && line[l->i + 1] != line[l->i]) \
-		|| (line[l->i] == line[l->i + 1] && is_delim(line[l->i + 2]) == 3)))
-		return (3);
-	return (0);
-}
+// int	check_lexpr_error(char *line, t_lex *l)
+// {
+// 	if (l->delim == 2 && !line[l->i + 1])
+// 		return (1);
+// 	else if (l->delim == 2 && !l->i)
+// 		return (2);
+// 	else if (l->delim == 3 && \
+// 		((is_delim(line[l->i + 1]) == 3 && line[l->i + 1] != line[l->i]) \
+// 		|| (line[l->i] == line[l->i + 1] && is_delim(line[l->i + 2]) == 3)))
+// 		return (3);
+// 	return (0);
+// }
 
 int	syntax_err(t_lex *l, int lexpr)
 {
@@ -53,7 +53,15 @@ int	lex_pr(t_lex *l, char *line, t_cmd *parse_list)
 {
 	int	lexpr;
 
-	lexpr = check_lexpr_error(line, l);
+	lexpr = 0;
+	if (l->delim == 2 && !line[l->i + 1])
+		lexpr = 1;
+	else if (l->delim == 2 && !l->i)
+		lexpr = 2;
+	else if (l->delim == 3 && \
+		((is_delim(line[l->i + 1]) == 3 && line[l->i + 1] != line[l->i]) \
+		|| (line[l->i] == line[l->i + 1] && is_delim(line[l->i + 2]) == 3)))
+		lexpr = 3;
 	if (syntax_err(l, lexpr))
 		return (1);
 	l->i += lex_pipe_redir(line + l->i, l->lex_tab + l->j++);
@@ -158,10 +166,7 @@ int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 		}
 		close(cmd->heredoc[1]);
 		if (!line)
-		{
 			exit(0);
-			return (0);
-		}
 		free(line);
 		exit (0);
 	}
@@ -278,15 +283,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			if (err > 0)
 				i++;
 			else
-<<<<<<< HEAD
-			{
-				ft_printf(2, "Error : this redirection is chelou !\n");
-				env.error_code = 258;
-				return (NULL);
-			}
-=======
 				return (redir_err_msg(err, lex_tab[i + 1]));
->>>>>>> 875ebba24ebfd79c48982ab75aa5f6b831adb802
 		}
 		else if (type == 4)
 			temp = lst_next_cmd(temp);
