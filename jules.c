@@ -14,50 +14,46 @@
 
 extern g_t_env	env;
 
-int	check_lexpr_error(char *line, int delim)
+int	check_lexpr_error(char *line, t_lex *l)
 {
-	if (delim == 2 && !line[1])
+	if (l->delim == 2 && !line[l->i + 1])
 		return (1);
-	else if (delim == 3 && \
-		((is_delim(line[1]) == 3 && line[1] != line[0]) \
-		|| (line[1] == line[0] && is_delim(line[2]) == 3)))
+	else if (l->delim == 2 && !l->i)
 		return (2);
+	else if (l->delim == 3 && \
+		((is_delim(line[l->i + 1]) == 3 && line[l->i + 1] != line[l->i]) \
+		|| (line[l->i] == line[l->i + 1] && is_delim(line[l->i + 2]) == 3)))
+		return (3);
 	return (0);
 }
 
 int	syntax_err(t_lex *l, int lexpr)
 {
-	int	error;
-
-	error = 0;
-	if (lexpr)
+	if (lexpr || l->i < 0)
 	{
 		l->lex_tab = NULL;
 		if (lexpr == 1)
 			printf("Error : input ends with a pipe\n");
 		else if (lexpr == 2)
+			printf("Error : pipe at start of input is CHELOU !\n");
+		else if (lexpr == 3)
 			printf("Error : this redirection is chelou !\n");
-		error = 1;
-	}
-	else if (l->i < 0)
-	{
-		l->lex_tab = NULL;
-		if (l->i == -1)
+		else if (l->i == -1)
 			printf("Error : unclosed quotes !\n");
 		else if (l->i == -2)
 			printf("Error : chelou input detected\n");
-		error = 1;
+		l->error = 1;
 	}
-	if (error)
+	if (l->error)
 		env.error_code = 258;
-	return (error);
+	return (l->error);
 }
 
 int	lex_pr(t_lex *l, char *line, t_cmd *parse_list)
 {
 	int	lexpr;
 
-	lexpr = check_lexpr_error(line + l->i, l->delim);
+	lexpr = check_lexpr_error(line, l);
 	if (syntax_err(l, lexpr))
 		return (1);
 	l->i += lex_pipe_redir(line + l->i, l->lex_tab + l->j++);
@@ -94,6 +90,7 @@ char	**lexing(char *line, t_cmd *parse_list)
 	l = malloc(sizeof(t_lex));
 	l->i = 0;
 	l->j = 0;
+	l->error = 0;
 	l->delim = -1;
 	l->lex_tab = malloc(sizeof(char*) * arg_count(line));
 	tab_list_init(l->lex_tab, line, parse_list);
@@ -284,7 +281,6 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 
 	return(parse_list);
 }
-
 
 	// TEST PRINTS
 	// temp = parse_list;

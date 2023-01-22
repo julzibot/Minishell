@@ -79,6 +79,7 @@ typedef struct	s_lex
 {
 	char	**lex_tab;
 	int	delim;
+	int	error;
 	int	i;
 	int	j;
 } t_lex;

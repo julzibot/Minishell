@@ -168,5 +168,7 @@ void	tab_list_init(char **lex_tab, char *line, t_cmd *parse_list)
 		parse_list->quoted[i] = 0;
 		parse_list->space_after[i] = 0;
 	}
+	parse_list->quoted[i] = '\0';
+	parse_list->space_after[i] = '\0';
 	return;
 }
