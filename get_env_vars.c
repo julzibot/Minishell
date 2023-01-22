@@ -76,59 +76,57 @@ static  int	reset_namelen(char *token)
 	return (namelen);
 }
 
-int	env_check_name(char *token, char *str, t_env *env_list)
+char	*env_check_name(char *token, char *str, t_env *env_list, t_seg *m)
 {
 	t_env	*temp;
 	int	j;
-	int	match;
-	int	namelen;
 
 	temp = env_list;
-	match = 0;
+	m->match = 0;
 	j = env_lstsize(env_list);
-	while (j-- > 0 && !match)
+	while (j-- > 0 && !m->match)
 	{
-		namelen = 0;
-		while (temp->line && temp->line[namelen] != '=')
-			namelen++;
-		if (!ft_strncmp(temp->line, token + 1, namelen) \
-				&& (!token[namelen + 1] || token[namelen + 1] == '$' \
-				|| is_delim(token[namelen + 1]) == 1 || is_delim(token[namelen + 1]) == 4))
+		m->namelen = 0;
+		while (temp->line && temp->line[m->namelen] != '=')
+			m->namelen++;
+		if (!ft_strncmp(temp->line, token + 1, m->namelen) \
+				&& (!token[m->namelen + 1] || token[m->namelen + 1] == '$' \
+				|| is_delim(token[m->namelen + 1]) == 1 || is_delim(token[m->namelen + 1]) == 4))
 		{
-			str = get_value(token, namelen, temp->line, str);
-			match = 1;
+			str = get_value(token, m->namelen, temp->line, str);
+			m->match = 1;
 		}
 		temp = temp->next;
 	}
-	return (match);
+	return (str);
 }
 
 static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env_list)
 {
-	int	j;
-	int	namelen;
-	int match;
+	t_seg	*m;
 
-	j = -1;
-	match = 0;
-	match = env_check_name(token, str, env_list);
-	while (env_vars && env_vars[++j] && !match)
+	m = malloc(sizeof(t_seg));
+	m->j = -1;
+	m->match = 0;
+	str = env_check_name(token, str, env_list, m);
+	while (env_vars && env_vars[++m->j] && !m->match)
 	{
-		namelen = 0;
-		while (env_vars && env_vars[j][namelen] != '=')
-			namelen++;
-		if (!ft_strncmp(env_vars[j], token + 1, namelen) \
-				&& (!token[namelen + 1] || token[namelen + 1] == '$' \
-				|| is_delim(token[namelen + 1]) == 1 || is_delim(token[namelen + 1]) == 4))
+		m->namelen = 0;
+		while (env_vars && env_vars[m->j][m->namelen] != '=')
+			m->namelen++;
+		if (!ft_strncmp(env_vars[m->j], token + 1, m->namelen) \
+				&& (!token[m->namelen + 1] || token[m->namelen + 1] == '$' \
+				|| is_delim(token[m->namelen + 1]) == 1 || is_delim(token[m->namelen + 1]) == 4))
 		{
-			str = get_value(token, namelen, env_vars[j], str);
-			match = 1;
+			str = get_value(token, m->namelen, env_vars[m->j], str);
+			m->match = 1;
 		}
 	}
-	if (!match)
-		namelen = reset_namelen(token);
-	while (token[++namelen] && token[namelen] != '$')
-		str = char_cat(str, token[namelen]);
+	if (!m->match)
+		m->namelen = reset_namelen(token);
+	while (token && token[++m->namelen] && token[m->namelen] != '$')
+		str = char_cat(str, token[m->namelen]);
+	free(m);
 	return (str);
 }
 

@@ -70,6 +70,9 @@ typedef	struct s_seg
 	int var_q_type;
 	int	is_var;
 	int	var_quoted;
+	int	match;
+	int namelen;
+	int	j;
 } t_seg;
 
 typedef struct	s_lex
