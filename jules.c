@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 13:49:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 15:36:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 16:58:17 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,7 +259,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 				i++;
 			else
 			{
-				printf("Error : this redirection is chelou !\n");
+				ft_printf(2, "Error : this redirection is chelou !\n");
 				env.error_code = 258;
 				return (NULL);
 			}
@@ -271,20 +271,15 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			if (type == 6)
 				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars, env.env_list);
 			if (type < 7)
-			{
 				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars, env.env_list), lex_tab, parse_list, i);
-			}
 			else
 				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab, parse_list, i);
 			temp->args = token_join(temp->args, str);
 			i += quotes_skip(lex_tab + i, parse_list->space_after + i);
 		}
-		// if (str != NULL)
-		// 	free(str);
 	}
-
-
-
+	// if (str != NULL) // Doesn't work with more than 1 arg | cd works, but not "but cd .."
+	// 	free(str);
 	// temp = parse_list;
 	// while (temp->next != NULL)
 	// {
@@ -303,8 +298,7 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	// i = -1;
 	// while (parse_list->env_vars && parse_list->env_vars[++i])
 	// 	printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
-
-	return(parse_list);
+	return (parse_list);
 }
 
 	// TEST PRINTS

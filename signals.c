@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 14:57:04 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 16:59:14 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ void	ft_free_exit(t_cmd *parse_list, char **tokens)
 		free(parse_list->quoted);
 	while (parse_list)
 	{
-		// if (parse_list->args)
-		// 	ft_free_char_array(parse_list->args);
+		if (parse_list->args)
+			ft_free_char_array(parse_list->args);
 		temp = parse_list->next;
 		if (parse_list)
 			free(parse_list);

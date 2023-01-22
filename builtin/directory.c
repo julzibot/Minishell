@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 13:10:41 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 18:06:37 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,12 @@ int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 	s = getcwd(s, 0);
 	if (!s)
 		return (1);
-	var = ft_strjoin(env, s, 0);
+	var = ft_strjoin(env, s, 2);
 	ft_update_env(env_list, exp_list, var);
-	free(s);
-	free(var);
+	// if (s)
+	// 	free(s);
+	if (var)
+		free(var);
 	return (0);
 }
 

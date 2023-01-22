@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 13:01:18 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 18:11:04 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,28 +108,17 @@ char	*ft_var_content(char *line)
 int	ft_update_var(t_env **env_list, char *s)
 {
 	t_env	*curr;
-	t_env	*new;
-	t_env	*prev;
-	int		i;
 
 	curr = *env_list;
-	i = 0;
-	new = malloc(sizeof(t_env));
-	new->next = NULL;
-	new->line = malloc(sizeof(char) * (ft_strlen(s) + 1));
-	ft_strcpy(new->line, s);
 	while (curr)
 	{
 		if (ft_strncmp(curr->line, s, ft_varlen(s)) == 0)
 		{
-			new->next = curr->next;
-			prev->next = new;
 			free(curr->line);
-			free(curr);
+			curr->line = malloc(sizeof(char) * (ft_strlen(s) + 1));
+			ft_strcpy(curr->line, s);
 			return (1);
 		}
-		i++;
-		prev = curr;
 		curr = curr->next;
 	}
 	return (0);
