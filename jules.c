@@ -133,7 +133,6 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	next_cmd->redir_in = -1;
 	next_cmd->cmd_done = 0;
 	temp->next = next_cmd;
-
 	return (next_cmd);
 }
 
@@ -141,22 +140,36 @@ int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 {
 	char	*line;
 	
-	signal(SIGINT, &ft_handle_sigint); // CTRL-C
-	signal(SIGQUIT, SIG_IGN); // CTRL-/
 	if (pipe(cmd->heredoc) == -1)
 		return (0);
 	cmd->redir_in = cmd->heredoc[0];
-	line = readline("> ");
-	while (ft_strcmp(line, filename_delim) && line)
+	cmd->heredoc_pid = fork();
+	if (cmd->heredoc_pid == 0)
 	{
-		ft_printf(cmd->heredoc[1], "%s\n", line);
-		free(line);
+		close(cmd->heredoc[0]);
+		signal(SIGINT, &ft_handle_sigint); // CTRL-C
+		signal(SIGQUIT, SIG_IGN); // CTRL-/
 		line = readline("> ");
+		while (ft_strcmp(line, filename_delim) && line)
+		{
+			ft_printf(cmd->heredoc[1], "%s\n", line);
+			free(line);
+			line = readline("> ");
+		}
+		close(cmd->heredoc[1]);
+		if (!line)
+		{
+			exit(0);
+			return (0);
+		}
+		free(line);
+		exit (0);
 	}
-	close(cmd->heredoc[1]);
-	if (!line)
-		return (0);
-	free(line);
+	else
+	{
+		close(cmd->heredoc[1]);
+		waitpid(-1, NULL, 0);
+	}
 	return (1);
 }
 
@@ -172,7 +185,6 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
 		close (cmd->outfile);
 	cmd->redir[type % 2] = 1;
-	
 	if (!type && !heredoc_handle(cmd, filename_delim))
 		return (0);
 	else if (type == 2)

@@ -96,6 +96,7 @@ typedef struct s_gl_env
 typedef	struct	s_cmd
 {
 	pid_t			shell_pid;
+	pid_t			heredoc_pid;
 	char			**args;     // cd -> ../folder <-
 	char			**env_vars; // a=b (export)
 	int				infile;     // fd
