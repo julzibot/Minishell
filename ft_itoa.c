@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/22 11:00:40 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 11:18:06 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,14 @@ char	*ft_itoa(int n)
 	int		sign;
 	char	*nbr;
 
+	nbr = NULL;
+	if (n == 0)
+	{
+		nbr = malloc(sizeof(char) * 2);
+		nbr[0] = '0';
+		nbr[1] = '\0';
+		return (nbr);
+	}
 	if (n == -2147483648)
 	{
 		nbr = ft_strdup("-2147483648");

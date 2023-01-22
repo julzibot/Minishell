@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/22 10:48:47 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 11:44:23 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ g_t_env	env;
 void	free_list(t_cmd *parse_list, char **tokens)
 {
 	t_cmd	*temp;
+
 	if (parse_list)
 	{
 		if (parse_list->env_vars)

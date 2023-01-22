@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 14:02:08 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 11:49:18 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ int	ft_str_is_digit(char *s)
 int	ft_exec_cmd(t_cmd *cmd, char **envp)
 {
 	int	status;
+	int	code;
 
 	status = 0;
 	if (cmd == NULL || cmd->args == NULL || ft_verify_equal(cmd->args[0]))
@@ -218,8 +219,11 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	}
 	if (ft_str_is_digit(cmd->args[0]) == 0)
 	{
-		ft_get_err_code(ft_atoi(cmd->args[0]));
-		return (ft_atoi(cmd->args[0]));
+		code = ft_atoi(cmd->args[0]);
+		code %= 255;
+		free(cmd->args[0]);
+		ft_get_err_code(code);
+		return (code);
 	}
 	if (is_builtin(cmd) != 0)
 	{

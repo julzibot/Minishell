@@ -133,12 +133,16 @@ static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env
 
 char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
 {
-	int	i;
+	int		i;
+	char	*str_code;
 
 	i = 0;
+	str_code = NULL;
 	if (token[i] == '$' && token[i + 1] == '?')
 	{
-		str = ft_strjoin(str, ft_itoa(env.error_code), 3);
+		printf("error code %d\n", env.error_code);
+		str_code = ft_itoa(env.error_code);
+		str = ft_strjoin(str, str_code, 3);
 		i++;
 		while (token[++i] && token[i] != '$')
 			str = char_cat(str, token[i]);
