@@ -155,13 +155,10 @@ int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 		free(line);
 		line = readline("> ");
 	}
-	if (!line)
-	{
-		close(cmd->heredoc[1]);
-		return (0);
-	}
-	free(line);
 	close(cmd->heredoc[1]);
+	if (!line)
+		return (0);
+	free(line);
 	return (1);
 }
 
