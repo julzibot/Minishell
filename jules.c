@@ -143,8 +143,6 @@ int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 	
 	signal(SIGINT, &ft_handle_sigint); // CTRL-C
 	signal(SIGQUIT, SIG_IGN); // CTRL-/
-	if (cmd->redir_in != -1)
-		close(cmd->redir_in);
 	if (pipe(cmd->heredoc) == -1)
 		return (0);
 	cmd->redir_in = cmd->heredoc[0];
@@ -162,25 +160,6 @@ int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 	return (1);
 }
 
-// int	heredoc_handle(t_cmd *cmd, char *filename_delim)
-// {
-// 	char	*line;
-
-// 	if (cmd->redir_in != -1)
-// 		close(cmd->redir_in);
-// 	if (pipe(cmd->heredoc) == -1)
-// 		return (0);
-// 	cmd->redir_in = cmd->heredoc[0];
-// 	line = readline("> ");
-// 	while (ft_strcmp(line, filename_delim))
-// 	{
-// 		ft_printf(cmd->heredoc[1], "%s\n", line);
-// 		line = readline("> ");
-// 	}
-// 	close(cmd->heredoc[1]);
-// 	return (1);
-// }
-
 int	redir(t_cmd *cmd, char **redir_ptr, int type)
 {
 	char	*filename_delim;
@@ -188,6 +167,8 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)
 		return (0);
+	if (cmd->redir_in != -1)
+		close(cmd->redir_in);
 	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
 		close (cmd->outfile);
 	cmd->redir[type % 2] = 1;
@@ -196,14 +177,21 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 		return (0);
 	else if (type == 2)
 	{
-		if (cmd->redir_in != -1)
-			close(cmd->redir_in);
+		if (access(filename_delim, F_OK) == -1)
+			return (-1);
+		if (!access(filename_delim, F_OK) && access(filename_delim, R_OK) == -1)
+			return (-2);
 		cmd->redir_in = open(filename_delim, O_RDONLY, 0644);
 	}
-	else if (type == 1)
-		cmd->outfile = open(filename_delim, O_CREAT | O_RDWR| O_APPEND, 0644);
-	else if (type == 3)
-		cmd->outfile = open(filename_delim, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	else
+	{
+		if (!access(filename_delim, F_OK) && access(filename_delim, W_OK) == -1)
+			return (-3);
+		if (type == 1)
+			cmd->outfile = open(filename_delim, O_CREAT | O_RDWR| O_APPEND, 0644);
+		if (type == 3)
+			cmd->outfile = open(filename_delim, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	}
 	return (1);
 }
 
@@ -231,10 +219,29 @@ int	token_type(char *token, int quoted)
 		return (6);
 }
 
+t_cmd	*redir_err_msg(int	err, char *filename)
+{
+	if (!err)
+	{
+		printf("Error : this redirection is chelou !\n");
+		env.error_code = 258;
+	}
+	else
+	{
+		if (err == -1)
+			printf("Error : %s does nos exist !\n", filename);
+		if (err == -2 || err == -3)
+			printf("Error : %s : permission denied\n", filename);
+		env.error_code = 1;
+	}
+	return (NULL);
+}
+
 t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 {
 	t_cmd	*temp;
 	int		i;
+	int		err;
 	int		type;
 	char	*str;
 
@@ -255,14 +262,11 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 		type = token_type(lex_tab[i], parse_list->quoted[i]);
 		if (type < 4)
 		{
-			if (redir(temp, lex_tab + i, type))
+			err = redir(temp, lex_tab + i, type);
+			if (err > 0)
 				i++;
 			else
-			{
-				printf("Error : this redirection is chelou !\n");
-				env.error_code = 258;
-				return (NULL);
-			}
+				return (redir_err_msg(err, lex_tab[i + 1]));
 		}
 		else if (type == 4)
 			temp = lst_next_cmd(temp);
