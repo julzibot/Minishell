@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 14:45:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 17:19:27 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ int		ft_verify_double(t_env *env_list, char *line);
 char	*ft_verify_env_var(char *s);
 char	*ft_var_content(char *line);
 int		ft_verify_equal(char *s);
+int		ft_simple_equal(char *s);
 int		ft_verify_err_var(char *line);
 int		ft_verify_alphanum(char c);
 

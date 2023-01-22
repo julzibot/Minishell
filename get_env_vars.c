@@ -43,7 +43,7 @@ int	value_size(char *env_var, int namelen, int quoted)
 	return (ft_strlen(env_var) - v_len - namelen + quoted);
 }
 
-static  char	*get_value(char *token, int namelen, char *env_var, char *str)
+static char	*get_value(char *token, int namelen, char *env_var, char *str)
 {
 	int	v_i;
 	int	quoted;
@@ -161,9 +161,10 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 	// printf("GET_IN %s\n", token);
 
 	i = 0;
+	str = NULL;
 	if (!token)
 		return (NULL);
-	str = get_vars_init(token);
+	str = get_vars_init(token); // String lost in leak
 	i = ft_strlen(str);
 	while (token[i])
 	{

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 12:29:25 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/22 16:40:21 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,14 +242,10 @@ char	**ft_tabdup(char **tab, int must_free)
 	if (!dup)
 		return (NULL);
 	while (tab[++i])
-	{
 		dup[i] = ft_strdup(tab[i]);
-		if (must_free && tab[i])
-			free(tab[i]);
-	}
 	dup[i] = NULL;
 	if (must_free && tab)
-	 	free(tab);
+	 	ft_free_char_array(tab);
 	return (dup);
 }
 
