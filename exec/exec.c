@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 18:06:44 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 22:20:00 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,40 +222,43 @@ int	ft_str_is_digit(char *s)
 	return (0);
 }
 
+int	ft_close_cmd_redir(t_cmd *cmd)
+{
+	if (cmd->redir[0] == 1)
+		close (cmd->redir_in);
+	if (cmd->redir[1] == 1)
+		close(cmd->outfile);
+	return (1);
+}
+
+int	ft_do_builtin(t_cmd *cmd, int builtin, char **tokens)
+{
+	int	status;
+
+	status = 0;
+	status = exec_builtin(cmd, builtin, tokens);
+	ft_close_fds(cmd);
+	return (status);
+}
+
+int	ft_not_cmd(t_cmd *cmd)
+{
+	ft_print_error(NOT_CMD, cmd, NULL);
+	g_env.error_code = 127;
+	return (NOT_CMD);
+}
+
 int	ft_exec_cmd(t_cmd *cmd, char **envp, char **tokens, int cmd_i)
 {
 	int	status;
-	int	code;
 
 	status = 0;
 	if (cmd == NULL || cmd->args == NULL || ft_verify_equal(cmd->args[0]))
-	{
-		if (cmd->redir[0] == 1)
-			close (cmd->redir_in);
-		if (cmd->redir[1] == 1)
-			close(cmd->outfile);
-		return (status);
-	}
-	if (ft_str_is_digit(cmd->args[0]) == 0)
-	{
-		code = ft_atoi(cmd->args[0]);
-		code %= 255;
-		free(cmd->args[0]);
-		ft_get_err_code(code);
-		return (code);
-	}
+		return (ft_close_cmd_redir(cmd));
 	if (is_builtin(cmd) != 0 && !cmd_i)
-	{
-		status = exec_builtin(cmd, is_builtin(cmd), tokens);
-		ft_close_fds(cmd);
-		return (status);
-	}
+		return (ft_do_builtin(cmd, is_builtin(cmd), tokens));
 	if (ft_cmd_check(envp, cmd->args[0], 0) == NULL && is_builtin(cmd) == 0)
-	{
-		g_env.error_code = 127;
-		ft_get_err_code(NOT_CMD);
-		return (NOT_CMD);
-	}
+		return (ft_not_cmd(cmd));
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
 		ft_fork(cmd, envp, tokens);
