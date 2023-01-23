@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 // int	check_lexpr_error(char *line, t_lex *l)
 // {
@@ -45,7 +45,7 @@ int	syntax_err(t_lex *l, int lexpr)
 		l->error = 1;
 	}
 	if (l->error)
-		env.error_code = 258;
+		g_env.error_code = 258;
 	return (l->error);
 }
 
@@ -241,7 +241,7 @@ t_cmd	*redir_err_msg(int	err, char *filename)
 	if (!err)
 	{
 		printf("Error : this redirection is chelou !\n");
-		env.error_code = 258;
+		g_env.error_code = 258;
 	}
 	else
 	{
@@ -249,7 +249,7 @@ t_cmd	*redir_err_msg(int	err, char *filename)
 			printf("Error : %s does nos exist !\n", filename);
 		if (err == -2 || err == -3)
 			printf("Error : %s : permission denied\n", filename);
-		env.error_code = 1;
+		g_env.error_code = 1;
 	}
 	return (NULL);
 }
@@ -290,9 +290,9 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 		else
 		{
 			if (type == 6)
-				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars, env.env_list);
+				parse_list->env_vars = create_env_vars(ft_strdup(lex_tab[i]), parse_list->env_vars, g_env.env_list);
 			if (type < 7)
-				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars, env.env_list), lex_tab, parse_list, i);
+				str = fuse_quotes(get_env_vars(lex_tab[i], parse_list->env_vars, g_env.env_list), lex_tab, parse_list, i);
 			else
 				str = fuse_quotes(ft_strdup(lex_tab[i]), lex_tab, parse_list, i);
 			temp->args = token_join(temp->args, str);

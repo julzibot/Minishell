@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_env_vars.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jibot <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/23 13:40:46 by jibot             #+#    #+#             */
+/*   Updated: 2023/01/23 13:40:54 by jibot            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
-static  char	*get_vars_init(char *token)
+static char	*get_vars_init(char *token)
 {
-	int	i;
-	int	v_i;
+	int		i;
+	int		v_i;
 	char	*str;
 
 	i = 0;
@@ -15,7 +27,6 @@ static  char	*get_vars_init(char *token)
 		i++;
 	while (token[i] && token[i] != '$')
 		i++;
-	
 	if (i > 0)
 	{
 		str = malloc(i + 1);
@@ -24,7 +35,6 @@ static  char	*get_vars_init(char *token)
 			str[v_i] = token[v_i];
 		str[v_i] = '\0';
 	}
-	//free(token);
 	return (str);
 }
 
@@ -45,8 +55,8 @@ int	value_size(char *env_var, int namelen, int quoted)
 
 static char	*get_value(char *token, int namelen, char *env_var, char *str)
 {
-	int	v_i;
-	int	quoted;
+	int		v_i;
+	int		quoted;
 	char	*value;
 
 	quoted = 0;
@@ -66,12 +76,14 @@ static char	*get_value(char *token, int namelen, char *env_var, char *str)
 	return (str);
 }
 
-static  int	reset_namelen(char *token)
+static int	reset_namelen(char *token)
 {
 	int	namelen;
 
 	namelen = 0;
-	while (token[namelen + 1] && token[namelen + 1] != '$' && is_delim(token[namelen + 1]) != 1 && is_delim(token[namelen + 1]) != 4)
+	while (token[namelen + 1] && token[namelen + 1] != '$' \
+			&& is_delim(token[namelen + 1]) != 1 \
+			&& is_delim(token[namelen + 1]) != 4)
 		namelen++;
 	return (namelen);
 }
@@ -79,7 +91,7 @@ static  int	reset_namelen(char *token)
 char	*env_check_name(char *token, char *str, t_env *env_list, t_seg *m)
 {
 	t_env	*temp;
-	int	j;
+	int		j;
 
 	temp = env_list;
 	m->match = 0;
@@ -91,7 +103,8 @@ char	*env_check_name(char *token, char *str, t_env *env_list, t_seg *m)
 			m->namelen++;
 		if (!ft_strncmp(temp->line, token + 1, m->namelen) \
 				&& (!token[m->namelen + 1] || token[m->namelen + 1] == '$' \
-				|| is_delim(token[m->namelen + 1]) == 1 || is_delim(token[m->namelen + 1]) == 4))
+				|| is_delim(token[m->namelen + 1]) == 1 \
+				|| is_delim(token[m->namelen + 1]) == 4))
 		{
 			str = get_value(token, m->namelen, temp->line, str);
 			m->match = 1;
@@ -101,7 +114,8 @@ char	*env_check_name(char *token, char *str, t_env *env_list, t_seg *m)
 	return (str);
 }
 
-static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env_list)
+static char	*check_var_name(char *token, char **env_vars, \
+	char *str, t_env *env_list)
 {
 	t_seg	*m;
 
@@ -116,7 +130,8 @@ static  char	*check_var_name(char *token, char **env_vars, char *str, t_env *env
 			m->namelen++;
 		if (!ft_strncmp(env_vars[m->j], token + 1, m->namelen) \
 				&& (!token[m->namelen + 1] || token[m->namelen + 1] == '$' \
-				|| is_delim(token[m->namelen + 1]) == 1 || is_delim(token[m->namelen + 1]) == 4))
+				|| is_delim(token[m->namelen + 1]) == 1 \
+				|| is_delim(token[m->namelen + 1]) == 4))
 		{
 			str = get_value(token, m->namelen, env_vars[m->j], str);
 			m->match = 1;
@@ -139,7 +154,7 @@ char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
 	str_code = NULL;
 	if (token[i] == '$' && token[i + 1] == '?')
 	{
-		str_code = ft_itoa(env.error_code);
+		str_code = ft_itoa(g_env.error_code);
 		str = ft_strjoin(str, str_code, 3);
 		i++;
 		while (token[++i] && token[i] != '$')
@@ -158,13 +173,12 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 {
 	int		i;
 	char	*str;
-	// printf("GET_IN %s\n", token);
 
 	i = 0;
 	str = NULL;
 	if (!token)
 		return (NULL);
-	str = get_vars_init(token); // String lost in leak
+	str = get_vars_init(token);
 	i = ft_strlen(str);
 	while (token[i])
 	{
@@ -176,6 +190,5 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 		str = ft_strjoin(str, ft_strdup("\""), 3);
 	else if (token[i - 1] == '\'' &&  (!str || str[ft_strlen(str) - 1] != '\''))
 		str = ft_strjoin(str, ft_strdup("\'"), 3);
-	// printf("GET_OUT %s\n", str);
 	return (str);
 }

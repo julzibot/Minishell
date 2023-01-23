@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 int	ft_do_quotes(char *var, char *env_var, int i, int j)
 {
@@ -95,7 +95,7 @@ char	*ft_var_content(char *line)
 {
 	t_env	*curr;
 
-	curr = env.env_list;
+	curr = g_env.env_list;
 	while (curr)
 	{
 		if (ft_strncmp(curr->line, line, ft_varlen(line)) == 0)

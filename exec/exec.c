@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 void	ft_child_termios(struct termios *original_termios, struct termios *modified_termios)
 {
@@ -158,7 +158,7 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 	if (builtin == 1)
 		status = ft_cd(cmd);
 	else if (builtin == 2)
-		status = ft_print_env(env.env_list, cmd);
+		status = ft_print_env(g_env.env_list, cmd);
 	if (builtin == 3)
 		ft_echo(cmd);
 	else if (builtin == 4)
@@ -168,7 +168,7 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 	else if (builtin == 6)
 	{
 		if (cmd->args[1] == NULL)
-			ft_print_env(env.exp_list, cmd);
+			ft_print_env(g_env.exp_list, cmd);
 		else
 			status = ft_export(cmd);
 	}
@@ -251,7 +251,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	}
 	if (ft_cmd_check(envp, cmd->args[0], 0) == NULL && is_builtin(cmd) == 0)
 	{
-		env.error_code = 127;
+		g_env.error_code = 127;
 		ft_get_err_code(NOT_CMD);
 		return (NOT_CMD);
 	}
@@ -267,13 +267,13 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	else
 	{
 		ft_close_fds(cmd);
-		for (int fd = 0; fd < 30; fd++) {
-			int flags = fcntl(fd, F_GETFD);
-			if (flags != -1) {
-				printf("in parent : fd %d is open\n", fd);
-			}
-		}
-		printf ("---\n");
+		// for (int fd = 0; fd < 30; fd++) {
+		// 	int flags = fcntl(fd, F_GETFD);
+		// 	if (flags != -1) {
+		// 		printf("in parent : fd %d is open\n", fd);
+		// 	}
+		// }
+		// printf ("---\n");
 	}
 	signal(SIGINT, SIG_IGN);
 	return (status);

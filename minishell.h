@@ -115,7 +115,7 @@ typedef	struct	s_cmd
 }	t_cmd;
 
 /**************INIT***************/
-void	parse_init(t_cmd *parse_list, char **envp, char **env_vars);
+void	parse_init(t_cmd *parse_list, char **env_vars);
 void	ft_init_env(char **envp);
 void	ft_init_termios(struct termios *term);
 

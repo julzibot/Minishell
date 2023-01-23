@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 void	ft_remove_line(t_env **env_list, t_env *node)
 {
@@ -71,10 +71,10 @@ int	ft_unset(t_cmd *cmd)
 			ft_print_error(ENV_VAR, cmd, cmd->args[i]);
 			return (err);
 		}
-		if (ft_unset_variable(&env.env_list, cmd->args[i]) == 1)
+		if (ft_unset_variable(&g_env.env_list, cmd->args[i]) == 1)
 			return (1);
 		exp = ft_strjoin("declare -x ", cmd->args[i], -1);
-		if (ft_unset_variable(&env.exp_list, exp) == 1)
+		if (ft_unset_variable(&g_env.exp_list, exp) == 1)
 		{
 			free(exp);
 			return (1);

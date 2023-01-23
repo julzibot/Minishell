@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-g_t_env	env;
+g_t_env	g_env;
 
 void	free_list(t_cmd *parse_list, char **tokens)
 {
@@ -68,7 +68,7 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 	while (i++ < len)
 	{
 		waitpid(-1, &status, 0);
-		env.error_code = status;
+		g_env.error_code = status;
 	}
 	return (status);
 }
@@ -83,7 +83,7 @@ int	main(int argc, char **argv, char **envp)
 	t_cmd 			*parse_list;
 
 	env_vars = NULL;
-	ft_init_termios(&env.term);
+	ft_init_termios(&g_env.term);
 	ft_init_env(envp);
 	while (1)
 	{
@@ -92,7 +92,7 @@ int	main(int argc, char **argv, char **envp)
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
-		parse_init(parse_list, envp, ft_tabdup(env_vars, 0));
+		parse_init(parse_list, ft_tabdup(env_vars, 0));
 		line = readline(PROMPT);
 		add_history(line);
 		tokens = lexing(line, parse_list);

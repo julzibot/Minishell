@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 static  char	*rem_quotes(char *str, int pos)
 {
@@ -50,7 +50,7 @@ static  char	*join_tokens(char *token, char **lex_tab, t_cmd *plist, int j)
 
 	type = token_type(lex_tab[j + 1], plist->quoted[j + 1]);
 	if (type < 7)
-		str = get_env_vars(lex_tab[j + 1], plist->env_vars, env.env_list);
+		str = get_env_vars(lex_tab[j + 1], plist->env_vars, g_env.env_list);
 	else
 		str = ft_strdup(lex_tab[j + 1]);
 	len = ft_strlen(lex_tab[j + 1]) - 1;

@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 // 6 EXPORT CASES:
 // -----------------------------
@@ -105,8 +105,8 @@ void	ft_loop_assign_vars(char **env_vars, char *line)
 	{
 		if (ft_strcmp(env_vars[i], line) == 0)
 		{
-			ft_add_after(&env.env_list, 15, line);
-			ft_add_queue(&env.exp_list, exp);
+			ft_add_after(&g_env.env_list, 15, line);
+			ft_add_queue(&g_env.exp_list, exp);
 			free(exp);
 			return ;
 		}
@@ -119,8 +119,8 @@ void	ft_equal_var(t_cmd *cmd, char *line)
 {
 	if (ft_change_var_content(cmd, line))
 	{
-		ft_update_var(&env.env_list, line);
-		ft_update_var(&env.exp_list, line);
+		ft_update_var(&g_env.env_list, line);
+		ft_update_var(&g_env.exp_list, line);
 		return ;
 	}
 	ft_loop_assign_vars(cmd->env_vars, line);
@@ -140,8 +140,8 @@ void	ft_not_equal_var(t_cmd *cmd, char *line)
 		{
 			exp = ft_add_quotes(cmd->env_vars[i]);
 			exp = ft_strjoin("declare -x ", exp, 2);
-			ft_add_after(&env.env_list, 15, cmd->env_vars[i]);
-			ft_add_queue(&env.exp_list, exp);
+			ft_add_after(&g_env.env_list, 15, cmd->env_vars[i]);
+			ft_add_queue(&g_env.exp_list, exp);
 			return ;
 		}
 		i++;
@@ -151,7 +151,7 @@ void	ft_not_equal_var(t_cmd *cmd, char *line)
 void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 {
 	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0
-		&& ft_verify_double(env.env_list, args) == 0)
+		&& ft_verify_double(g_env.env_list, args) == 0)
 	{
 		if (ft_verify_equal(args))
 			ft_equal_var(cmd, args);
@@ -171,7 +171,7 @@ int	ft_export(t_cmd *cmd)
 	err = 0;
 	if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
 	{
-		ft_add_queue(&env.exp_list, ft_strjoin("declare -x ", cmd->args[1], 0));
+		ft_add_queue(&g_env.exp_list, ft_strjoin("declare -x ", cmd->args[1], 0));
 		return (0);
 	}
 	while (cmd->args[i])

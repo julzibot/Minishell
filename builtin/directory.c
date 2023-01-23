@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 {
@@ -61,7 +61,7 @@ int	ft_cd(t_cmd *cmd)
 	char	*s;
 
 	ret = 0;
-	if (ft_update_pwd(&env.exp_list, &env.env_list, "OLDPWD="))
+	if (ft_update_pwd(&g_env.exp_list, &g_env.env_list, "OLDPWD="))
 		return (0);
 	if (cmd->args[1] == NULL || ft_strcmp(cmd->args[1], "~") == 0)
 	{
@@ -78,7 +78,7 @@ int	ft_cd(t_cmd *cmd)
 		ret = chdir(cmd->args[1]);
 	if (ret == -1)
 		return (ft_cd_error(cmd));
-	ft_update_pwd(&env.exp_list, &env.env_list, "PWD=");
+	ft_update_pwd(&g_env.exp_list, &g_env.env_list, "PWD=");
 	return (0);
 }
 
