@@ -6,13 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 16:30:25 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:28:48 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 int	ft_is_digit(char *s)
 {
@@ -104,27 +104,11 @@ void	ft_free_char_array(char **s)
 	free(s);
 }
 
-void	ft_free_cmd(t_cmd *cmd)
+void	ft_exit(t_cmd *cmd, int error_code, char **tokens)
 {
-	t_cmd	*prev;
+	t_cmd	*temp;
 
-	prev = NULL;
-	while (cmd)
-	{
-		if (prev != NULL)
-			free(prev);
-		ft_free_char_array(cmd->args);
-		ft_free_char_array(cmd->env_vars);
-		prev = cmd;
-		cmd = cmd->next;
-	}
-}
-
-void	ft_exit(t_cmd *cmd)
-{
-	int	code;
-
-	code = 0;
+	temp = NULL;
 	if (cmd && cmd->args && cmd->args[1] != NULL)
 	{
 		if (cmd->args[2] != NULL)
@@ -139,12 +123,25 @@ void	ft_exit(t_cmd *cmd)
 			ft_printf(2, "exit: %s: numeric argument required\n", cmd->args[1]);
 			return ;
 		}
-		code = ft_atoi(cmd->args[1]);
-		code %= 255;
+		error_code = ft_atoi(cmd->args[1]);
+		error_code %= 256;
 	}
-	//ft_free_env(env.env_list);
-	//ft_free_env(env.exp_list);
-	//ft_free_cmd(cmd);
-	//system("leaks minishell");
-	//exit(code);
+	if (cmd->env_vars)
+		ft_free_char_array(cmd->env_vars);
+	if (cmd->space_after)
+		free(cmd->space_after);
+	if (cmd->quoted)
+		free(cmd->quoted);
+	while (cmd)
+	{
+		if (cmd->args)
+			ft_free_char_array(cmd->args);
+		temp = cmd->next;
+		if (cmd)
+			free(cmd);
+		cmd = temp;
+	}
+	ft_free_char_array(tokens);
+	system("leaks minishell");
+	exit(error_code);
 }

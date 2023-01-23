@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 11:43:39 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 14:58:43 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 14:56:07 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ void	ft_init_env(char **envp)
 {
 	g_env.gl = 0;
 	g_env.error_code = 0;
+	g_env.curr_pwd = NULL;
+	g_env.old_pwd = NULL;
+	g_env.abs_path = getenv("HOME");
 	ft_get_env(&g_env.env_list, envp); // For env command
 	ft_get_exp(&g_env.exp_list, envp); // For export command
 	ft_get_export(&g_env.exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"

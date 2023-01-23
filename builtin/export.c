@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 18:43:56 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 15:51:49 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,8 @@ int	ft_export(t_cmd *cmd)
 	err = 0;
 	if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
 	{
-		ft_add_queue(&g_env.exp_list, ft_strjoin("declare -x ", cmd->args[1], 0));
+		ft_add_queue(&g_env.exp_list,
+			ft_strjoin("declare -x ", cmd->args[1], 0));
 		return (0);
 	}
 	while (cmd->args[i])

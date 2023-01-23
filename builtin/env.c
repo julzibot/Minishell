@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:58 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 18:13:16 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 15:46:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,6 @@ void	ft_update_env(t_env **env_list, t_env **exp_list, char *line)
 	exp = NULL;
 	if (ft_simple_equal(line))
 		return ;
-	// line = ft_verify_env_var(line);
-	// if (line == NULL)
-	// 	return ;
 	exp = ft_add_quotes(line);
 	exp = ft_strjoin("declare -x ", exp, 2);
 	printf("exp %s\n", exp);

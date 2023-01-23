@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/21 17:44:47 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 15:57:27 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,35 +53,44 @@ int	ft_unset_variable(t_env **list, char *s)
 	return (0);
 }
 
+int	ft_do_unset(t_cmd *cmd, char *line)
+{
+	char	*exp;
+	int		err;
+
+	exp = NULL;
+	err = 0;
+	if (ft_verify_err_var(line))
+	{
+		err = 1;
+		ft_print_error(ENV_VAR, cmd, line);
+		return (err);
+	}
+	if (ft_unset_variable(&g_env.env_list, line) == 1)
+		return (1);
+	exp = ft_strjoin("declare -x ", line, -1);
+	if (ft_unset_variable(&g_env.exp_list, exp) == 1)
+	{
+		free(exp);
+		return (1);
+	}
+	if (exp)
+		free(exp);
+	return (0);
+}
+
 // Unsets ENV variable
 int	ft_unset(t_cmd *cmd)
 {
 	int		i;
 	int		err;
-	char	*exp;
 
 	i = 1;
 	err = 0;
-	exp = NULL;
 	while (cmd->args[i])
 	{
-		if (ft_verify_err_var(cmd->args[i]))
-		{
-			err = 1;
-			ft_print_error(ENV_VAR, cmd, cmd->args[i]);
-			return (err);
-		}
-		if (ft_unset_variable(&g_env.env_list, cmd->args[i]) == 1)
-			return (1);
-		exp = ft_strjoin("declare -x ", cmd->args[i], -1);
-		if (ft_unset_variable(&g_env.exp_list, exp) == 1)
-		{
-			free(exp);
-			return (1);
-		}
+		err = ft_do_unset(cmd, cmd->args[i]);
 		i++;
 	}
-	if (exp)
-		free(exp);
 	return (err);
 }
