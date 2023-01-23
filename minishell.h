@@ -135,10 +135,10 @@ char	**lexing(char *line, t_cmd *parse_list);
 int		token_type(char *token, int quoted);
 int		quotes_skip(char **tab, int *space_after);
 char	*fuse_quotes(char *token, char **lex_tab, t_cmd *plist, int j);
-char	*get_env_vars(char *token, char **env_vars, t_env *env_list);
 char	**create_env_vars(char	*token, char **env_vars, t_env *env_list);
 t_cmd	*parsing(char **lex_tab, t_cmd *parse_list); //returns a t_cmd*, each element in the list being a segment of the pipeline.
 	/*---GET_ENV_VARS---*/
+char	*get_env_vars(char *token, char **env_vars, t_env *env_list);
 char	*get_vars_init(char *token);
 int	value_size(char *env_var, int namelen, int quoted);
 int	reset_namelen(char *token);

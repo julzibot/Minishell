@@ -25,6 +25,7 @@ SRCS	= Minishell.c jules.c utils.c \
 			error.c \
 			ft_itoa.c \
 			get_env_vars.c \
+			get_env_vars_utils.c \
 			builtin/env.c \
 			builtin/echo.c \
 			builtin/exit.c \

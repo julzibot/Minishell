@@ -40,7 +40,7 @@ static char	*get_value(char *token, t_seg *m, char *env_var, char *str)
 	return (str);
 }
 
-char	*env_check_name(char *token, char *str, t_env *env_list, t_seg *m)
+static char	*env_check_name(char *token, char *str, t_env *env_list, t_seg *m)
 {
 	t_env	*temp;
 	int		j;
@@ -91,7 +91,7 @@ static char	*check_var_name(char *token, char **env_vars, \
 	return (str);
 }
 
-char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
+static char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
 {
 	int		i;
 	char	*str_code;
