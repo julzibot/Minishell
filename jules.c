@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 13:49:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 16:58:17 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 15:39:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,19 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	return (next_cmd);
 }
 
+void	ft_sigint_heredoc(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	exit(130);
+}
+
+void	ft_heredoc_sig(void)
+{
+	signal(SIGINT, &ft_sigint_heredoc); // CTRL-C
+	signal(SIGQUIT, SIG_IGN); // CTRL-/
+}
+
 int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 {
 	char	*line;
@@ -158,8 +171,7 @@ int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 	if (cmd->heredoc_pid == 0)
 	{
 		close(cmd->heredoc[0]);
-		signal(SIGINT, &ft_handle_sigint); // CTRL-C
-		signal(SIGQUIT, SIG_IGN); // CTRL-/
+		ft_heredoc_sig();
 		line = readline("> ");
 		while (ft_strcmp(line, filename_delim) && line)
 		{
@@ -167,14 +179,15 @@ int	heredoc_handle(t_cmd *cmd, char *filename_delim)
 			free(line);
 			line = readline("> ");
 		}
+		//write(cmd->heredoc[1], "\n", 1);
 		close(cmd->heredoc[1]);
-		if (!line)
-			exit(0);
-		free(line);
+		if (line)
+			free(line);
 		exit (0);
 	}
 	else
 	{
+		signal(SIGINT, SIG_IGN);
 		close(cmd->heredoc[1]);
 		waitpid(-1, NULL, 0);
 	}

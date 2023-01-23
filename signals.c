@@ -6,20 +6,18 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 16:59:14 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 18:08:50 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern g_t_env	env;
+extern g_t_env	g_env;
 
 void	ft_free_exit(t_cmd *parse_list, char **tokens)
 {
 	t_cmd	*temp;
-	int		code;
 
-	code = 0;
 	// if (parse_list)
 	// {
 	// 	printf("after\n");
@@ -56,7 +54,7 @@ void	ft_free_exit(t_cmd *parse_list, char **tokens)
 	if (tokens)
 		ft_free_char_array(tokens);
 	system("leaks minishell");
-	exit(code);
+	exit(g_env.error_code);
 }
 
 void	check_line_exists(char *line, t_cmd *pl, char **tokens) // CTRL-D
@@ -82,15 +80,15 @@ void	ft_handle_sigint(int sig)
 	rl_redisplay();
 }
 
+void	ft_handle_sigquit(int sig)
+{
+	(void)sig;
+	printf("Quit: 3\n");
+	exit(0);
+}
+
 void	ft_child_sig(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, &ft_handle_sigquit);
-}
-
-void	ft_handle_sigquit(int sig)
-{
-	if (sig == SIGQUIT)
-		printf("Quit: 3\n");
-	signal(SIGQUIT, SIG_DFL);
 }

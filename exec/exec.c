@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 13:14:13 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 18:06:44 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ void		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 	return ;
 }
 
-int	exec_builtin(t_cmd *cmd, int builtin)
+int	exec_builtin(t_cmd *cmd, int builtin, char **tokens)
 {
 	int	status;
 
@@ -173,7 +173,7 @@ int	exec_builtin(t_cmd *cmd, int builtin)
 			status = ft_export(cmd);
 	}
 	else if (builtin == 7)
-		ft_exit(cmd);
+		ft_exit(cmd, status, tokens);
 	return (status);
 }
 
@@ -221,7 +221,7 @@ int	ft_str_is_digit(char *s)
 	return (0);
 }
 
-int	ft_exec_cmd(t_cmd *cmd, char **envp)
+int	ft_exec_cmd(t_cmd *cmd, char **envp, char **tokens)
 {
 	int	status;
 	int	code;
@@ -245,7 +245,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	}
 	if (is_builtin(cmd) != 0)
 	{
-		status = exec_builtin(cmd, is_builtin(cmd));
+		status = exec_builtin(cmd, is_builtin(cmd), tokens);
 		ft_close_fds(cmd);
 		return (status);
 	}
@@ -267,6 +267,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp)
 	else
 	{
 		ft_close_fds(cmd);
+		signal(SIGINT, SIG_IGN);
 		// for (int fd = 0; fd < 30; fd++) {
 		// 	int flags = fcntl(fd, F_GETFD);
 		// 	if (flags != -1) {

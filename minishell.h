@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/22 17:19:27 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:26:31 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,9 @@ typedef struct s_gl_env
 	struct termios	term;
 	pid_t			gl;
 	int				error_code;
+	char			*curr_pwd;
+	char			*old_pwd;
+	char			*abs_path;
 	t_env			*env_list;
 	t_env			*exp_list;
 } g_t_env;
@@ -172,11 +175,11 @@ int		ft_atoi(const char *str);
 int		ft_is_digit(char *s);
 
 /***********EXEC***********/
-int		ft_exec_cmd(t_cmd *cmd, char **env);
+int		ft_exec_cmd(t_cmd *cmd, char **env, char **tokens);
 void	ft_exec(t_cmd *cmd, char **envp);
 char	*ft_substr(char *s, unsigned int start);
 char	*ft_strstr(char *haystack, char *needle);
-int		exec_builtin(t_cmd *cmd, int builtin);
+int		exec_builtin(t_cmd *cmd, int builtin, char **tokens);
 int		is_builtin(t_cmd *cmd);
 char	*ft_cmd_check(char **envp, char *cmd, int option);
 void	ft_free_paths(char **paths);
@@ -222,7 +225,7 @@ int		ft_unset(t_cmd *cmd);
 void	ft_remove_line(t_env **env_list, t_env *node);
 
 /***********EXIT***********/
-void	ft_exit(t_cmd *cmd);
+void	ft_exit(t_cmd *cmd, int error_code, char **tokens);
 void	ft_free_env(t_env *env);
 void	ft_free_list(t_env **list);
 int		ft_arrlen(char **s);

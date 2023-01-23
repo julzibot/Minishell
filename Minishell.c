@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/22 12:08:48 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 18:09:34 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	free_list(t_cmd *parse_list, char **tokens)
 	return;
 }
 
-int	exec_pipeline(t_cmd *parse_list, char **envp)
+int	exec_pipeline(t_cmd *parse_list, char **envp, char **tokens)
 {
 	t_cmd	*temp;
 	int		status;
@@ -60,7 +60,7 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 			temp->next->in_pipe[0] = temp->out_pipe[0];
 			temp->next->in_pipe[1] = temp->out_pipe[1];
 		}
-		status = ft_exec_cmd(temp, envp);
+		status = ft_exec_cmd(temp, envp, tokens);
 		if (temp->next)
 			temp = temp->next;
 	}
@@ -75,12 +75,12 @@ int	exec_pipeline(t_cmd *parse_list, char **envp)
 
 int	main(int argc, char **argv, char **envp)
 {
-	(void)argc;
-	(void)argv;
 	char			*line;
 	char			**tokens;
 	char			**env_vars;
 	t_cmd 			*parse_list;
+	(void)argc;
+	(void)argv;
 
 	env_vars = NULL;
 	ft_init_termios(&g_env.term);
@@ -96,6 +96,7 @@ int	main(int argc, char **argv, char **envp)
 		line = readline(PROMPT);
 		add_history(line);
 		tokens = lexing(line, parse_list);
+		check_line_exists(line, parse_list, tokens);
 		if (tokens)
 		{
 			parse_list = parsing(tokens, parse_list);
@@ -103,7 +104,7 @@ int	main(int argc, char **argv, char **envp)
 			{
 				ft_free_char_array(env_vars);
 				env_vars = ft_tabdup(parse_list->env_vars, 0);
-				exec_pipeline(parse_list, envp);
+				exec_pipeline(parse_list, envp, tokens);
 			}
 		}
 		check_line_exists(line, parse_list, tokens);
