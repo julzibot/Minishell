@@ -44,7 +44,7 @@ void	ft_free_exit(t_cmd *parse_list, char **tokens)
 		free(parse_list->quoted);
 	while (parse_list)
 	{
-		if (parse_list->args)
+		if (parse_list && parse_list->args)
 			ft_free_char_array(parse_list->args);
 		temp = parse_list->next;
 		if (parse_list)

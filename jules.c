@@ -139,7 +139,6 @@ t_cmd	*lst_next_cmd(t_cmd *temp)
 	next_cmd->in_pipe[0] = temp->out_pipe[0];
 	next_cmd->in_pipe[1] = temp->out_pipe[1];
 	next_cmd->redir_in = -1;
-	next_cmd->cmd_done = 0;
 	temp->next = next_cmd;
 	return (next_cmd);
 }

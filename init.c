@@ -33,7 +33,6 @@ void	parse_init(t_cmd *parse_list, char **env_vars)
 	parse_list->in_pipe[0] = -1;
 	parse_list->in_pipe[1] = -1;
 	parse_list->redir_in = -1;
-	parse_list->cmd_done = 0;
 }
 
 void	ft_init_env(char **envp)
