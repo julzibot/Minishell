@@ -201,9 +201,9 @@ int	redir(t_cmd *cmd, char **redir_ptr, int type)
 	filename_delim = redir_ptr[1];
 	if (!filename_delim)
 		return (0);
-	if (cmd->redir_in != -1)
+	if (type % 2 == 0 && cmd->redir[0])
 		close(cmd->redir_in);
-	if (type % 2 == 1 && cmd->outfile != STDOUT_FILENO)
+	else if (type % 2 == 1 && cmd->redir[1])
 		close (cmd->outfile);
 	cmd->redir[type % 2] = 1;
 	if (!type && !heredoc_handle(cmd, filename_delim))
