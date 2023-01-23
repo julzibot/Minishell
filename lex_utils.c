@@ -159,16 +159,15 @@ void	tab_list_init(char **lex_tab, char *line, t_cmd *parse_list)
 	
 	i = -1;
 	lex_size = arg_count(line);
+	printf ("TAGROSSERACE %d\n", lex_size);
 	if (lex_tab == NULL || parse_list == NULL || line == NULL)
 		return ;
-	parse_list->quoted = malloc(sizeof(int) * (lex_size + 1));
-	parse_list->space_after = malloc(sizeof(int) * (lex_size + 1));
+	parse_list->quoted = malloc(sizeof(int) * (lex_size));
+	parse_list->space_after = malloc(sizeof(int) * (lex_size));
 	while (++i < lex_size)
 	{
 		parse_list->quoted[i] = 0;
 		parse_list->space_after[i] = 0;
 	}
-	parse_list->quoted[i] = '\0';
-	parse_list->space_after[i] = '\0';
 	return;
 }

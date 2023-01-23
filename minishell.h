@@ -109,8 +109,6 @@ typedef	struct	s_cmd
 	int				heredoc[2];
 	int				*quoted;
 	int				*space_after;
-	int				wait_value;
-	int				cmd_done;
 	struct s_cmd	*next;
 }	t_cmd;
 
