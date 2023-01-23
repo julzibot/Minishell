@@ -14,53 +14,16 @@
 
 extern g_t_env	g_env;
 
-static char	*get_vars_init(char *token)
-{
-	int		i;
-	int		v_i;
-	char	*str;
-
-	i = 0;
-	v_i = 0;
-	str = NULL;
-	while (token[i] == '\"' || token[i] == '\'')
-		i++;
-	while (token[i] && token[i] != '$')
-		i++;
-	if (i > 0)
-	{
-		str = malloc(i + 1);
-		v_i = -1;
-		while (++v_i < i && token[v_i])
-			str[v_i] = token[v_i];
-		str[v_i] = '\0';
-	}
-	return (str);
-}
-
-int	value_size(char *env_var, int namelen, int quoted)
-{
-	int	v_len;
-	int	v_i;
-
-	v_i = -1;
-	v_len = 0;
-	while (env_var[++v_i] && !quoted)
-	{
-		if (is_delim(env_var[v_i] == 1))
-			v_len++;
-	}
-	return (ft_strlen(env_var) - v_len - namelen + quoted);
-}
-
-static char	*get_value(char *token, int namelen, char *env_var, char *str)
+static char	*get_value(char *token, t_seg *m, char *env_var, char *str)
 {
 	int		v_i;
 	int		quoted;
 	char	*value;
+	int		namelen;
 
 	quoted = 0;
 	v_i = -1;
+	namelen = m->namelen;
 	if ((token[0] == '\"' || token[1] == '\"') && token[namelen + 1] == '\"')
 		quoted = 1;
 	value = malloc(value_size(env_var, namelen, quoted));
@@ -73,19 +36,8 @@ static char	*get_value(char *token, int namelen, char *env_var, char *str)
 	value[++v_i] = '\"';
 	value[v_i + quoted] = '\0';
 	str = ft_strjoin(str, value, 3);
+	m->match = 1;
 	return (str);
-}
-
-static int	reset_namelen(char *token)
-{
-	int	namelen;
-
-	namelen = 0;
-	while (token[namelen + 1] && token[namelen + 1] != '$' \
-			&& is_delim(token[namelen + 1]) != 1 \
-			&& is_delim(token[namelen + 1]) != 4)
-		namelen++;
-	return (namelen);
 }
 
 char	*env_check_name(char *token, char *str, t_env *env_list, t_seg *m)
@@ -105,10 +57,7 @@ char	*env_check_name(char *token, char *str, t_env *env_list, t_seg *m)
 				&& (!token[m->namelen + 1] || token[m->namelen + 1] == '$' \
 				|| is_delim(token[m->namelen + 1]) == 1 \
 				|| is_delim(token[m->namelen + 1]) == 4))
-		{
-			str = get_value(token, m->namelen, temp->line, str);
-			m->match = 1;
-		}
+			str = get_value(token, m, temp->line, str);
 		temp = temp->next;
 	}
 	return (str);
@@ -132,10 +81,7 @@ static char	*check_var_name(char *token, char **env_vars, \
 				&& (!token[m->namelen + 1] || token[m->namelen + 1] == '$' \
 				|| is_delim(token[m->namelen + 1]) == 1 \
 				|| is_delim(token[m->namelen + 1]) == 4))
-		{
-			str = get_value(token, m->namelen, env_vars[m->j], str);
-			m->match = 1;
-		}
+			str = get_value(token, m, env_vars[m->j], str);
 	}
 	if (!m->match)
 		m->namelen = reset_namelen(token);
@@ -169,7 +115,7 @@ char	*expand_vars(char *token, char *str, char **env_vars, t_env *env_list)
 	return (str);
 }
 
-char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all $NAME by their values in the parsing arguments. TODO : handle ${NAME}
+char	*get_env_vars(char *token, char **env_vars, t_env *env_list)
 {
 	int		i;
 	char	*str;
@@ -186,9 +132,9 @@ char	*get_env_vars(char *token, char **env_vars, t_env *env_list) // replace all
 		while (token[++i] && token[i] != '$')
 			;
 	}
-	if (token[i - 1] == '\"' &&  (!str || str[ft_strlen(str) - 1] != '\"'))
+	if (token[i - 1] == '\"' && (!str || str[ft_strlen(str) - 1] != '\"'))
 		str = ft_strjoin(str, ft_strdup("\""), 3);
-	else if (token[i - 1] == '\'' &&  (!str || str[ft_strlen(str) - 1] != '\''))
+	else if (token[i - 1] == '\'' && (!str || str[ft_strlen(str) - 1] != '\''))
 		str = ft_strjoin(str, ft_strdup("\'"), 3);
 	return (str);
 }
