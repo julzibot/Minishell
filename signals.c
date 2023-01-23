@@ -53,7 +53,8 @@ void	ft_free_exit(t_cmd *parse_list, char **tokens)
 			free(parse_list);
 		parse_list = temp;
 	}
-	ft_free_char_array(tokens);
+	if (tokens)
+		ft_free_char_array(tokens);
 	system("leaks minishell");
 	exit(code);
 }

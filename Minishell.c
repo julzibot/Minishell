@@ -107,7 +107,8 @@ int	main(int argc, char **argv, char **envp)
 			}
 		}
 		check_line_exists(line, parse_list, tokens);
-		free_list(parse_list, tokens);
+		if (parse_list)
+			free_list(parse_list, tokens);
 		free(line);
 		// system("leaks minishell\n");
 	}

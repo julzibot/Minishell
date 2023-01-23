@@ -31,6 +31,7 @@ int	syntax_err(t_lex *l, int lexpr)
 {
 	if (lexpr || l->i < 0)
 	{
+		// ft_free_char_array(l->lex_tab);
 		l->lex_tab = NULL;
 		if (lexpr == 1)
 			printf("Error : input ends with a pipe\n");
@@ -107,7 +108,10 @@ char	**lexing(char *line, t_cmd *parse_list)
 		l->delim = is_delim(line[l->i]);
 		if (((l->delim == 2 || l->delim == 3) && lex_pr(l, line, parse_list)) \
 			|| ((!l->delim || l->delim == 1) && lex_qw(l, line, parse_list)))
-				return (l->lex_tab);
+			{
+				free(l);
+				return (NULL);
+			}
 		l->i++;
 	}
 	l->lex_tab[l->j] = NULL;
@@ -235,7 +239,7 @@ int	token_type(char *token, int quoted)
 		return (6);
 }
 
-t_cmd	*redir_err_msg(int	err, char *filename)
+t_cmd	*redir_err_msg(int	err, char *filename, char** lex_tab, t_cmd *parse_list)
 {
 	if (!err)
 	{
@@ -250,6 +254,7 @@ t_cmd	*redir_err_msg(int	err, char *filename)
 			printf("Error : %s : permission denied\n", filename);
 		g_env.error_code = 1;
 	}
+	free_list(parse_list, lex_tab);
 	return (NULL);
 }
 
@@ -279,10 +284,9 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 		if (type < 4)
 		{
 			err = redir(temp, lex_tab + i, type);
-			if (err > 0)
-				i++;
-			else
-				return (redir_err_msg(err, lex_tab[i + 1]));
+			if (err <= 0)
+				return (redir_err_msg(err, lex_tab[i + 1], lex_tab, parse_list));
+			i++;
 		}
 		else if (type == 4)
 			temp = lst_next_cmd(temp);
