@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 16:55:34 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 18:08:50 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ void	ft_handle_sigint(int sig)
 
 void	ft_handle_sigquit(int sig)
 {
-	if (sig == SIGQUIT)
-		printf("Quit: 3\n");
+	(void)sig;
+	printf("Quit: 3\n");
 	exit(0);
 }
 

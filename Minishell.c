@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/23 16:25:48 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 18:09:34 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int	main(int argc, char **argv, char **envp)
 		line = readline(PROMPT);
 		add_history(line);
 		tokens = lexing(line, parse_list);
+		check_line_exists(line, parse_list, tokens);
 		if (tokens)
 		{
 			parse_list = parsing(tokens, parse_list);
@@ -106,7 +107,6 @@ int	main(int argc, char **argv, char **envp)
 				exec_pipeline(parse_list, envp, tokens);
 			}
 		}
-		check_line_exists(line, parse_list, tokens);
 		free_list(parse_list, tokens);
 		free(line);
 		// system("leaks minishell\n");
