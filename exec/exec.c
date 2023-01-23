@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 16:24:24 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:59:47 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,6 +267,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp, char **tokens)
 	else
 	{
 		ft_close_fds(cmd);
+		signal(SIGINT, SIG_IGN);
 		// for (int fd = 0; fd < 30; fd++) {
 		// 	int flags = fcntl(fd, F_GETFD);
 		// 	if (flags != -1) {

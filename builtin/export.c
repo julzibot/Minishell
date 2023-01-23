@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 15:51:49 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 17:02:00 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,17 +162,24 @@ void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 
 int	ft_export(t_cmd *cmd)
 {
-	int	i;
-	int	j;
-	int	err;
+	int		i;
+	int		j;
+	int		err;
+	char	*tmp;
 
 	i = 1;
 	j = 0;
 	err = 0;
+	tmp = NULL;
 	if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
 	{
-		ft_add_queue(&g_env.exp_list,
-			ft_strjoin("declare -x ", cmd->args[1], 0));
+		if (!ft_verify_err_var(cmd->args[i]))
+		{
+			tmp = ft_strjoin("declare -x ", cmd->args[1], 0);
+			ft_add_queue(&g_env.exp_list, tmp);
+			free(tmp);
+		}
+		
 		return (0);
 	}
 	while (cmd->args[i])

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 17:41:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 16:27:22 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/23 16:55:34 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,15 @@ void	ft_handle_sigint(int sig)
 	rl_redisplay();
 }
 
-void	ft_child_sig(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, &ft_handle_sigquit);
-}
-
 void	ft_handle_sigquit(int sig)
 {
 	if (sig == SIGQUIT)
 		printf("Quit: 3\n");
-	signal(SIGQUIT, SIG_DFL);
+	exit(0);
+}
+
+void	ft_child_sig(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, &ft_handle_sigquit);
 }
