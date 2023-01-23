@@ -140,6 +140,8 @@ int		ft_exec(t_cmd *cmd, char **envp, char **tokens) // Execute a command
 	close(cmd->in_pipe[0]);
 	if (is_builtin(cmd))
 	{
+		cmd->outfile = STDOUT_FILENO;
+		cmd->out_pipe[1] = STDOUT_FILENO;
 		status = exec_builtin(cmd, is_builtin(cmd), tokens);
 		exit(status);
 		return (status);

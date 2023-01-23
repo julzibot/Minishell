@@ -60,7 +60,6 @@ int	exec_pipeline(t_cmd *parse_list, char **envp, char **tokens)
 			temp->next->in_pipe[0] = temp->out_pipe[0];
 			temp->next->in_pipe[1] = temp->out_pipe[1];
 		}
-		printf("kek %d\n", i);
 		status = ft_exec_cmd(temp, envp, tokens, i);
 		if (temp->next)
 			temp = temp->next;
