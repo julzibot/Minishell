@@ -115,9 +115,10 @@ char	*ft_cmd_check(char **envp, char *cmd, int option)
 	return (NULL);
 }
 
-void		ft_exec(t_cmd *cmd, char **envp) // Execute a command
+int		ft_exec(t_cmd *cmd, char **envp, char **tokens) // Execute a command
 {
 	char	*path;
+	int		status;
 
 	close(cmd->out_pipe[0]);
 	close(cmd->in_pipe[1]);
@@ -137,17 +138,15 @@ void		ft_exec(t_cmd *cmd, char **envp) // Execute a command
 	}
 	close(cmd->out_pipe[1]);
 	close(cmd->in_pipe[0]);
-	// for (int fd = 0; fd < 30; fd++) {
-	// 		int flags = fcntl(fd, F_GETFD);
-	// 		if (flags != -1) {
-	// 			printf("in exec : fd %d is open\n", fd);
-	// 		}
-	// 	}
-	// printf ("---\n");
+	if (is_builtin(cmd))
+	{
+		status = exec_builtin(cmd, is_builtin(cmd), tokens);
+		exit(status);
+		return (status);
+	}
 	path = ft_cmd_check(envp, cmd->args[0], 1);
 	execve(path, cmd->args, envp);
-	//exit(0);
-	return ;
+	return (1);
 }
 
 int	exec_builtin(t_cmd *cmd, int builtin, char **tokens)
@@ -191,14 +190,14 @@ int	ft_verify_dollar(char *s)
 	return (0);
 }
 
-int	ft_fork(t_cmd *cmd, char **envp)
+int	ft_fork(t_cmd *cmd, char **envp, char **tokens)
 {
 	struct termios original_termios;
     struct termios modified_termios;
 
 	ft_child_termios(&original_termios, &modified_termios);
 	ft_child_sig();
-	ft_exec(cmd, envp); // execve
+	ft_exec(cmd, envp, tokens); // execve
 	tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
 	signal(SIGINT, SIG_IGN);
 	return (0);
@@ -221,7 +220,7 @@ int	ft_str_is_digit(char *s)
 	return (0);
 }
 
-int	ft_exec_cmd(t_cmd *cmd, char **envp, char **tokens)
+int	ft_exec_cmd(t_cmd *cmd, char **envp, char **tokens, int cmd_i)
 {
 	int	status;
 	int	code;
@@ -243,7 +242,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp, char **tokens)
 		ft_get_err_code(code);
 		return (code);
 	}
-	if (is_builtin(cmd) != 0)
+	if (is_builtin(cmd) != 0 && !cmd_i)
 	{
 		status = exec_builtin(cmd, is_builtin(cmd), tokens);
 		ft_close_fds(cmd);
@@ -257,7 +256,7 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp, char **tokens)
 	}
 	cmd->shell_pid = fork();
 	if (cmd->shell_pid == 0)
-		ft_fork(cmd, envp);
+		ft_fork(cmd, envp, tokens);
 	else if (cmd->shell_pid == -1)
 	{
 		ft_close_fds(cmd);
@@ -268,13 +267,6 @@ int	ft_exec_cmd(t_cmd *cmd, char **envp, char **tokens)
 	{
 		ft_close_fds(cmd);
 		signal(SIGINT, SIG_IGN);
-		// for (int fd = 0; fd < 30; fd++) {
-		// 	int flags = fcntl(fd, F_GETFD);
-		// 	if (flags != -1) {
-		// 		printf("in parent : fd %d is open\n", fd);
-		// 	}
-		// }
-		// printf ("---\n");
 	}
 	signal(SIGINT, SIG_IGN);
 	return (status);

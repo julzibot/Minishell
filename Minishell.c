@@ -49,9 +49,9 @@ int	exec_pipeline(t_cmd *parse_list, char **envp, char **tokens)
 
 	status = 0;
 	len = cmd_lstsize(parse_list);
-	i = 0;
+	i = -1;
 	temp = parse_list;
-	while (i++ < len)
+	while (++i < len)
 	{
 		if (temp->piped && pipe(temp->out_pipe) == -1)
 			return (1);
@@ -60,7 +60,8 @@ int	exec_pipeline(t_cmd *parse_list, char **envp, char **tokens)
 			temp->next->in_pipe[0] = temp->out_pipe[0];
 			temp->next->in_pipe[1] = temp->out_pipe[1];
 		}
-		status = ft_exec_cmd(temp, envp, tokens);
+		printf("kek %d\n", i);
+		status = ft_exec_cmd(temp, envp, tokens, i);
 		if (temp->next)
 			temp = temp->next;
 	}

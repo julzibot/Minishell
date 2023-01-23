@@ -175,8 +175,8 @@ int		ft_atoi(const char *str);
 int		ft_is_digit(char *s);
 
 /***********EXEC***********/
-int		ft_exec_cmd(t_cmd *cmd, char **env, char **tokens);
-void	ft_exec(t_cmd *cmd, char **envp);
+int		ft_exec_cmd(t_cmd *cmd, char **env, char **tokens, int	cmd_i);
+int		ft_exec(t_cmd *cmd, char **envp, char **tokens);
 char	*ft_substr(char *s, unsigned int start);
 char	*ft_strstr(char *haystack, char *needle);
 int		exec_builtin(t_cmd *cmd, int builtin, char **tokens);
