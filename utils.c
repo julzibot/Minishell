@@ -189,6 +189,7 @@ char	**token_join(char **args, char *token) // add a string to the end of a char
 	{
 		tab[0] = ft_strdup(token);
 		tab[1] = NULL;
+		free(token);
 		return (tab);
 	}
 	while (args[++i])
