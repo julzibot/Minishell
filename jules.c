@@ -14,22 +14,12 @@
 
 extern g_t_env	g_env;
 
-// int	check_lexpr_error(char *line, t_lex *l)
-// {
-// 	if (l->delim == 2 && !line[l->i + 1])
-// 		return (1);
-// 	else if (l->delim == 2 && !l->i)
-// 		return (2);
-// 	else if (l->delim == 3 && \
-// 		((is_delim(line[l->i + 1]) == 3 && line[l->i + 1] != line[l->i]) \
-// 		|| (line[l->i] == line[l->i + 1] && is_delim(line[l->i + 2]) == 3)))
-// 		return (3);
-// 	return (0);
-// }
-
-int	syntax_err(t_lex *l, int lexpr)
+int	syntax_err(t_lex *l, int lexpr, int u_c)
 {
-	if (lexpr || l->i < 0)
+	int	error;
+
+	error = 0;
+	if (lexpr || (l && l->i < 0) || u_c)
 	{
 		if (lexpr == 1)
 			printf("Error : input ends with a pipe\n");
@@ -37,15 +27,17 @@ int	syntax_err(t_lex *l, int lexpr)
 			printf("Error : pipe at start of input is CHELOU !\n");
 		else if (lexpr == 3)
 			printf("Error : this redirection is chelou !\n");
-		else if (l->i == -1)
+		else if (u_c)
 			printf("Error : unclosed quotes !\n");
-		else if (l->i == -2)
+		else if ((l && l->i == -2))
 			printf("Error : chelou input detected\n");
-		l->error = 1;
+		if (l)
+			l->error = 1;
+		error = 1;
 	}
-	if (l->error)
+	if ((l && l->error) || error)
 		g_env.error_code = 258;
-	return (l->error);
+	return (error);
 }
 
 int	lex_pr(t_lex *l, char *line, t_cmd *parse_list)
@@ -61,7 +53,7 @@ int	lex_pr(t_lex *l, char *line, t_cmd *parse_list)
 		((is_delim(line[l->i + 1]) == 3 && line[l->i + 1] != line[l->i]) \
 		|| (line[l->i] == line[l->i + 1] && is_delim(line[l->i + 2]) == 3)))
 		lexpr = 3;
-	if (syntax_err(l, lexpr))
+	if (syntax_err(l, lexpr, 0))
 		return (1);
 	l->i += lex_pipe_redir(line + l->i, l->lex_tab + l->j++);
 	if (is_delim(line[l->i]) != 4 /*is not a space or tab*/)
@@ -77,7 +69,7 @@ int	lex_qw(t_lex *l, char *line, t_cmd *parse_list)
 	if (l->delim == 1)
 		parse_list->quoted[l->j] = 1;
 	l->i = lineseg(line, l->i, l->lex_tab + l->j, parse_list->quoted[l->j]);
-	if (syntax_err(l, 0))
+	if (syntax_err(l, 0, 0))
 		return (1);
 	if (is_delim(line[l->i]) != 4 /*is not a space or tab*/)
 		l->i--;
@@ -87,19 +79,49 @@ int	lex_qw(t_lex *l, char *line, t_cmd *parse_list)
 	return (0);
 }
 
+int	unclosed_quote(char *line)
+{
+	int	i;
+	int	quoted;
+	int	q_type;
+
+	i = -1;
+	quoted = 0;
+	q_type = 0;
+	while (line[++i])
+	{
+		if (is_delim(line[i]) == 1)
+		{
+			if (!quoted)
+			{
+				quoted = 1;
+				q_type = i;
+			}
+			else if (quoted && line[i] == line[q_type])
+				quoted = 0;
+		}
+	}
+	if (quoted)
+		return (syntax_err(NULL, 0, 1));
+	return (0);
+}
+
 char	**lexing(char *line, t_cmd *parse_list)
 {
 	t_lex	*l;
 	char	**ret;
+	int		mcsize;
 
-	if (line == NULL)
+	if (line == NULL || unclosed_quote(line))
 		return (NULL);
 	l = malloc(sizeof(t_lex));
 	l->i = 0;
 	l->j = 0;
 	l->error = 0;
 	l->delim = -1;
-	l->lex_tab = malloc(sizeof(char*) * arg_count(line));
+	mcsize = arg_count(line);
+	l->lex_tab = malloc(sizeof(char*) * mcsize);
+	l->lex_tab[mcsize - 1] = NULL;
 	tab_list_init(line, parse_list);
 	while (line[l->i])
 	{

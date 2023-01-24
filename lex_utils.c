@@ -55,23 +55,23 @@ void	segvars_init(t_seg *segvars, int i, int quoted)
 	segvars->var_q_type = i;
 }
 
-int	seg_loop(char *line, int i, char *seg, t_seg *segvars)
+int	seg_loop(char *line, int i, char *seg, t_seg *sv)
 {
-	while (line[++i] && ((segvars->quoted && line[i] != line[segvars->q_type]) \
-		|| (!segvars->quoted && !is_delim(line[i])) \
-		|| (!segvars->quoted && segvars->is_var && (is_delim(line[i]) != 4 || segvars->var_quoted))) \
-		&& !(!segvars->quoted && (line[i] == '\\' || line[i] == ';')))
+	while (line[++i] && ((sv->quoted && line[i] != line[sv->q_type]) \
+		|| (!sv->quoted && !is_delim(line[i])) \
+		|| (!sv->quoted && sv->is_var && (is_delim(line[i]) != 4 || sv->var_quoted))) \
+		&& !(!sv->quoted && (line[i] == '\\' || line[i] == ';')))
 	{
-		if (line[i] == '=' && !segvars->quoted && !segvars->is_var)
-			segvars->is_var = 1;
-		else if (segvars->is_var && !segvars->var_quoted && is_delim(line[i]) == 1)
+		if (line[i] == '=' && !sv->quoted && !sv->is_var)
+			sv->is_var = 1;
+		else if (sv->is_var && !sv->var_quoted && is_delim(line[i]) == 1)
 		{
-			segvars->var_quoted = 1;
-			segvars->var_q_type = i;
+			sv->var_quoted = 1;
+			sv->var_q_type = i;
 		}
-		else if (segvars->is_var && segvars->var_quoted && line[i] == line[segvars->var_q_type])
-			segvars->var_quoted = 0;
-		seg[segvars->s_i++] = line[i];
+		else if (sv->is_var && sv->var_quoted && line[i] == line[sv->var_q_type])
+			sv->var_quoted = 0;
+		seg[sv->s_i++] = line[i];
 	}
 	return (i);
 }
@@ -97,9 +97,7 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 		return(f_return(seg, sv, -2));
 	seg[sv->s_i++] = line[i];
 	i = seg_loop(line, i, seg, sv);
-	if ((quoted || sv->var_quoted) && !line[i])
-		return(f_return(seg, sv, -1));
-	else if (!quoted && (line[i] == '\\' || line[i] == ';'))
+	if (!quoted && (line[i] == '\\' || line[i] == ';'))
 		return(f_return(seg, sv, -2));
 	seg[sv->s_i] = line[i];
 	if (!quoted && is_delim(line[i]) == 1)
