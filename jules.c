@@ -14,48 +14,33 @@
 
 extern g_t_env	g_env;
 
-int	syntax_err(t_lex *l, int lexpr, int u_c)
+int	syntax_err(int err_type)
 {
 	int	error;
 
 	error = 0;
-	if (lexpr || (l && l->i < 0) || u_c)
+	if (err_type)
 	{
-		if (lexpr == 1)
+		if (err_type == 1)
 			printf("Error : input ends with a pipe\n");
-		else if (lexpr == 2)
+		else if (err_type == 2)
 			printf("Error : pipe at start of input is CHELOU !\n");
-		else if (lexpr == 3)
+		else if (err_type == 3)
 			printf("Error : this redirection is chelou !\n");
-		else if (u_c)
+		else if (err_type == 4)
 			printf("Error : unclosed quotes !\n");
-		else if ((l && l->i == -2))
+		else if (err_type == 5)
 			printf("Error : chelou input detected\n");
-		if (l)
-			l->error = 1;
 		error = 1;
 	}
-	if ((l && l->error) || error)
+	if (error)
 		g_env.error_code = 258;
 	return (error);
 }
 
 int	lex_pr(t_lex *l, char *line, t_cmd *parse_list)
 {
-	int	lexpr;
-
-	lexpr = 0;
-	if (l->delim == 2 && !line[l->i + 1])
-		lexpr = 1;
-	else if (l->delim == 2 && !l->i)
-		lexpr = 2;
-	else if (l->delim == 3 && \
-		((is_delim(line[l->i + 1]) == 3 && line[l->i + 1] != line[l->i]) \
-		|| (line[l->i] == line[l->i + 1] && is_delim(line[l->i + 2]) == 3)))
-		lexpr = 3;
-	if (syntax_err(l, lexpr, 0))
-		return (1);
-	l->i += lex_pipe_redir(line + l->i, l->lex_tab + l->j++);
+	l->i += lex_pipe_redir(line + l->i, l->lex_tab[l->j++]);
 	if (is_delim(line[l->i]) != 4 /*is not a space or tab*/)
 		l->i--;
 	else
@@ -69,8 +54,6 @@ int	lex_qw(t_lex *l, char *line, t_cmd *parse_list)
 	if (l->delim == 1)
 		parse_list->quoted[l->j] = 1;
 	l->i = lineseg(line, l->i, l->lex_tab + l->j, parse_list->quoted[l->j]);
-	if (syntax_err(l, 0, 0))
-		return (1);
 	if (is_delim(line[l->i]) != 4 /*is not a space or tab*/)
 		l->i--;
 	else
@@ -79,7 +62,7 @@ int	lex_qw(t_lex *l, char *line, t_cmd *parse_list)
 	return (0);
 }
 
-int	unclosed_quote(char *line)
+int	prelex_err(char *line)
 {
 	int	i;
 	int	quoted;
@@ -88,6 +71,10 @@ int	unclosed_quote(char *line)
 	i = -1;
 	quoted = 0;
 	q_type = 0;
+	if (line[0] == '|')
+		return (syntax_err(2));
+	else if (line[ft_strlen(line) - 1] == '|')
+		return(syntax_err(1));
 	while (line[++i])
 	{
 		if (is_delim(line[i]) == 1)
@@ -100,9 +87,15 @@ int	unclosed_quote(char *line)
 			else if (quoted && line[i] == line[q_type])
 				quoted = 0;
 		}
+		else if (!quoted && is_delim(line[i]) == 3 && \
+				((is_delim(line[i + 1]) == 3 && line[i + 1] != line[i]) \
+				|| (line[i] == line[i + 1] && is_delim(line[i + 2]) == 3)))
+			return (syntax_err(3));
+		else if (!quoted && (line[i] == '\\' || line[i] == ';'))
+			return (syntax_err(4));	
 	}
 	if (quoted)
-		return (syntax_err(NULL, 0, 1));
+		return (syntax_err(5));
 	return (0);
 }
 
@@ -111,8 +104,9 @@ char	**lexing(char *line, t_cmd *parse_list)
 	t_lex	*l;
 	char	**ret;
 	int		mcsize;
+	// int		i;
 
-	if (line == NULL || unclosed_quote(line))
+	if (line == NULL || prelex_err(line))
 		return (NULL);
 	l = malloc(sizeof(t_lex));
 	l->i = 0;

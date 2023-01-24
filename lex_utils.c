@@ -109,20 +109,19 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 	return(f_return(seg, sv, i + quoted));
 }
  
-int	lex_pipe_redir(char *c, char **lex_tab)
+int	lex_pipe_redir(char *c, char *pr_token)
 {
-	char	*str;
+	// char	*str;
 	int		count;
 
 	count = 0;
 	if (is_delim(c[0]) == 3 && c[0] == c[1])
 		count = 1;
-	str = malloc(2 + count);
-	str[0] = c[0];
+	pr_token = malloc(2 + count);
+	pr_token[0] = c[0];
 	if (count)
-		str[count] = c[0];
-	str[1 + count] = '\0';
-	*lex_tab = str;
+		pr_token[count] = c[0];
+	pr_token[1 + count] = '\0';
 	return (1 + count);
 }
 

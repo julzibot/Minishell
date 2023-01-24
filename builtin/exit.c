@@ -90,21 +90,13 @@ int	ft_arrlen(char **s)
 void	ft_free_char_array(char **s)
 {
 	int	i;
-	//int	len;
 
-	i = 0;
-	//len = ft_arrlen(s);
+	i = -1;
 	if (!s)
 		return ;
-	while (s[i])
-	{
+	while (s[++i])
 		free(s[i]);
-		i++;
-	}
-	if (s[i])
-		free(s[i]);
-	if (s)
-		free(s);
+	free(s);
 }
 
 void	ft_exit(t_cmd *cmd, int error_code, char **tokens)

@@ -92,7 +92,7 @@ int	main(int argc, char **argv, char **envp)
 		parse_list = malloc(sizeof(t_cmd));
 		if (!parse_list)
 			exit(1);
-		parse_init(parse_list, ft_tabdup(env_vars, 0));
+		parse_init(parse_list, ft_tabdup(env_vars, 1));
 		line = readline(PROMPT);
 		add_history(line);
 		tokens = lexing(line, parse_list);
@@ -102,8 +102,6 @@ int	main(int argc, char **argv, char **envp)
 			parse_list = parsing(tokens, parse_list);
 			if	(parse_list)
 			{
-				if (env_vars)
-					ft_free_char_array(env_vars);
 				exec_pipeline(parse_list, envp, tokens);
 				env_vars = ft_tabdup(parse_list->env_vars, 0);
 			}
