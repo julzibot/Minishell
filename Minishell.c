@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/23 22:09:30 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 13:20:59 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,10 @@ int	exec_pipeline(t_cmd *parse_list, char **envp, char **tokens)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char			*line;
-	char			**tokens;
-	char			**env_vars;
-	t_cmd 			*parse_list;
+	char	*line;
+	char	**tokens;
+	char	**env_vars;
+	t_cmd 	*parse_list;
 	(void)argc;
 	(void)argv;
 
@@ -102,9 +102,12 @@ int	main(int argc, char **argv, char **envp)
 			parse_list = parsing(tokens, parse_list);
 			if	(parse_list)
 			{
-				ft_free_char_array(env_vars);
-				env_vars = ft_tabdup(parse_list->env_vars, 0);
+				if (env_vars)
+					ft_free_char_array(env_vars);
 				exec_pipeline(parse_list, envp, tokens);
+				env_vars = ft_tabdup(parse_list->env_vars, 0);
+				if (env_vars == NULL)
+					ft_free_char_array(env_vars);
 			}
 		}
 		check_line_exists(line, parse_list, tokens);

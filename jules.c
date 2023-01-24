@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 13:49:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 15:39:12 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 10:27:53 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,9 +332,9 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	// 	printf("%s\n", temp->args[i]);
 		
 	// printf("\n");
-	// i = -1;
-	// while (parse_list->env_vars && parse_list->env_vars[++i])
-	// 	printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
+	i = -1;
+	while (parse_list->env_vars && parse_list->env_vars[++i])
+		printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
 	return (parse_list);
 }
 
