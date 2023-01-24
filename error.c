@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 10:51:57 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 22:11:40 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 16:15:16 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_get_err_code(int error_code)
 	return ;
 }
 
-void	ft_print_error(int error_code, t_cmd *cmd, char *line)
+int	ft_print_error(int error_code, t_cmd *cmd, char *line)
 {
 	ft_printf(2, "Mini_chelou: ");
 	if (error_code == CMD)
@@ -37,5 +37,5 @@ void	ft_print_error(int error_code, t_cmd *cmd, char *line)
 		g_env.error_code = 0;
 	}
 	//else if (error_code == SIG_C)
-	return ;
+	return (1);
 }

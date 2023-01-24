@@ -6,13 +6,34 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 18:50:02 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 15:46:35 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 18:14:16 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 extern g_t_env	g_env;
+
+int	ft_pwd_exist(t_env *list)
+{
+	t_env	*curr;
+	char	*exp;
+
+	curr = list;
+	while (curr)
+	{
+		if (ft_strncmp(curr->line, "PWD", 2) == 0)
+			return (0);
+		curr = curr->next;
+	}
+	if (ft_unset_variable(&g_env.env_list, "OLDPWD") == 1)
+		return (1);
+	exp = ft_strjoin("declare -x ", "OLDPWD=", 0);
+	ft_update_var(&g_env.exp_list, exp);
+	if (exp)
+		free(exp);
+	return (1);
+}
 
 int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 {
@@ -22,6 +43,12 @@ int	ft_update_pwd(t_env **exp_list, t_env **env_list, char *env)
 	s = NULL;
 	var = NULL;
 	s = getcwd(s, 0);
+	if (ft_pwd_exist(g_env.env_list))
+	{
+		if (s)
+			free(s);
+		return (0);
+	}
 	if (!s)
 		return (1);
 	if (g_env.curr_pwd)

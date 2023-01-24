@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/24 15:29:24 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 17:02:09 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,11 @@ int	ft_arrlen(char **s)
 void	ft_free_char_array(char **s)
 {
 	int	i;
+	//int	len;
 
 	i = 0;
-	if (!s )
+	//len = ft_arrlen(s);
+	if (!s)
 		return ;
 	while (s[i])
 	{

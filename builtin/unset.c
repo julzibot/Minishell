@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/24 15:21:23 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 17:40:46 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ char	**ft_free_env_vars(char **env_vars, char *line)
 	int	i;
 
 	i = 0;
+	if (!env_vars)
+		return (NULL);
 	while (env_vars[i])
 	{
 		if (ft_strncmp(env_vars[i], line, ft_varlen(env_vars[i])) == 0)

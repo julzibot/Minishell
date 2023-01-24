@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 22:20:00 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 17:26:55 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,15 @@
 
 extern g_t_env	g_env;
 
-void	ft_child_termios(struct termios *original_termios, struct termios *modified_termios)
-{
-	tcgetattr(STDIN_FILENO, original_termios);
-	modified_termios = original_termios;
-	modified_termios->c_cc[VEOF] = -1;
-	//modified_termios.c_lflag &= ~ICANON; // Disable canonical mode
-	tcsetattr(STDIN_FILENO, TCSANOW, modified_termios);
-}
+// void	ft_child_termios(struct termios *original_termios,
+// struct termios *modified_termios)
+// {
+// 	// tcgetattr(STDIN_FILENO, original_termios);
+// 	// modified_termios = original_termios;
+// 	// modified_termios->c_cc[VEOF] = -1;
+// 	// //modified_termios.c_lflag &= ~ICANON; // Disable canonical mode
+// 	// tcsetattr(STDIN_FILENO, TCSANOW, modified_termios);
+// }
 
 void	ft_close_fds(t_cmd *cmd)
 {
@@ -73,53 +74,61 @@ void	ft_free_paths(char **paths)
 	free(paths);
 }
 
+char	*ft_path_check(char **paths, char *path, int option)
+{
+	ft_free_paths(paths);
+	if (option == 0)
+	{
+		free(path);
+		return ("ok");
+	}
+	return (path);
+}
+
+char	*ft_get_env_path(char **envp, int i)
+{
+	char	*env_line;
+
+	env_line = NULL;
+	while (envp && envp[++i])
+	{
+		if (ft_strstr(envp[i], "PATH"))
+		{
+			env_line = ft_substr(envp[i], 5);
+			return (env_line);
+		}
+	}
+	return (NULL);
+}
+
 char	*ft_cmd_check(char **envp, char *cmd, int option)
 {
 	char	*env_line;
 	char	**paths;
-	char	*path;
 	int		i;
 
-	i = 0;
-	path = NULL;
+	i = -1;
 	env_line = NULL;
 	if (access(cmd, F_OK | X_OK) == 0)
-			return (cmd);
-	while (envp && envp[i])
-	{
-		if (ft_strstr(envp[i], "PATH"))
-			env_line = ft_substr(envp[i], 5);
-		i++;
-	}
+		return (cmd);
+	env_line = ft_get_env_path(envp, i);
 	if (!env_line)
 		return (NULL);
 	paths = ft_split(env_line, ':');
 	free(env_line);
-	i = 0;
-	while (paths[i])
+	i = -1;
+	while (paths[++i])
 	{
 		paths[i] = ft_strjoin(paths[i], "/", 1);
 		paths[i] = ft_strjoin(paths[i], cmd, 1);
 		if (access(paths[i], F_OK | X_OK) == 0)
-		{
-			path = ft_strdup(paths[i]);
-			ft_free_paths(paths);
-			if (option == 0)
-			{
-				free(path);
-				return ("ok");
-			}
-			return (path);
-		}
-		else
-			i++;
+			return (ft_path_check(paths, ft_strdup(paths[i]), option));
 	}
-	printf("3\n");
 	ft_free_paths(paths);
 	return (NULL);
 }
 
-int		ft_exec(t_cmd *cmd, char **envp, char **tokens) // Execute a command
+int	ft_exec(t_cmd *cmd, char **envp, char **tokens)
 {
 	char	*path;
 	int		status;
@@ -198,13 +207,13 @@ int	ft_verify_dollar(char *s)
 
 int	ft_fork(t_cmd *cmd, char **envp, char **tokens)
 {
-	struct termios original_termios;
-    struct termios modified_termios;
+	// struct termios original_termios;
+    // struct termios modified_termios;
 
-	ft_child_termios(&original_termios, &modified_termios);
+	//ft_child_termios(&original_termios, &modified_termios);
 	ft_child_sig();
 	ft_exec(cmd, envp, tokens); // execve
-	tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
+	//tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
 	signal(SIGINT, SIG_IGN);
 	return (0);
 }
