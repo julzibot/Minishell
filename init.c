@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 11:43:39 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 14:56:07 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 17:01:37 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,22 +37,25 @@ void	parse_init(t_cmd *parse_list, char **env_vars)
 
 void	ft_init_env(char **envp)
 {
+	if (envp[0] == NULL)
+	{
+		ft_printf(2, "No environment found!\n");
+		ft_printf(2, "Quitting shell...\n");
+		exit(1);
+	}
 	g_env.gl = 0;
 	g_env.error_code = 0;
 	g_env.curr_pwd = NULL;
 	g_env.old_pwd = NULL;
 	g_env.abs_path = getenv("HOME");
-	ft_get_env(&g_env.env_list, envp); // For env command
-	ft_get_exp(&g_env.exp_list, envp); // For export command
-	ft_get_export(&g_env.exp_list);    // Declare -x PWD="somewhere/nice/and/cozy"
+	ft_get_env(&g_env.env_list, envp);
+	ft_get_exp(&g_env.exp_list, envp);
+	ft_get_export(&g_env.exp_list);
 	ft_sort_list(&g_env.exp_list);
 }
 
 void	ft_init_termios(struct termios *term)
 {
-	// term = malloc(sizeof(struct termios));
-	// if (!term)
-	// 	exit(1);
 	tcgetattr(STDOUT_FILENO, term);
 	term->c_lflag = term->c_lflag ^ ECHOCTL;
 	tcsetattr(STDOUT_FILENO, TCSAFLUSH, term);

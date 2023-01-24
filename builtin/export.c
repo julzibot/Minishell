@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/24 15:20:04 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 16:15:27 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,42 +177,24 @@ int	ft_export(t_cmd *cmd)
 	char	*tmp;
 
 	i = 1;
-	j = 0;
+	j = -1;
 	err = 0;
 	tmp = NULL;
-	// if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
-	// {
-	// 	if (!ft_verify_err_var(cmd->args[i]))
-	// 	{
-	// 		tmp = ft_strjoin("declare -x ", cmd->args[1], 0);
-	// 		ft_add_queue(&g_env.exp_list, tmp);
-	// 		free(tmp);
-	// 	}
-	// 	return (0);
-	// }
 	while (cmd->args[i])
 	{
-		//printf("arg is %s\n", cmd->args[i]);
 		if (ft_verify_err_var(cmd->args[i]))
 		{
-			err = 1;
-			ft_print_error(ENV_VAR, cmd, cmd->args[i]);
+			err = ft_print_error(ENV_VAR, cmd, cmd->args[i]);
 			break ;
 		}
-		//printf("arg is %s\n", cmd->args[i]);
-		if (cmd->env_vars[0] == NULL)
+		if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
 		{
-			printf("env null\n");
-			tmp = ft_strjoin("declare -x ", cmd->args[1], 0);
+			tmp = ft_strjoin("declare -x ", cmd->args[i], 0);
 			ft_add_queue(&g_env.exp_list, tmp);
 			free(tmp);
 		}
-		while (cmd->env_vars[j])
-		{
-			printf("arg is %s\n", cmd->args[i]);
+		while (cmd->env_vars[++j])
 			ft_do_export(cmd->args[i], cmd->env_vars[j], cmd);
-			j++;
-		}
 		j = 0;
 		i++;
 	}

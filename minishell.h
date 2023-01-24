@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 16:26:31 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 18:04:08 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,6 +223,8 @@ char	*ft_pwd(t_cmd *cmd);
 /***********UNSET**********/
 int		ft_unset(t_cmd *cmd);
 void	ft_remove_line(t_env **env_list, t_env *node);
+int		ft_do_unset(t_cmd *cmd, char *line);
+int		ft_unset_variable(t_env **list, char *s);
 
 /***********EXIT***********/
 void	ft_exit(t_cmd *cmd, int error_code, char **tokens);
@@ -240,7 +242,7 @@ void	ft_child_sig(void);
 void	check_line_exists(char *line, t_cmd *pl, char **tokens);
 
 /***********ERRORS*********/
-void	ft_print_error(int error_code, t_cmd *cmd, char *line);
+int		ft_print_error(int error_code, t_cmd *cmd, char *line);
 void	ft_get_err_code(int error_code);
 
 #endif
