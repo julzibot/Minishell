@@ -76,6 +76,13 @@ int	seg_loop(char *line, int i, char *seg, t_seg *segvars)
 	return (i);
 }
 
+int	f_return(char *seg, t_seg *sv, int ret)
+{
+	free(seg);
+	free(sv);
+	return (ret);
+}
+
 int	lineseg(char *line, int i, char **lex_tab, int quoted)
 {
 	char	*seg;
@@ -87,13 +94,13 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 	if (i > 0 && is_delim(line[i - 1]) == 1 && !(line[i - 1] == line[i]))
 		seg[sv->s_i++] = line[i - 1];
 	if (line[i] == '\\' || line[i] == ';')
-		return (-2);
+		return(f_return(seg, sv, -2));
 	seg[sv->s_i++] = line[i];
 	i = seg_loop(line, i, seg, sv);
 	if ((quoted || sv->var_quoted) && !line[i])
-		return (-1);
+		return(f_return(seg, sv, -1));
 	else if (!quoted && (line[i] == '\\' || line[i] == ';'))
-		return (-2);
+		return(f_return(seg, sv, -2));
 	seg[sv->s_i] = line[i];
 	if (!quoted && is_delim(line[i]) == 1)
 		sv->q_type = 1;
@@ -101,9 +108,7 @@ int	lineseg(char *line, int i, char **lex_tab, int quoted)
 		sv->q_type = 0;
 	seg[sv->s_i + quoted + sv->q_type] = '\0';
 	*lex_tab = ft_strdup(seg);
-	free(seg);
-	free(sv);
-	return (i + quoted);
+	return(f_return(seg, sv, i + quoted));
 }
  
 int	lex_pipe_redir(char *c, char **lex_tab)
@@ -152,21 +157,22 @@ int	arg_count(char *line)
 	return (count);
 }
 
-void	tab_list_init(char **lex_tab, char *line, t_cmd *parse_list)
+void	tab_list_init(char *line, t_cmd *parse_list)
 {
 	int	i;
 	int	lex_size;
 	
 	i = -1;
 	lex_size = arg_count(line);
-	if (lex_tab == NULL || parse_list == NULL || line == NULL)
-		return ;
-	parse_list->quoted = malloc(sizeof(int) * (lex_size));
-	parse_list->space_after = malloc(sizeof(int) * (lex_size));
-	while (++i < lex_size)
+	if (parse_list)
 	{
-		parse_list->quoted[i] = 0;
-		parse_list->space_after[i] = 0;
+		parse_list->quoted = malloc(sizeof(int) * (lex_size));
+		parse_list->space_after = malloc(sizeof(int) * (lex_size));
+		while (++i < lex_size)
+		{
+			parse_list->quoted[i] = 0;
+			parse_list->space_after[i] = 0;
+		}
 	}
 	return;
 }

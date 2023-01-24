@@ -92,15 +92,14 @@ void	ft_free_char_array(char **s)
 	int	i;
 
 	i = 0;
-	if (s == NULL || *s == NULL)
+	if (!s )
 		return ;
-	while (i < ft_arrlen(s))
+	while (s[i])
 	{
-		if (s[i] == NULL)
-			break ;
 		free(s[i]);
 		i++;
 	}
+	free(s[i]);
 	free(s);
 }
 
@@ -142,6 +141,6 @@ void	ft_exit(t_cmd *cmd, int error_code, char **tokens)
 		cmd = temp;
 	}
 	ft_free_char_array(tokens);
-	system("leaks minishell");
+	system("leaks --list minishell");
 	exit(error_code);
 }

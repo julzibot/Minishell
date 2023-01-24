@@ -26,14 +26,14 @@ void	free_list(t_cmd *parse_list, char **tokens)
 			free(parse_list->space_after);
 		if (parse_list->quoted)
 			free(parse_list->quoted);
-	}
-	while (parse_list)
-	{
-		if (parse_list->args)
-			ft_free_char_array(parse_list->args);
-		temp = parse_list->next;
-		free(parse_list);
-		parse_list = temp;
+		while (parse_list)
+		{
+			if (parse_list->args)
+				ft_free_char_array(parse_list->args);
+			temp = parse_list->next;
+			free(parse_list);
+			parse_list = temp;
+		}
 	}
 	if (tokens)
 		ft_free_char_array(tokens);
@@ -103,12 +103,12 @@ int	main(int argc, char **argv, char **envp)
 			if	(parse_list)
 			{
 				ft_free_char_array(env_vars);
-				env_vars = ft_tabdup(parse_list->env_vars, 0);
 				exec_pipeline(parse_list, envp, tokens);
+				env_vars = ft_tabdup(parse_list->env_vars, 0);
 			}
 		}
 		check_line_exists(line, parse_list, tokens);
-		if (parse_list)
+		if (parse_list || !tokens)
 			free_list(parse_list, tokens);
 		free(line);
 		// system("leaks minishell\n");

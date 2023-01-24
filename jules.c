@@ -31,8 +31,6 @@ int	syntax_err(t_lex *l, int lexpr)
 {
 	if (lexpr || l->i < 0)
 	{
-		// ft_free_char_array(l->lex_tab);
-		l->lex_tab = NULL;
 		if (lexpr == 1)
 			printf("Error : input ends with a pipe\n");
 		else if (lexpr == 2)
@@ -102,13 +100,14 @@ char	**lexing(char *line, t_cmd *parse_list)
 	l->error = 0;
 	l->delim = -1;
 	l->lex_tab = malloc(sizeof(char*) * arg_count(line));
-	tab_list_init(l->lex_tab, line, parse_list);
+	tab_list_init(line, parse_list);
 	while (line[l->i])
 	{
 		l->delim = is_delim(line[l->i]);
 		if (((l->delim == 2 || l->delim == 3) && lex_pr(l, line, parse_list)) \
 			|| ((!l->delim || l->delim == 1) && lex_qw(l, line, parse_list)))
 			{
+				ft_free_char_array(l->lex_tab);
 				free(l);
 				return (NULL);
 			}
@@ -315,26 +314,6 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			i += quotes_skip(lex_tab + i, parse_list->space_after + i);
 		}
 	}
-	// if (str != NULL) // Doesn't work with more than 1 arg | cd works, but not "but cd .."
-	// 	free(str);
-	// temp = parse_list;
-	// while (temp->next != NULL)
-	// {
-	// 	printf("%p\n", temp);
-	// 	i = -1;
-	// 	while (temp->args && temp->args[++i])
-	// 		printf("%s\n", temp->args[i]);
-	// 	temp = temp->next;
-	// }
-	// printf("%p\n", temp);
-	// i = -1;
-	// while (temp->args && temp->args[++i])
-	// 	printf("%s\n", temp->args[i]);
-		
-	// printf("\n");
-	// i = -1;
-	// while (parse_list->env_vars && parse_list->env_vars[++i])
-	// 	printf("env_var %d : %s\n", i, parse_list->env_vars[i]);
 	return (parse_list);
 }
 
