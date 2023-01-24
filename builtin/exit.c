@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 16:28:48 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 10:29:12 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,8 @@ void	ft_free_char_array(char **s)
 	{
 		if (s[i] == NULL)
 			break ;
-		free(s[i]);
+		if (s)
+			free(s[i]);
 		i++;
 	}
 	free(s);
