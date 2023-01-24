@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 17:45:56 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 15:57:27 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 15:15:10 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,32 @@ int	ft_unset_variable(t_env **list, char *s)
 	return (0);
 }
 
+char	**ft_free_env_vars(char **env_vars, char *line)
+{
+	int	i;
+
+	i = 0;
+	while (env_vars[i])
+	{
+		if (ft_strncmp(env_vars[i], line, ft_varlen(env_vars[i])) == 0)
+		{
+			free(env_vars[i]);
+			while (env_vars[i])
+			{
+				env_vars[i] = env_vars[i + 1];
+				i++;
+			}
+			if (env_vars == NULL || env_vars[0] == NULL)
+				ft_free_char_array(env_vars);
+			return (env_vars);
+		}
+		i++;
+	}
+	if (env_vars == NULL || env_vars[0] == NULL)
+		ft_free_char_array(env_vars);
+	return (env_vars);
+}
+
 int	ft_do_unset(t_cmd *cmd, char *line)
 {
 	char	*exp;
@@ -74,6 +100,9 @@ int	ft_do_unset(t_cmd *cmd, char *line)
 		free(exp);
 		return (1);
 	}
+	cmd->env_vars = ft_free_env_vars(cmd->env_vars, line);
+	if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
+		ft_free_char_array(cmd->env_vars);
 	if (exp)
 		free(exp);
 	return (0);
