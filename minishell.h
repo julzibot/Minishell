@@ -129,7 +129,7 @@ int		lex_pipe_redir(char *c, char **lex_tab);
 int		lineseg(char *line, int i, char **lex_tab, int quoted);
 int		seg_size(char *line, int i);
 int		is_delim(char c);
-void	tab_list_init(char **lex_tab, char *line, t_cmd *parse_list);
+void	tab_list_init(char *line, t_cmd *parse_list);
 char	**lexing(char *line, t_cmd *parse_list);
 
 /***********PARSING**********/

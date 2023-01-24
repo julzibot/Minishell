@@ -17,25 +17,6 @@ extern g_t_env	g_env;
 void	ft_free_exit(t_cmd *parse_list, char **tokens)
 {
 	t_cmd	*temp;
-
-	// if (parse_list)
-	// {
-	// 	printf("after\n");
-	// 	if (parse_list->args[2] != NULL)
-	// 	{
-	// 		ft_printf(2, "Mini_chelou: ");
-	// 		ft_printf(2, "exit: too many arguments\n");
-	// 		return ;
-	// 	}
-	// 	if (ft_is_digit(parse_list->args[1]))
-	// 	{
-	// 		ft_printf(2, "Mini_chelou: ");
-	// 		ft_printf(2, "exit: %s: numeric argument required\n", parse_list->args[1]);
-	// 		return ;
-	// 	}
-	// 	code = ft_atoi(parse_list->args[1]);
-	// 	code %= 256;
-	// }
 	if (parse_list->env_vars)
 		ft_free_char_array(parse_list->env_vars);
 	if (parse_list->space_after)
