@@ -82,14 +82,17 @@ char	*ft_cmd_check(char **envp, char *cmd, int option)
 
 	i = 0;
 	path = NULL;
+	env_line = NULL;
 	if (access(cmd, F_OK | X_OK) == 0)
 			return (cmd);
-	while (envp[i])
+	while (envp && envp[i])
 	{
 		if (ft_strstr(envp[i], "PATH"))
 			env_line = ft_substr(envp[i], 5);
 		i++;
 	}
+	if (!env_line)
+		return (NULL);
 	paths = ft_split(env_line, ':');
 	free(env_line);
 	i = 0;
@@ -111,6 +114,7 @@ char	*ft_cmd_check(char **envp, char *cmd, int option)
 		else
 			i++;
 	}
+	printf("3\n");
 	ft_free_paths(paths);
 	return (NULL);
 }
