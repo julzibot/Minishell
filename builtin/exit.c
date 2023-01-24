@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/13 18:58:10 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 16:28:48 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/24 15:24:56 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,10 @@ void	ft_free_char_array(char **s)
 		free(s[i]);
 		i++;
 	}
-	free(s[i]);
-	free(s);
+	if (s[i])
+		free(s[i]);
+	// if (s)
+	// 	free(s);
 }
 
 void	ft_exit(t_cmd *cmd, int error_code, char **tokens)
