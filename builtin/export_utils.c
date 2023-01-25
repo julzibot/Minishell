@@ -6,83 +6,13 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:39:23 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/23 16:01:19 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 09:38:31 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 extern g_t_env	g_env;
-
-int	ft_do_quotes(char *var, char *env_var, int i, int j)
-{
-	while (var[i])
-	{
-		env_var[j++] = var[i++];
-		if (j != 0 && env_var[j - 1] == '=')
-		{
-			env_var[j++] = '\"';
-			break ;
-		}
-	}
-	while (var[i])
-	{
-		env_var[j] = var[i];
-		if (var[i + 1] == '\0')
-		{
-			env_var[++j] = '\"';
-			return (j);
-		}
-		i++;
-		j++;
-	}
-	return (j);
-}
-
-char	*ft_add_quotes(char *var)
-{
-	int		i;
-	int		j;
-	char	*env_var;
-
-	i = 0;
-	j = 0;
-	if (var == NULL)
-		return (NULL);
-	env_var = malloc(sizeof(char) * (ft_strlen(var) + 3));
-	j = ft_do_quotes(var, env_var, i, j);
-	env_var[++j] = '\0';
-	return (env_var);
-}
-
-char	*ft_verify_env_var(char *s)
-{
-	int		i;
-	int		len;
-	int		equal;
-	char	*str;
-
-	i = 0;
-	equal = 0;
-	while (s[i])
-	{
-		if (s[i] == '=')
-			equal = 1;
-		if (s[i] == ' ' && equal == 0)
-		{
-			ft_printf(2, "export: `=': not a valid identifier\n");
-			return (NULL);
-		}
-		if (s[i] == ' ')
-			break ;
-		i++;
-	}
-	len = i + 1;
-	str = malloc(sizeof(char) * len);
-	ft_strcpy(str, s);
-	free(s);
-	return (str);
-}
 
 char	*ft_var_content(char *line)
 {
@@ -115,4 +45,27 @@ int	ft_update_var(t_env **env_list, char *s)
 		curr = curr->next;
 	}
 	return (0);
+}
+
+void	ft_loop_assign_vars(char **env_vars, char *line)
+{
+	int		i;
+	char	*exp;
+
+	i = 0;
+	exp = NULL;
+	exp = ft_add_quotes(line);
+	exp = ft_strjoin("declare -x ", exp, 2);
+	while (env_vars[i])
+	{
+		if (ft_strcmp(env_vars[i], line) == 0)
+		{
+			ft_add_after(&g_env.env_list, 15, line);
+			ft_add_queue(&g_env.exp_list, exp);
+			free(exp);
+			return ;
+		}
+		i++;
+	}
+	free(exp);
 }
