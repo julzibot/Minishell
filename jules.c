@@ -28,9 +28,9 @@ int	syntax_err(int err_type)
 		else if (err_type == 3)
 			printf("Error : this redirection is chelou !\n");
 		else if (err_type == 4)
-			printf("Error : unclosed quotes !\n");
-		else if (err_type == 5)
 			printf("Error : chelou input detected\n");
+		else if (err_type == 5)
+		printf("Error : unclosed quotes !\n");
 		error = 1;
 	}
 	if (error)
@@ -40,7 +40,7 @@ int	syntax_err(int err_type)
 
 int	lex_pr(t_lex *l, char *line, t_cmd *parse_list)
 {
-	l->i += lex_pipe_redir(line + l->i, l->lex_tab[l->j++]);
+	l->i += lex_pipe_redir(line + l->i, l->lex_tab + l->j++);
 	if (is_delim(line[l->i]) != 4 /*is not a space or tab*/)
 		l->i--;
 	else
@@ -115,7 +115,7 @@ char	**lexing(char *line, t_cmd *parse_list)
 	l->delim = -1;
 	mcsize = arg_count(line);
 	l->lex_tab = malloc(sizeof(char*) * mcsize);
-	l->lex_tab[mcsize - 1] = NULL;
+	// l->lex_tab[mcsize - 1] = NULL;
 	tab_list_init(line, parse_list);
 	while (line[l->i])
 	{
@@ -131,6 +131,7 @@ char	**lexing(char *line, t_cmd *parse_list)
 	}
 	l->lex_tab[l->j] = NULL;
 	ret = ft_tabdup(l->lex_tab, 1);
+	printf("here : %d\n", ft_tablen(ret));
 	free(l);
 	return (ret);
 }
@@ -294,9 +295,9 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 	int		type;
 	char	*str;
 
-	// i = -1;
-	// while (lex_tab[++i])
-	// 	printf("lex %d : %s\n", i, lex_tab[i]);
+	i = -1;
+	while (lex_tab && lex_tab[++i])
+		printf("lex %d : %s\n", i, lex_tab[i]);
 	
 	// INIT
 	i = -1;
@@ -330,6 +331,24 @@ t_cmd	*parsing(char **lex_tab, t_cmd *parse_list)
 			i += quotes_skip(lex_tab + i, parse_list->space_after + i);
 		}
 	}
+
+	temp = parse_list;
+	while (temp->next != NULL)
+	{
+		printf("%p\n", temp);
+		i = -1;
+		while (temp->args && temp->args[++i])
+			printf("%s\n", temp->args[i]);
+		// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
+		temp = temp->next;
+	}
+	printf("%p\n", temp);
+	i = -1;
+	while (temp->args && temp->args[++i])
+		printf("%s\n", temp->args[i]);
+	// printf("%d %d %d\n", temp->redir_in, temp->out_pipe[1], temp->out_pipe[0]);
+	printf("\n");
+
 	return (parse_list);
 }
 

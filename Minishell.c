@@ -103,8 +103,6 @@ int	main(int argc, char **argv, char **envp)
 			if	(parse_list)
 			{
 				exec_pipeline(parse_list, envp, tokens);
-				if (env_vars)
-					free(env_vars);
 				env_vars = ft_tabdup(parse_list->env_vars, 0);
 			}
 		}

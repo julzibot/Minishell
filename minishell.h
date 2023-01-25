@@ -125,7 +125,7 @@ void 	rl_replace_line(const char *text, int clear_undo);
 
 /***********LEXING**********/
 int		arg_count(char *line);
-int		lex_pipe_redir(char *c, char *pr_token);
+int		lex_pipe_redir(char *c, char **pr_token);
 int		lineseg(char *line, int i, char **lex_tab, int quoted);
 int		seg_size(char *line, int i);
 int		is_delim(char c);
