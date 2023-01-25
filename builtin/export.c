@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/24 16:15:27 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 09:19:11 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,11 +176,11 @@ int	ft_export(t_cmd *cmd)
 	int		err;
 	char	*tmp;
 
-	i = 1;
+	i = 0;
 	j = -1;
 	err = 0;
 	tmp = NULL;
-	while (cmd->args[i])
+	while (cmd->args[++i])
 	{
 		if (ft_verify_err_var(cmd->args[i]))
 		{
@@ -193,10 +193,9 @@ int	ft_export(t_cmd *cmd)
 			ft_add_queue(&g_env.exp_list, tmp);
 			free(tmp);
 		}
-		while (cmd->env_vars[++j])
+		while (cmd->env_vars && cmd->env_vars[++j])
 			ft_do_export(cmd->args[i], cmd->env_vars[j], cmd);
 		j = 0;
-		i++;
 	}
 	return (err);
 }
