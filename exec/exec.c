@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 18:54:53 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/24 17:26:55 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 12:22:48 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,77 +56,6 @@ int	is_builtin(t_cmd *cmd)
 		return (0);
 }
 
-void	ft_free_paths(char **paths)
-{
-	int	i;
-
-	i = 0;
-	if (!paths)
-		return ;
-	while (i < ft_arrlen(paths))
-	{
-		if (paths[i] == NULL)
-			break ;
-		if (paths[i])
-			free(paths[i]);
-		i++;
-	}
-	free(paths);
-}
-
-char	*ft_path_check(char **paths, char *path, int option)
-{
-	ft_free_paths(paths);
-	if (option == 0)
-	{
-		free(path);
-		return ("ok");
-	}
-	return (path);
-}
-
-char	*ft_get_env_path(char **envp, int i)
-{
-	char	*env_line;
-
-	env_line = NULL;
-	while (envp && envp[++i])
-	{
-		if (ft_strstr(envp[i], "PATH"))
-		{
-			env_line = ft_substr(envp[i], 5);
-			return (env_line);
-		}
-	}
-	return (NULL);
-}
-
-char	*ft_cmd_check(char **envp, char *cmd, int option)
-{
-	char	*env_line;
-	char	**paths;
-	int		i;
-
-	i = -1;
-	env_line = NULL;
-	if (access(cmd, F_OK | X_OK) == 0)
-		return (cmd);
-	env_line = ft_get_env_path(envp, i);
-	if (!env_line)
-		return (NULL);
-	paths = ft_split(env_line, ':');
-	free(env_line);
-	i = -1;
-	while (paths[++i])
-	{
-		paths[i] = ft_strjoin(paths[i], "/", 1);
-		paths[i] = ft_strjoin(paths[i], cmd, 1);
-		if (access(paths[i], F_OK | X_OK) == 0)
-			return (ft_path_check(paths, ft_strdup(paths[i]), option));
-	}
-	ft_free_paths(paths);
-	return (NULL);
-}
 
 int	ft_exec(t_cmd *cmd, char **envp, char **tokens)
 {
@@ -191,20 +120,6 @@ int	exec_builtin(t_cmd *cmd, int builtin, char **tokens)
 	return (status);
 }
 
-int	ft_verify_dollar(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '$')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
 int	ft_fork(t_cmd *cmd, char **envp, char **tokens)
 {
 	// struct termios original_termios;
@@ -215,23 +130,6 @@ int	ft_fork(t_cmd *cmd, char **envp, char **tokens)
 	ft_exec(cmd, envp, tokens); // execve
 	//tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
 	signal(SIGINT, SIG_IGN);
-	return (0);
-}
-
-int	ft_str_is_digit(char *s)
-{
-	int	i;
-
-	i = 0;
-	if (!s)
-		return (1);
-	while (s[i])
-	{
-		if (s[i] >= '0' && s[i] < '9')
-			i++;
-		else
-			return (1);
-	}
 	return (0);
 }
 
