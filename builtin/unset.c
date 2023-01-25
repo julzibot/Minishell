@@ -53,30 +53,31 @@ int	ft_unset_variable(t_env **list, char *s)
 	return (0);
 }
 
-char	**ft_free_env_vars(char **env_vars, char *line)
+char    **ft_free_env_vars(char **env_vars, char *line)
 {
-	int	i;
+    int i;
+    int j;
+    char    **ret;
 
-	i = 0;
-	if (!env_vars)
-		return (NULL);
-	while (env_vars[i])
-	{
-		if (ft_strncmp(env_vars[i], line, ft_varlen(env_vars[i])) == 0)
-		{
-			free(env_vars[i]);
-			while (env_vars[i])
-			{
-				env_vars[i] = env_vars[i + 1];
-				i++;
-			}
-			if (env_vars == NULL || env_vars[0] == NULL)
-				ft_free_char_array(env_vars);
-			return (env_vars);
-		}
-		i++;
-	}
-	return (env_vars);
+    i = -1;
+    j = -1;
+    if (!env_vars)
+        return (NULL);
+    while (env_vars[++i])
+    {
+        if (ft_strncmp(env_vars[i], line, ft_varlen(env_vars[i])) == 0)
+        {
+            ret = malloc(ft_tablen(env_vars));
+            while(++j < i) 
+                ret[j] = ft_strdup(env_vars[j]);
+            while (env_vars[++j])
+                ret[j - 1] = ft_strdup(env_vars[j]);
+            ret[j - 1] = NULL;
+            ft_free_char_array(env_vars);
+            return (ret);
+        }
+    }
+    return (env_vars);
 }
 
 int	ft_do_unset(t_cmd *cmd, char *line)
