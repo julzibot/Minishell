@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/25 09:45:51 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 12:18:15 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ int	exec_pipeline(t_cmd *parse_list, char **envp, char **tokens)
 			temp->next->in_pipe[0] = temp->out_pipe[0];
 			temp->next->in_pipe[1] = temp->out_pipe[1];
 		}
+		printf("exec pipeline\n");
 		status = ft_exec_cmd(temp, envp, tokens, i);
 		if (temp->next)
 			temp = temp->next;
@@ -71,6 +72,45 @@ int	exec_pipeline(t_cmd *parse_list, char **envp, char **tokens)
 		g_env.error_code = status;
 	}
 	return (status);
+}
+
+int	ft_sprint(t_env *env_lst)
+{
+	t_env	*curr;
+	int		i;
+
+	i = 0;
+	curr = env_lst;
+	if (curr == NULL)
+		return (1);
+	while (curr)
+	{
+		ft_printf(1, "%d - %s\n", i, curr->line);
+		i++;
+		curr = curr->next;
+	}
+	return (0);
+}
+
+char	**ft_env_vars_dup(char **tab, int must_free)
+{
+	char **dup;
+	int	i;
+	int	len;
+
+	if (!tab || !tab[0])
+		return (NULL);
+	len = ft_arrlen(tab);
+	i = -1;
+	dup = malloc(sizeof(char*) * (ft_tablen(tab) + 1));
+	if (!dup)
+		return (NULL);
+	while (++i < len - 1)
+		dup[i] = ft_strdup(tab[i]);
+	dup[i] = NULL;
+	if (must_free && tab)
+	 	ft_free_char_array(tab);
+	return (dup);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -100,12 +140,16 @@ int	main(int argc, char **argv, char **envp)
 		if (tokens)
 		{
 			parse_list = parsing(tokens, parse_list);
+			// if  (!parse_list)
+			// 	printf("PARSE LIST PROBLEM\n");
 			if	(parse_list)
 			{
+				// for (int i = 0; parse_list->env_vars[i]; i++)
+				// 	printf("env %s\n", parse_list->env_vars[i]);
 				exec_pipeline(parse_list, envp, tokens);
 				if (env_vars)
 					free(env_vars);
-				env_vars = ft_tabdup(parse_list->env_vars, 0);
+				env_vars = ft_env_vars_dup(parse_list->env_vars, 0);
 			}
 		}
 		check_line_exists(line, parse_list, tokens);

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/25 09:37:00 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 12:17:01 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,9 @@ void	ft_not_equal_var(t_cmd *cmd, char *line)
 
 void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 {
-	char	*tmp;
+	// char	*tmp;
 
-	tmp = NULL;
+	// tmp = NULL;
 	if (ft_strncmp(args, env_vars, ft_varlen(args)) == 0
 		&& ft_verify_double(g_env.env_list, args) == 0)
 	{
@@ -96,12 +96,13 @@ void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 		else
 			ft_not_equal_var(cmd, args);
 	}
-	else
-	{
-		tmp = ft_strjoin("declare -x ", args, 0);
-		ft_add_queue(&g_env.exp_list, tmp);
-		free(tmp);
-	}
+	// else
+	// {
+	// 	printf("do only\n");
+	// 	tmp = ft_strjoin("declare -x ", args, 0);
+	// 	ft_add_queue(&g_env.exp_list, tmp);
+	// 	free(tmp);
+	// }
 }
 
 void	ft_export_only(char *var)
@@ -119,10 +120,12 @@ int	ft_export(t_cmd *cmd)
 	int		i;
 	int		j;
 	int		err;
+	char	*tmp;
 
 	i = 0;
 	j = -1;
 	err = 0;
+	tmp = NULL;
 	while (cmd->args[++i])
 	{
 		if (ft_verify_err_var(cmd->args[i]))
@@ -130,11 +133,15 @@ int	ft_export(t_cmd *cmd)
 			err = ft_print_error(ENV_VAR, cmd, cmd->args[i]);
 			break ;
 		}
-		if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
-			ft_export_only(cmd->args[i]);
 		while (cmd->env_vars && cmd->env_vars[++j])
 			ft_do_export(cmd->args[i], cmd->env_vars[j], cmd);
-		j = 0;
+		tmp = ft_strjoin("declare -x ", cmd->args[i], 0);
+		if ((cmd->env_vars[j] == NULL || cmd->env_vars == NULL)
+			&& ft_verify_double(g_env.exp_list, tmp) == 0)
+			ft_export_only(cmd->args[i]);
+		if (tmp)
+			free(tmp);
+		j = -1;
 	}
 	return (err);
 }
