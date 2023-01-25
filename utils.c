@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:33:24 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/24 15:24:07 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 09:48:13 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,14 +235,18 @@ char	**ft_tabdup(char **tab, int must_free)
 {
 	char **dup;
 	int	i;
+	int	len;
 
-	if (!tab)
+	if (!tab || !tab[0])
 		return (NULL);
+	len = ft_arrlen(tab);
 	i = -1;
 	dup = malloc(sizeof(char*) * (ft_tablen(tab) + 1));
 	if (!dup)
 		return (NULL);
-	while (tab[++i])
+	// while (tab[++i])
+	// 	dup[i] = ft_strdup(tab[i]);
+	while (++i < len - 1)
 		dup[i] = ft_strdup(tab[i]);
 	dup[i] = NULL;
 	if (must_free && tab)

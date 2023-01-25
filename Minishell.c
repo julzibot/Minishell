@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/18 10:58:48 by jibot             #+#    #+#             */
-/*   Updated: 2023/01/24 15:55:31 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 09:45:51 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ int	main(int argc, char **argv, char **envp)
 			if	(parse_list)
 			{
 				exec_pipeline(parse_list, envp, tokens);
+				if (env_vars)
+					free(env_vars);
 				env_vars = ft_tabdup(parse_list->env_vars, 0);
 			}
 		}

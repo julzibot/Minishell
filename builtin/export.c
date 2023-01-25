@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 21:48:04 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/25 09:19:11 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 09:37:00 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,71 +49,6 @@ extern g_t_env	g_env;
 // Unset more than one variable
 
 // Adds declare -x and quotes
-void	ft_get_export(t_env **exp_list)
-{
-	t_env	*curr;
-	char	*tmp;
-
-	tmp = NULL;
-	curr = *exp_list;
-	if (!curr)
-		return ;
-	while (curr)
-	{
-		tmp = ft_add_quotes(curr->line);
-		free(curr->line);
-		tmp = ft_strjoin("declare -x ", tmp, 2);
-		curr->line = malloc(sizeof(char) * (ft_strlen(tmp) + 1));
-		ft_strcpy(curr->line, tmp);
-		free(tmp);
-		if (curr->next == NULL)
-			break ;
-		curr = curr->next;
-	}
-}
-
-// Check if there is an existing variable that changed content
-int	ft_change_var_content(t_cmd *cmd, char *line)
-
-{
-	int	i;
-
-	i = 0;
-	while (cmd->env_vars[i])
-	{
-		if (ft_strncmp(cmd->env_vars[i],
-				line, ft_varlen(line)) == 0)
-		{
-			if (ft_strcmp(cmd->env_vars[i], line) != 0)
-				return (1);
-		}
-		i++;
-	}
-	return (0);
-}
-
-void	ft_loop_assign_vars(char **env_vars, char *line)
-{
-	int		i;
-	char	*exp;
-
-	i = 0;
-	exp = NULL;
-	exp = ft_add_quotes(line);
-	exp = ft_strjoin("declare -x ", exp, 2);
-	while (env_vars[i])
-	{
-		if (ft_strcmp(env_vars[i], line) == 0)
-		{
-			ft_add_after(&g_env.env_list, 15, line);
-			ft_add_queue(&g_env.exp_list, exp);
-			free(exp);
-			return ;
-		}
-		i++;
-	}
-	free(exp);
-}
 
 void	ft_equal_var(t_cmd *cmd, char *line)
 {
@@ -169,17 +104,25 @@ void	ft_do_export(char *args, char *env_vars, t_cmd *cmd)
 	}
 }
 
+void	ft_export_only(char *var)
+{
+	char	*tmp;
+
+	tmp = NULL;
+	tmp = ft_strjoin("declare -x ", var, 0);
+	ft_add_queue(&g_env.exp_list, tmp);
+	free(tmp);
+}
+
 int	ft_export(t_cmd *cmd)
 {
 	int		i;
 	int		j;
 	int		err;
-	char	*tmp;
 
 	i = 0;
 	j = -1;
 	err = 0;
-	tmp = NULL;
 	while (cmd->args[++i])
 	{
 		if (ft_verify_err_var(cmd->args[i]))
@@ -188,11 +131,7 @@ int	ft_export(t_cmd *cmd)
 			break ;
 		}
 		if (cmd->env_vars == NULL || cmd->env_vars[0] == NULL)
-		{
-			tmp = ft_strjoin("declare -x ", cmd->args[i], 0);
-			ft_add_queue(&g_env.exp_list, tmp);
-			free(tmp);
-		}
+			ft_export_only(cmd->args[i]);
 		while (cmd->env_vars && cmd->env_vars[++j])
 			ft_do_export(cmd->args[i], cmd->env_vars[j], cmd);
 		j = 0;

@@ -6,7 +6,7 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 19:39:38 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/24 18:04:08 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 09:39:35 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,6 @@ int		ft_export(t_cmd *cmd);
 void	ft_get_export(t_env **exp_list);
 void	ft_add_after(t_env **env_list, int line_nb, char *s);
 void	ft_sort_list(t_env **list);
-char	*ft_add_quotes(char *var);
 int		ft_verify_double(t_env *env_list, char *line);
 char	*ft_verify_env_var(char *s);
 char	*ft_var_content(char *line);
@@ -212,6 +211,10 @@ int		ft_verify_equal(char *s);
 int		ft_simple_equal(char *s);
 int		ft_verify_err_var(char *line);
 int		ft_verify_alphanum(char c);
+char	*ft_add_quotes(char *var);
+int		ft_do_quotes(char *var, char *env_var, int i, int j);
+void	ft_loop_assign_vars(char **env_vars, char *line);
+int		ft_change_var_content(t_cmd *cmd, char *line);
 
 
 /***********DIRECTORY******/
