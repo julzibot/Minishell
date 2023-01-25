@@ -6,11 +6,38 @@
 /*   By: mstojilj <mstojilj@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 12:21:39 by mstojilj          #+#    #+#             */
-/*   Updated: 2023/01/25 12:22:25 by mstojilj         ###   ########.fr       */
+/*   Updated: 2023/01/25 12:25:16 by mstojilj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+char	*ft_substr(char *s, unsigned int start)
+{
+	char				*sub;
+	unsigned int		i;
+	unsigned int		j;
+
+	i = start;
+	j = 0;
+	while (s[start + j] && start + j < (unsigned int)ft_strlen(s))
+		j++;
+	sub = malloc(j * sizeof(char) + 1);
+	if (!sub)
+	{
+		free(sub);
+		return (NULL);
+	}
+	j = 0;
+	while (s[i])
+	{
+		sub[j] = s[i];
+		j++;
+		i++;
+	}
+	sub[j] = '\0';
+	return (sub);
+}
 
 void	ft_free_paths(char **paths)
 {
