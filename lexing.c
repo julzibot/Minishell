@@ -127,7 +127,6 @@ char	**lexing(char *line, t_cmd *parse_list)
 	m_size = arg_count(line);
 	if (m_size == 1)
 		m_size ++;
-	printf("lex malloc : %d\n", arg_count(line));
 	l->lex_tab = malloc(sizeof(char *) * m_size);
 	tab_list_init(line, parse_list);
 	while (line[++l->i])
